@@ -1,0 +1,2 @@
+# hamibot-auto_xuexiqiangguo
+基于Hamibot的安卓端学习强国自动化脚本
