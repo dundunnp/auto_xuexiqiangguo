@@ -95,6 +95,7 @@ var back_track_flag = 2;
 
 /**
  * 先获取有哪些模块还没有完成，并生成一个列表，其中第一个是我要选读文章模块，以此类推
+ * 再获取阅读模块和视听模块已完成的时间和次数
  */
 
 back_track();
@@ -104,6 +105,14 @@ for (var i = 4; i < 17; i++) {
     var model = className('android.view.View').depth(22).findOnce(i);
     finish_list.push(model.child(3).text() == '已完成');
 }
+// 已阅读文章次数
+var read_model = className('android.view.View').depth(22).findOnce(4);
+var completed_count = parseInt(read_model.child(2).text().match(/\d+/)) / 2 + 1;
+// 已观看视频时间
+var audiovisual_model1 = className('android.view.View').depth(22).findOnce(5);
+var audiovisual_model2 = className('android.view.View').depth(22).findOnce(6);
+var completed_time = Math.min(parseInt(audiovisual_model1.child(2).text().match(/\d+/)), 
+parseInt(audiovisual_model2.child(2).text().match(/\d+/))) * 60000;
 
 // 返回首页
 className('android.view.View').clickable(true).depth(21).findOne().click();
@@ -137,11 +146,8 @@ var back_track_flag = 0;
 
 // 阅读文章次数
 var count = 0;
-// 已阅读文章次数
-var read_model = className('android.view.View').depth(22).findOnce(4);
-var completed_count = parseInt(read_model.child(2).text().match(/\d+/)) / 2 + 1;
 
-while (count < 6 - completed_count && !finish_list[0]) {   
+while ((count < 6 - completed_count) && !finish_list[0]) {   
     
     if (!id('comm_head_title').exists() || !className('android.widget.TextView').depth(27).text('切换地区').exists()) back_track();
     sleep(random_time(delay_time));
@@ -198,12 +204,6 @@ while (count < 6 - completed_count && !finish_list[0]) {
 *********************视听部分********************
 */
 back_track_flag = 1;
-
-// 已看时间
-var audiovisual_model1 = className('android.view.View').depth(22).findOnce(5);
-var audiovisual_model2 = className('android.view.View').depth(22).findOnce(6);
-var completed_time = Math.min(parseInt(audiovisual_model1.child(2).text().match(/\d+/)), 
-parseInt(audiovisual_model2.child(2).text().match(/\d+/))) * 60000;
 
 /*
 **********视听学习、听学习时长*********
@@ -591,8 +591,6 @@ if (!finish_list[5]) {
     className('android.view.View').clickable(true).depth(23).waitFor();
     className('android.view.View').clickable(true).depth(23).findOne().click();
 }
-
-exit();
 
 /*
 *********************竞赛部分********************
