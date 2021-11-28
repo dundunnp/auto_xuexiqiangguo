@@ -3,15 +3,6 @@
  * 4. fill_in_blank() 填空题如果文本框有分开的情况还未解决
  * 6. video() 视频题待编写
  * 10. 挑战答题有题库
- * 11. 专项答题和每周答题不能重复答题，因此如果做了就不用再做
- * 
- * 
- * 未解决bug：
- * 1. 看完视频不能点击退出，而是暂停（由于后台音乐影响，如果播放下一首音乐会暂停视频）
- * 2. 看完文章跳往视频不能点击视频（已用my_sleep解决）
- * 3. restart后没有反应
- * 4. 完成每日答题后返回打不开每周答题
- * 5. 专项答题会卡住在打开查看提示
  */
 
 auto.waitFor()
@@ -146,8 +137,11 @@ var back_track_flag = 0;
 
 // 阅读文章次数
 var count = 0;
+// 已阅读文章次数
+var read_model = className('android.view.View').depth(22).findOnce(4);
+var completed_count = parseInt(read_model.child(2).text().match(/\d+/)) / 2 + 1;
 
-while (count < 6 && !finish_list[0]) {   
+while (count < 6 - completed_count && !finish_list[0]) {   
     
     if (!id('comm_head_title').exists() || !className('android.widget.TextView').depth(27).text('切换地区').exists()) back_track();
     sleep(random_time(delay_time));
@@ -204,6 +198,13 @@ while (count < 6 && !finish_list[0]) {
 *********************视听部分********************
 */
 back_track_flag = 1;
+
+// 已看时间
+var audiovisual_model1 = className('android.view.View').depth(22).findOnce(5);
+var audiovisual_model2 = className('android.view.View').depth(22).findOnce(6);
+var completed_time = Math.min(parseInt(audiovisual_model1.child(2).text().match(/\d+/)), 
+parseInt(audiovisual_model2.child(2).text().match(/\d+/))) * 60000;
+
 /*
 **********视听学习、听学习时长*********
 */
@@ -216,7 +217,8 @@ if (!finish_list[1] || !finish_list[2]) {
     while (!className('android.widget.FrameLayout').clickable(true).depth(24).findOne().click());
     sleep(random_time(delay_time));
     if (text('继续播放').exists()) click('继续播放');
-    sleep(random_time(380000));
+    // 阅读时间
+    sleep(random_time(370000 - completed_time));
     back();
 }
 
@@ -313,13 +315,41 @@ function video_exist() {
     return className("android.widget.Image").exists();
 }
 
-// 如果错误重新答题
+/**
+ * 点击对应的去答题或去看看
+ * @param {int} number 7对应为每日答题模块，以此类推
+ */
+function entry_model(number) {
+    var model = className('android.view.View').depth(22).findOnce(number);
+    while (!model.child(3).click());
+}
+
+/**
+ * 如果错误则重新答题
+ * 全局变量restart_flag说明:
+ * restart_flag = 0时，表示每日答题
+ * restart_flag = 1时，表示每周答题
+ * restart_flag = 2时，表示专项答题
+ */
 function restart() {
     // 点击退出
     className('android.view.View').clickable(true).depth(20).findOne().click();
     my_click_clickable('退出');
-    text('登录').waitFor();
-    click('去答题', 0);
+    switch (back_track_flag) {
+        case 0:
+            text('登录').waitFor();
+            entry_model(7);
+            break;
+        case 1:
+            // 等待列表加载
+            text('本月').waitFor();
+            // 打开第一个出现未作答的题目
+            while (!text('未作答').exists()) {
+                swipe(500, 1700, 500, 500, random_time(delay_time / 2));
+            }
+            text('未作答').findOne().parent().click();
+            break;
+    }
 }
 
 /*
@@ -464,18 +494,11 @@ function do_it(number) {
     }    
 }
 
-/**
- * 点击对应的去答题或去看看
- * @param {int} number 7对应为我要选读文章模块，以此类推
- */
-function entry_model(number) {
-    var model = className('android.view.View').depth(22).findOnce(number);
-    while (!model.child(3).click());
-}
-
 /*
 **********每日答题*********
 */
+var restart_flag = 0;
+
 if (!finish_list[3]) {
     sleep(random_time(delay_time));
     if (!className('android.view.View').depth(21).text('学习积分').exists()) back_track();
@@ -490,6 +513,8 @@ if (!finish_list[3]) {
 /*
 **********每周答题*********
 */
+restart_flag = 1;
+
 if (!finish_list[4]) {
     sleep(random_time(delay_time));
     if (!className('android.view.View').depth(21).text('学习积分').exists()) back_track();
@@ -512,18 +537,48 @@ if (!finish_list[4]) {
 /*
 **********专项答题*********
 */
+restart_flag = 2;
+
 if (!finish_list[5]) {
     sleep(random_time(delay_time));
     if (!className('android.view.View').depth(21).text('学习积分').exists()) back_track();
     entry_model(9);
     // 等待列表加载
     className('android.view.View').clickable(true).depth(23).waitFor();
-    // 打开第一个出现未作答的题目
-    while (!text('开始答题').exists()) {
-        swipe(500, 1700, 500, 500, random_time(delay_time / 2));
+    // 打开第一个出现未完成作答的题目
+    var special_i = 0;
+    var special_flag = false;
+    while (!special_flag) {
+        if (text('开始答题').exists()) {
+            special_flag = true;
+            break;
+        } 
+        while (text('继续答题').findOnce(special_i)) {
+            if (text('继续答题').findOnce(special_i).parent().childCount() == 1) {
+                special_flag = true;
+                break;
+            } else {
+                special_i++;
+            }
+        }
+        if (!special_flag)
+            swipe(500, 1700, 500, 500, random_time(delay_time / 2));
     }
-    text('开始答题').findOne().click();
-    do_it(10);
+
+    if (text('开始答题').exists()) {
+        text('开始答题').findOne().click();
+        do_it(10);    
+    } else if (text('继续答题').exists()) {
+        text('继续答题').findOnce(special_i).click();
+        // 等待题目加载
+        sleep(random_time(delay_time));
+        // 已完成题数
+        var completed_num = parseInt(className('android.view.View').depth(24).findOnce(1).text().slice(0, 1));
+        do_it(10 - completed_num + 1);
+    } else {
+        toast('发生未知错误，请重新运行脚本');
+        exit();
+    }
     // 点击完成
     sleep(random_time(delay_time));
     text('完成').waitFor();
@@ -536,6 +591,8 @@ if (!finish_list[5]) {
     className('android.view.View').clickable(true).depth(23).waitFor();
     className('android.view.View').clickable(true).depth(23).findOne().click();
 }
+
+exit();
 
 /*
 *********************竞赛部分********************
