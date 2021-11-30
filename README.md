@@ -59,14 +59,14 @@ v1.1 更新内容:
 ## 编辑配置
 在控制台脚本中，在刚刚安装好的脚本中，点击编辑
 <div align=center>
-<img src="http://r32wozj47.hn-bkt.clouddn.com/img/msedge_WRzp0mov3N.png" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
+<img src="http://r32wozj47.hn-bkt.clouddn.com/img/msedge_WRzp0mov3N.png" width="600px" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
 </div>
 <div align=center>
-<img src="http://r32wozj47.hn-bkt.clouddn.com/img/b095b81f07d19bd4b347052e5b9ace0.png" alt="b095b81f07d19bd4b347052e5b9ace0" style="zoom:50%;" />
+<img src="http://r32wozj47.hn-bkt.clouddn.com/img/b095b81f07d19bd4b347052e5b9ace0.png" width="350px" alt="b095b81f07d19bd4b347052e5b9ace0" style="zoom:50%;" />
 </div>
 填写你对应的省份，用于打开本地频道可以积一分（一分也是分!注意不要多加一个省字），比如我这里是江西，然后随意选择一个本地频道（比如我选择的是江西卫视）
 <div align=center>
-<img src="http://r32wozj47.hn-bkt.clouddn.com/img/HwMirror_zmj2eavi85.png" alt="HwMirror_zmj2eavi85" style="zoom:50%;" />
+<img src="http://r32wozj47.hn-bkt.clouddn.com/img/HwMirror_zmj2eavi85.png" width="300px" alt="HwMirror_zmj2eavi85" style="zoom:50%;" />
 </div>
 而后填写跳转页面加载的时间(以秒s为单位)，默认为1s(支持小数点形式)，根据手机性能与网络情况自行而定，时间越长出bug的可能越小，但同时耗费的时间越长。
 我的手机是华为mate20 pro用的是1s，大家可以参考一下，不建议小于1s，太快不符合正常人类点击频率，容易被系统侦测出（当然我也设置了随机时间性，你的任何等待时间都是你设定的基础值加一个随机时间）
@@ -77,7 +77,7 @@ v1.1 更新内容:
 
 但是第二种模式需要通过华为API实现OCR功能，从而完成答题，注意这里通过华为API的收费标准如下，可以看到每个月有一千次免费使用，是完全够用的，相当于免费
 <div align=center>
-<img src="http://r32wozj47.hn-bkt.clouddn.com/img/msedge_QmQEm4XND4.png" alt="msedge_QmQEm4XND4" style="zoom:50%;" />
+<img src="http://r32wozj47.hn-bkt.clouddn.com/img/msedge_QmQEm4XND4.png" width="700px" alt="msedge_QmQEm4XND4" style="zoom:50%;" />
 </div>
 因此如果只想实现模式一的用户后面的选项不需要填写，到这里脚本就可以正常运行了！
 
@@ -85,55 +85,55 @@ v1.1 更新内容:
 
 登录[华为云官网](https://www.huaweicloud.com/)，点击注册（如果已经有账号可以直接登录）
 <div align=center>
-<img src="http://r32wozj47.hn-bkt.clouddn.com/img/msedge_LAXxJYLH9v.png" alt="msedge_LAXxJYLH9v" style="zoom: 33%;" />
+<img src="http://r32wozj47.hn-bkt.clouddn.com/img/msedge_LAXxJYLH9v.png" width="700px" alt="msedge_LAXxJYLH9v" style="zoom: 33%;" />
 </div>
 注册成功后，登录
 <div align=center>
-<img src="http://r32wozj47.hn-bkt.clouddn.com/img/msedge_MF3EQpHYfl.png" alt="msedge_MF3EQpHYfl" style="zoom: 33%;" />
+<img src="http://r32wozj47.hn-bkt.clouddn.com/img/msedge_MF3EQpHYfl.png" width="700px" alt="msedge_MF3EQpHYfl" style="zoom: 33%;" />
 </div>
 点击账户中心，并点击实名认证中的个人认证
 <div align=center>
-<img src="http://r32wozj47.hn-bkt.clouddn.com/img/msedge_i0WswextDv.png" alt="msedge_i0WswextDv" style="zoom: 33%;" />
+<img src="http://r32wozj47.hn-bkt.clouddn.com/img/msedge_i0WswextDv.png" width="700px" alt="msedge_i0WswextDv" style="zoom: 33%;" />
 </div>
 完成认证后，大家可以在基本信息中改一个自己的账号名（我这里改为了dundunnp，注意只能改一次账号名，大家也可以选择不改），而后还需创建一个用户，点击统一身份认证
 <div align=center>
-<img src="http://r32wozj47.hn-bkt.clouddn.com/img/msedge_KaElfaa67l.png" alt="msedge_KaElfaa67l" style="zoom:33%;" />
+<img src="http://r32wozj47.hn-bkt.clouddn.com/img/msedge_KaElfaa67l.png" width="700px" alt="msedge_KaElfaa67l" style="zoom:33%;" />
 </div>
 虽然可以看到已经有一个企业管理员用户，**但华为账号不支持获取帐号Token，需要我们自己创建一个IAM用户**，授予该用户必要的权限，获取IAM用户Token，因此，点击右上角的创建用户
 <div align=center>
-<img src="http://r32wozj47.hn-bkt.clouddn.com/img/msedge_DF8MDpI9Ck.png" alt="msedge_DF8MDpI9Ck" style="zoom:33%;" />
+<img src="http://r32wozj47.hn-bkt.clouddn.com/img/msedge_DF8MDpI9Ck.png" width="700px" alt="msedge_DF8MDpI9Ck" style="zoom:33%;" />
 </div>
 填写用户名与密码，请记住，后面需要用到，点击下一步
 <div align=center>
-<img src="http://r32wozj47.hn-bkt.clouddn.com/img/msedge_uNigytTpFa.png" alt="msedge_uNigytTpFa" style="zoom:33%;" />
+<img src="http://r32wozj47.hn-bkt.clouddn.com/img/msedge_uNigytTpFa.png" width="700px" alt="msedge_uNigytTpFa" style="zoom:33%;" />
 </div>
 点击admin，使其用户加入用户组，点击创建用户
 
 搜索框中[搜索ocr](https://www.huaweicloud.com/s/JW9jciU)，在第一条中点击立即使用
 <div align=center>
-<img src="http://r32wozj47.hn-bkt.clouddn.com/img/msedge_HNfceTw9ey.png" alt="msedge_HNfceTw9ey" style="zoom:33%;" />
+<img src="http://r32wozj47.hn-bkt.clouddn.com/img/msedge_HNfceTw9ey.png" width="700px" alt="msedge_HNfceTw9ey" style="zoom:33%;" />
 </div>
 将页面滚动到最下方
 <div align=center>
-<img src="http://r32wozj47.hn-bkt.clouddn.com/img/msedge_uUOIuwfWH1.png" alt="msedge_uUOIuwfWH1" style="zoom:33%;" />
+<img src="http://r32wozj47.hn-bkt.clouddn.com/img/msedge_uUOIuwfWH1.png" width="700px" alt="msedge_uUOIuwfWH1" style="zoom:33%;" />
 </div>
 翻到第二页，找到网络图片识别，点击开通服务，并确认
 <div align=center>
-<img src="http://r32wozj47.hn-bkt.clouddn.com/img/msedge_lLg8QqR7m8.png" alt="msedge_lLg8QqR7m8" style="zoom:33%;" />
+<img src="http://r32wozj47.hn-bkt.clouddn.com/img/msedge_lLg8QqR7m8.png" width="700px" alt="msedge_lLg8QqR7m8" style="zoom:33%;" />
 </div>
 点击左侧的调用指南其下的API调用
 <div align=center>
-<img src="http://r32wozj47.hn-bkt.clouddn.com/img/msedge_ccv7yxXG7h.png" alt="msedge_ccv7yxXG7h" style="zoom:33%;" />
+<img src="http://r32wozj47.hn-bkt.clouddn.com/img/msedge_ccv7yxXG7h.png" width="700px" alt="msedge_ccv7yxXG7h" style="zoom:33%;" />
 </div>
 在这个界面中，下面的配置参数查询下面的构造请求模块中有，Endpoint和project_id两项，将这两项填入配置中
 <div align=center>
-<img src="http://r32wozj47.hn-bkt.clouddn.com/img/msedge_iHvmohHfBh.png" alt="msedge_iHvmohHfBh" style="zoom:33%;" />
+<img src="http://r32wozj47.hn-bkt.clouddn.com/img/msedge_iHvmohHfBh.png" width="700px" alt="msedge_iHvmohHfBh" style="zoom:33%;" />
 </div>
 再将第二个模块的domainname和projectname填入配置中，**注意，这里千万不要将这里显示的dundunnp填入username中，domainname是企业管理员的账号名也就是dundunnp，而username和password填入的是刚刚创建的用户的信息，也就是dundun和XXXXX(你们设置的密码)。**
 
 这里是我的配置文件的例子：
 <div align=center>
-<img src="http://r32wozj47.hn-bkt.clouddn.com/img/msedge_4qInvihBwb.png" alt="msedge_4qInvihBwb" style="zoom:50%;" />
+<img src="http://r32wozj47.hn-bkt.clouddn.com/img/msedge_4qInvihBwb.png" width="700px" alt="msedge_4qInvihBwb" style="zoom:50%;" />
 </div>
 恭喜你，到这里就算是完成了！
 
