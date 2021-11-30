@@ -1,7 +1,8 @@
 /**
  * 待编写项：
- * 1. fill_in_blank() 填空题如果文本框有分开的情况还未解决
- * 2. 订阅与发表言论模块未编写
+ * 4. fill_in_blank() 填空题如果文本框有分开的情况还未解决
+ * 6. video() 视频题待编写
+ * 10. 挑战答题有题库
  */
 
 auto.waitFor()
@@ -648,13 +649,15 @@ if (!finish_list[4]) {
     // 等待列表加载
     text('本月').waitFor();
     // 打开第一个出现未作答的题目
-    while (!text('未作答').exists()) {
+    while (!text('未作答').exists() && !text('您已经看到了我的底线').exists()) {
         swipe(500, 1700, 500, 500, random_time(delay_time / 2));
     }
-    text('未作答').findOne().parent().click();
-    do_periodic_answer(5);
-    my_click_clickable('返回');
-    sleep(random_time(delay_time));
+    if (text('未作答').exists()) {
+        text('未作答').findOne().parent().click();
+        do_periodic_answer(5);
+        my_click_clickable('返回');
+        sleep(random_time(delay_time));
+    }
     className('android.view.View').clickable(true).depth(23).waitFor();
     className('android.view.View').clickable(true).depth(23).findOne().click();
 }
@@ -688,6 +691,7 @@ if (!finish_list[5]) {
         }
         if (!special_flag)
             swipe(500, 1700, 500, 500, random_time(delay_time / 2));
+        if (text('您已经看到了我的底线').exists()) break;
     }
 
     if (text('开始答题').exists()) {
@@ -701,7 +705,10 @@ if (!finish_list[5]) {
         var completed_num = parseInt(className('android.view.View').depth(24).findOnce(1).text().slice(0, 1));
         do_periodic_answer(10 - completed_num + 1);
     } else {
-        toast('发生未知错误，请重新运行脚本');
+        toast('你居然做完了，我很佩服你！！！');
+        sleep(random_time(delay_time));
+        className('android.view.View').clickable(true).depth(23).waitFor();
+        className('android.view.View').clickable(true).depth(23).findOne().click();
         exit();
     }
     // 点击完成
