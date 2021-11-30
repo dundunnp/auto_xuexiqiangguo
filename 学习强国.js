@@ -1,8 +1,7 @@
 /**
  * 待编写项：
- * 4. fill_in_blank() 填空题如果文本框有分开的情况还未解决
- * 6. video() 视频题待编写
- * 10. 挑战答题有题库
+ * 1. fill_in_blank() 填空题如果文本框有分开的情况还未解决
+ * 2. 订阅与发表言论模块未编写
  */
 
 auto.waitFor()
@@ -227,6 +226,141 @@ my_click_clickable('我的');
 my_click_clickable('学习积分');
 
 /*
+*********************竞赛部分********************
+*/
+
+/**
+ * 答题
+ * @param {int} depth_question 题目控件的深度
+ * @param {int} depth_option 选项控件的深度
+ */
+ function do_contest_answer(depth_question, depth_option) {
+    // 题目
+    var question = className('android.view.View').depth(depth_question).findOne().text();
+    // 截取到下划线前
+    question = question.indexOf('.') == -1 ? question.slice(0, question.indexOf(' ')) : question.slice(question.indexOf('.') + 1, question.indexOf(' '));
+    // 截取前20个字符就行
+    question = question.slice(0, 20);
+    if (question == "选择正确的读音" || question == "选择词语的正确词形") {
+        // 选择第一个
+        className('android.widget.RadioButton').depth(depth_option).findOne().click();
+    } else {
+        // 发送http请求获取答案
+        var r = http.get('https://www.souwen123.com/search/select.php?age=' + encodeURI(question));
+        var result = r.body.string().match(/答案：./);
+        if (result) {
+            try {
+                className('android.widget.RadioButton').depth(depth_option).findOnce(result[0].charCodeAt(3) - 65).click();
+            } catch (error) {
+                // 如果选项不存在，则点击第一个
+                if (className('android.widget.RadioButton').depth(depth_option).exists())
+                className('android.widget.RadioButton').depth(depth_option).findOne().click();
+            }
+        } else {
+            // 如果没找到结果则选择第一个
+            className('android.widget.RadioButton').depth(depth_option).findOne().click();
+        }
+    }
+}
+
+/*
+**********挑战答题*********
+*/
+if (!finish_list[6]) {
+    sleep(random_time(delay_time));
+    if (!className('android.view.View').depth(21).text('学习积分').exists()) back_track();
+    entry_model(10);
+    // 加载页面
+    className('android.view.View').clickable(true).depth(22).waitFor();
+    // flag为true时挑战成功拿到6分
+    var flag = false;
+    while (!flag) {
+        sleep(random_time(delay_time * 3));
+        var num = 0;
+        while (num < 5) {
+            // 每题的过渡
+            sleep(random_time(delay_time * 2));
+            // 如果答错，第一次通过分享复活
+            if (text('分享就能复活').exists()) {
+                num -= 2;
+                click('分享就能复活');
+                sleep(random_time(delay_time / 2));
+                back();
+                // 等待题目加载
+                sleep(random_time(delay_time * 3));
+            }
+            // 第二次重新开局
+            if (text('再来一局').exists()) {
+                my_click_clickable('再来一局');
+                break;
+            }
+            do_contest_answer(25, 28);
+            num++;
+        }
+        sleep(random_time(delay_time * 2));
+        if (num == 5 && !text('再来一局').exists() && !text('结束本局').exists()) flag = true;
+    }
+    // 随意点击直到退出
+    do {
+        sleep(random_time(delay_time * 2.5));
+        className('android.widget.RadioButton').depth(28).findOne().click();
+        sleep(random_time(delay_time * 2.5));
+    } while (!text('再来一局').exists() && !text('结束本局').exists());
+    click('结束本局');
+    sleep(random_time(delay_time));
+    back();
+}
+
+/*
+**********四人赛*********
+*/
+if (!finish_list[7]) {
+    sleep(random_time(delay_time));
+    if (!className('android.view.View').depth(21).text('学习积分').exists()) back_track();
+    entry_model(11);
+    for (var i = 0; i < 2; i++) {
+        my_click_clickable('开始比赛');
+        // 等待题目加载
+        className('android.view.View').depth(29).waitFor();
+        while (!text('继续挑战').exists()) {
+            sleep(random_time(delay_time * 4));
+            do_contest_answer(29, 32);
+        }
+        if (i == 0) {
+            sleep(random_time(delay_time));
+            while (!click('继续挑战'));
+            sleep(random_time(delay_time));
+        }
+    }
+    back();
+    sleep(random_time(delay_time));
+    back();
+}
+
+/*
+**********双人对战*********
+*/
+if (!finish_list[8]) {
+    sleep(random_time(delay_time));
+    if (!className('android.view.View').depth(21).text('学习积分').exists()) back_track();
+    entry_model(12);
+    // 点击随机匹配
+    text('随机匹配').waitFor();
+    sleep(random_time(delay_time * 2));
+    className('android.view.View').clickable(true).depth(24).findOnce(1).click();
+    // 等待题目加载
+    className('android.view.View').depth(29).waitFor();
+    while (!text('继续挑战').exists()) {
+        sleep(random_time(delay_time * 4));
+        do_contest_answer(29, 32);
+    }
+    back();
+    sleep(random_time(delay_time));
+    back();
+    my_click_clickable('退出');
+}
+
+/*
 ********************答题部分********************
 */
 if (whether_answer_questions == 'no') exit();
@@ -303,13 +437,6 @@ function is_select_all_choice() {
     return options.length / 2 == (question.match(/\s+/g) || []).length;
 }
 
-// 视频题(待编写)
-function video(answer) {
-    // 打开视频
-    var tmp = className("android.widget.Image").findOne().bounds();
-    click(tmp.centerX(), tmp.centerY());
-}
-
 // 判断是否是视频题
 function video_exist() {
     return className("android.widget.Image").exists();
@@ -329,7 +456,6 @@ function entry_model(number) {
  * 全局变量restart_flag说明:
  * restart_flag = 0时，表示每日答题
  * restart_flag = 1时，表示每周答题
- * restart_flag = 2时，表示专项答题
  */
 function restart() {
     // 点击退出
@@ -428,9 +554,9 @@ function huawei_ocr_api() {
 
 /**
  * 答题
- * @param {int} numbere 需要做题目的数量
+ * @param {int} number 需要做题目的数量
  */
-function do_it(number) {
+function do_periodic_answer(number) {
     // 保证拿满分，如果ocr识别有误而扣分重来
     // flag为true时全对
     var flag = false;
@@ -505,7 +631,7 @@ if (!finish_list[3]) {
     entry_model(7);
     // 等待题目加载
     text('查看提示').waitFor();
-    do_it(5);
+    do_periodic_answer(5);
     my_click_clickable('返回');
 }
 
@@ -526,7 +652,7 @@ if (!finish_list[4]) {
         swipe(500, 1700, 500, 500, random_time(delay_time / 2));
     }
     text('未作答').findOne().parent().click();
-    do_it(5);
+    do_periodic_answer(5);
     my_click_clickable('返回');
     sleep(random_time(delay_time));
     className('android.view.View').clickable(true).depth(23).waitFor();
@@ -537,7 +663,6 @@ if (!finish_list[4]) {
 /*
 **********专项答题*********
 */
-restart_flag = 2;
 
 if (!finish_list[5]) {
     sleep(random_time(delay_time));
@@ -567,14 +692,14 @@ if (!finish_list[5]) {
 
     if (text('开始答题').exists()) {
         text('开始答题').findOne().click();
-        do_it(10);    
+        do_periodic_answer(10);    
     } else if (text('继续答题').exists()) {
         text('继续答题').findOnce(special_i).click();
         // 等待题目加载
         sleep(random_time(delay_time));
         // 已完成题数
         var completed_num = parseInt(className('android.view.View').depth(24).findOnce(1).text().slice(0, 1));
-        do_it(10 - completed_num + 1);
+        do_periodic_answer(10 - completed_num + 1);
     } else {
         toast('发生未知错误，请重新运行脚本');
         exit();
@@ -590,56 +715,6 @@ if (!finish_list[5]) {
     sleep(random_time(delay_time));
     className('android.view.View').clickable(true).depth(23).waitFor();
     className('android.view.View').clickable(true).depth(23).findOne().click();
-}
-
-/*
-*********************竞赛部分********************
-*/
-
-/*
-**********挑战答题*********
-*/
-if (!finish_list[6]) {
-    sleep(random_time(delay_time));
-    if (!className('android.view.View').depth(21).text('学习积分').exists()) back_track();
-    entry_model(10);
-    // 题目
-    className('android.view.View').depth(25).findOne().text();
-    // abcd
-    className('android.widget.RadioButton').depth(28).findOne().click();
-    // 待编写
-}
-
-/*
-**********四人赛*********
-*/
-if (!finish_list[7]) {
-    sleep(random_time(delay_time));
-    if (!className('android.view.View').depth(21).text('学习积分').exists()) back_track();
-    entry_model(11);
-    my_click_clickable('开始比赛');
-    // abcd
-    className('android.widget.RadioButton').depth(32).findOne().click();
-    // 题目
-    className('android.view.View').depth(29).findOne().text();
-    // 待编写
-}
-
-
-/*
-**********双人对战*********
-*/
-if (!finish_list[8]) {
-    sleep(random_time(delay_time));
-    if (!className('android.view.View').depth(21).text('学习积分').exists()) back_track();
-    entry_model(12);
-    // 点击随机匹配
-    className('android.view.View').clickable(true).depth(24).findOnce(1).click();
-    // abcd
-    className('android.widget.RadioButton').depth(32).findOne().click();
-    // 题目
-    className('android.view.View').depth(29).findOne().text();
-    // 待编写
 }
 
 /*
