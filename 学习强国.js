@@ -112,12 +112,17 @@ for (var i = 4; i < 17; i++) {
     if (i == 4) {
         // 已阅读文章次数
         var completed_count = parseInt(model.child(2).text().match(/\d+/)) / 2;
-    }
-    if (i == 5) {
+    } else if (i == 5) {
         var other_model = className('android.view.View').depth(22).findOnce(i + 1);
         // 已观看视频时间
         var completed_time = Math.min(parseInt(model.child(2).text().match(/\d+/)), 
         parseInt(other_model.child(2).text().match(/\d+/))) * 60000;
+    } else if (i == 11) {
+        // 四人赛已得分
+        var four_players_scored = parseInt(model.child(2).text().match(/\d+/));
+    } else if (i == 12) {
+        // 双人对战已得分
+        var two_players_scored = parseInt(model.child(2).text().match(/\d+/));
     }
     finish_list.push(model.child(3).text() == '已完成');
 }
@@ -644,7 +649,7 @@ if (!finish_list[4]) {
 /*
 **********四人赛*********
 */
-if (!finish_list[7]) {
+if (!finish_list[7] && four_players_scored < 3) {
     sleep(random_time(delay_time));
     if (!className('android.view.View').depth(21).text('学习积分').exists()) back_track();
     entry_model(11);
@@ -666,6 +671,7 @@ if (!finish_list[7]) {
             sleep(random_time(delay_time));
         }
     }
+    sleep(random_time(delay_time));
     back();
     sleep(random_time(delay_time));
     back();
@@ -674,7 +680,7 @@ if (!finish_list[7]) {
 /*
 **********双人对战*********
 */
-if (!finish_list[8]) {
+if (!finish_list[8] && two_players_scored < 1) {
     sleep(random_time(delay_time));
     if (!className('android.view.View').depth(21).text('学习积分').exists()) back_track();
     entry_model(12);
@@ -692,6 +698,7 @@ if (!finish_list[8]) {
         question = question.slice(0, 20);   
         do_contest_answer(32, question);
     }
+    sleep(random_time(delay_time));
     back();
     sleep(random_time(delay_time));
     back();
