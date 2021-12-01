@@ -299,9 +299,9 @@ if (!finish_list[6]) {
                 break;
             }
             // 题目
-            var question = className('android.view.View').depth(depth_question).findOne().text();
+            var question = className('android.view.View').depth(25).findOne().text();
             // 截取到下划线前
-            question = question.indexOf('.') == -1 ? question.slice(0, question.indexOf(' ')) : question.slice(question.indexOf('.') + 1, question.indexOf(' '));
+            question = question.slice(0, question.indexOf(' '));
             // 截取前20个字符就行
             question = question.slice(0, 20);
             do_contest_answer(28, question);
@@ -623,6 +623,7 @@ if (!finish_list[4]) {
     entry_model(8);
     // 等待列表加载
     textContains('月').waitFor();
+    sleep(random_time(delay_time));
     // 打开第一个出现未作答的题目
     // 如果之前的答题全部完成则不向下搜索
     if (all_weekly_answers_completed == 'no') {
