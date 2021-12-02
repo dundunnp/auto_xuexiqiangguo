@@ -2,7 +2,6 @@
 
 <!-- code_chunk_output -->
 # 目录
-- [目录](#目录)
 - [免责声明](#免责声明)
 - [脚本声明](#脚本声明)
 - [使用说明](#使用说明)
@@ -179,15 +178,15 @@ A: 首先检查配置信息是否正确，其次检查是否打开如图所示�
 1. 配置信息里是否答题选择了否 
 2. 软件没有弹窗权限
 
+<div align=center>
+<img src="http://r32wozj47.hn-bkt.clouddn.com/img/18.jpg" width="300px" alt="18" style="zoom:33%;" />
+</div>
+
 ***
 
 Q6: 除上面的问题
 
 A: 请在[GitHub](https://github.com/dundunnp/hamibot-auto_xuexiqiangguo/issues)上提出问题，问题尽量详细，最好包含图片或视频，这样对大家解决问题都快
-
-<div align=center>
-<img src="http://r32wozj47.hn-bkt.clouddn.com/img/18.jpg" width="300px" alt="18" style="zoom:33%;" />
-</div>
 
 # Historical Change Log
 ## v3.2 更新内容:
@@ -213,4 +212,4 @@ A: 请在[GitHub](https://github.com/dundunnp/hamibot-auto_xuexiqiangguo/issues)
 # 待编写
 1. 填空题如果文本框有分开的情况还未解决
 2. 订阅与发表言论模块未编写
-2. 专项答题在软件更新后，点击继续答题重第一道开始，代码不能完成
+3. 专项答题在软件更新后，点击继续答题重第一道开始，代码不能完成
