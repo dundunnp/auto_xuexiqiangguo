@@ -4,6 +4,12 @@
  * 2. 订阅和发表观点模块未编写
  */
 
+/**
+ * 已知bug：
+ * 1. 每日答题最后会进去点点通
+ * 2. 专项答题完成后会卡住
+ */
+
 auto.waitFor()
 
 // setScreenMetrics(1080, 2340);
@@ -654,6 +660,7 @@ if (!finish_list[7] && four_players_scored < 3) {
     if (!className('android.view.View').depth(21).text('学习积分').exists()) back_track();
     entry_model(11);
     for (var i = 0; i < 2; i++) {
+        sleep(random_time(delay_time));
         my_click_clickable('开始比赛');
         // 等待题目加载
         className('android.view.View').depth(29).waitFor();
@@ -662,8 +669,10 @@ if (!finish_list[7] && four_players_scored < 3) {
             var img = images.inRange(captureScreen(), '#000000', '#444444');
             var question = huawei_ocr_api(img);
             question = question.slice(question.indexOf('.') + 1);
-            question = question.slice(0, 20);   
-            do_contest_answer(32, question);
+            question = question.slice(0, 20);
+            question = question.replace(/\s*/g,"");
+            question = question.replace(/,/g, "，"); 
+            if (question) do_contest_answer(32, question);
         }
         if (i == 0) {
             sleep(random_time(delay_time));
@@ -694,9 +703,12 @@ if (!finish_list[8] && two_players_scored < 1) {
         sleep(random_time(delay_time * 3));
         var img = images.inRange(captureScreen(), '#000000', '#444444');
         var question = huawei_ocr_api(img);
+        // 对识别出的题目进行处理
         question = question.slice(question.indexOf('.') + 1);
-        question = question.slice(0, 20);   
-        do_contest_answer(32, question);
+        question = question.slice(0, 20);
+        question = question.replace(/\s*/g,"");
+        question = question.replace(/,/g, "，"); 
+        if (question) do_contest_answer(32, question);
     }
     sleep(random_time(delay_time));
     back();
