@@ -10,7 +10,9 @@
   - [安装脚本](#安装脚本)
   - [满足条件](#满足条件)
   - [编辑配置](#编辑配置)
+- [常见问题](#常见问题)
 - [Historical Change Log](#historical-change-log)
+  - [v3.2 更新内容:](#v32-更新内容)
   - [v3.1 更新内容:](#v31-更新内容)
   - [v3.0 更新内容:](#v30-更新内容)
   - [v2.1 更新内容:](#v21-更新内容)
@@ -27,13 +29,14 @@
 如果喜欢的话可以star一下噢，谢谢！
 
 # 脚本声明
-如果因为bug或各种原因不得不终止脚本，请重新运行脚本，脚本会自动跳过已完成的部分
-如遇到脚本卡住等情况，请先调试跳转页面加载时间，如果不行请反馈bug给我
+**本脚本适用于安卓、鸿蒙系统，不适用于IOS，尽量将强国软件升级至最新版本，如有其他版本出现报错，我也无法解决**
+**如果因为bug或各种原因不得不终止脚本，请重新运行脚本，脚本会自动跳过已完成的部分**
+**如果遇到bug问题，请先查看[常见问题](#常见问题)，如果没有找到类似问题或还是不行请反馈bug给我，对于其他问题，由于我还在上课实在无暇顾及，抱歉**
 目前版本**无法**完成订阅、发表观点模块，其他模块均可自动化完成（当然不包括强国运动！），因为本人是在校学生无法把全部精力放在这，因此如果有想合作的小伙伴请在Github上一起完成更新项目
 ```
-v3.2 更新内容:
-1. 修复四人赛、双人对战做完无法退出的bug
-2. 如果四人赛大于2分，双人对战大于0分将不会重复答题
+v3.3 更新内容:
+1. 改善四人赛、双人对战正确率
+2. 增加常见问题板块，如果有问题可以先看看是否已经存在
 ```
 ***
 # 使用说明
@@ -123,15 +126,73 @@ v3.2 更新内容:
 <div align=center>
 <img src="http://r32wozj47.hn-bkt.clouddn.com/img/msedge_iHvmohHfBh.png" width="700px" alt="msedge_iHvmohHfBh" style="zoom:33%;" />
 </div>
-再将第二个模块的domainname和projectname填入配置中，**注意，这里千万不要将这里显示的dundunnp填入username中，domainname是企业管理员的账号名也就是dundunnp，而username和password填入的是刚刚创建的用户的信息，也就是dundun和XXXXX(你们设置的密码)。**
+再将第二个模块的domainname和projectname填入配置中，**注意**，这里千万不要将这里显示的dundunnp填入username中，domainname是企业管理员的账号名也就是dundunnp，而username和password填入的是刚刚创建的用户的信息，也就是dundun和XXXXX(你们设置的密码)。
 
 这里是我的配置文件的例子：
+
 <div align=center>
-<img src="http://r32wozj47.hn-bkt.clouddn.com/img/msedge_4qInvihBwb.png" width="700px" alt="msedge_4qInvihBwb" style="zoom:50%;" />
+<img src="http://r32wozj47.hn-bkt.clouddn.com/img/msedge_4qInvihBwb.png" width="400px" alt="msedge_4qInvihBwb" style="zoom:50%;" />
 </div>
-恭喜你，到这里就算是完成了！ 
+
+恭喜你，到这里就算是完成了!
+
+# 常见问题
+
+Q1: 运行脚本后出现这个报错
+
+<div align=center>
+<img src="http://r32wozj47.hn-bkt.clouddn.com/img/msedge_nGw9SZG0Ov.png" width="300px" alt="HwMirror_zmj2eavi85" style="zoom:50%;" />
+</div>
+
+A: 配置信息没有填写，这个脚本不是给连安装说明都不看、配置信息都不填，点击安装就想拿分的人用的
+
+***
+
+Q2: 点击运行脚本没有反应，甚至连学习强国都没有打开
+
+A: 请确保Hamibot已经打开**无障碍服务权限**
+
+***
+
+Q3: 在四人赛、双人对战正确率感人
+
+A: 我用自己手机测试答题正确率能在80%以上，大家出现错误率高的主要原因在于：**手机性能和网速。每人的手机不同，导致还没有等待题目加载就ocr了，题目并没有识别正确**。次要原因是：题库的数目有限。
+解决方法：适当提高延迟时间，让题目加载出来，后续版本会利用更好的题库
+**另：错误是无法避免的，如果你有特殊的需求我一定要拿满分，非常抱歉这个脚本可能不能满足你**
+
+***
+
+Q4: 进去到“我的”->“学习积分”，再退回到首页后，脚本卡主不动了
+
+A: 请确保配置信息中的**省份与本地频道名是自己学习强国界面对应的，而不是你自己现居地**，比如假设我现在住在北京，而我学习强国界面如下，那么我应该填写的是江西，而不是北京
+
+<div align=center>
+<img src="http://r32wozj47.hn-bkt.clouddn.com/img/16.png" width="400px" alt="HwMirror_zmj2eavi85" style="zoom:50%;" />
+</div>
+
+***
+
+Q5: 为什么我按照步骤配置好了华为ocr服务，但还是不答题
+
+A: 首先检查配置信息是否正确，其次检查是否打开如图所示的权限，如果运行脚本时，手机没有自动弹出打开权限的提示，可能原因是：
+
+1. 配置信息里是否答题选择了否 
+2. 软件没有弹窗权限
+
+***
+
+Q6: 除上面的问题
+
+A: 请在[GitHub](https://github.com/dundunnp/hamibot-auto_xuexiqiangguo/issues)上提出问题，问题尽量详细，最好包含图片或视频，这样对大家解决问题都快
+
+<div align=center>
+<img src="http://r32wozj47.hn-bkt.clouddn.com/img/18.jpg" width="300px" alt="18" style="zoom:33%;" />
+</div>
 
 # Historical Change Log
+## v3.2 更新内容:
+1. 修复四人赛、双人对战做完无法退出的bug
+2. 如果四人赛大于2分，双人对战大于0分将不会重复答题
 ## v3.1 更新内容:
 1. 修复挑战答题错误bug
 ## v3.0 更新内容:
@@ -152,3 +213,4 @@ v3.2 更新内容:
 # 待编写
 1. 填空题如果文本框有分开的情况还未解决
 2. 订阅与发表言论模块未编写
+2. 专项答题在软件更新后，点击继续答题重第一道开始，代码不能完成
