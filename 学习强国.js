@@ -43,12 +43,14 @@ function my_click_non_clickable(target) {
 // 模拟点击可点击元素
 function my_click_clickable(target) {
     text(target).waitFor();
+    // 由于部分机型在boundsInside函数上有bug，无法点击，遗弃
     // 防止点到页面中其他有包含“我的”的控件
-    if (target == '我的') {
-        text('我的').boundsInside(device.width * 3/4 , 0, device.width, device.height / 2).findOne().click();
-    } else {
-        click(target);
-    }
+    // if (target == '我的') {
+    //     text('我的').boundsInside(device.width * 3/4 , 0, device.width, device.height / 2).findOne().click();
+    // } else {
+    //     click(target);
+    // }
+    click(target);
 }
 
 // 模拟随机时间
@@ -252,17 +254,24 @@ my_click_clickable('学习积分');
 /**
  * 答题
  * @param {int} depth_option 选项控件的深度
- * @param {string} question 选项控件的深度
+ * @param {string} question 问题
  */
-function do_contest_answer(depth_option, question) {
+ function do_contest_answer(depth_option, question) {
     if (question == "选择正确的读音" || question == "选择词语的正确词形" || question == "下列词形正确的是") {
         // 选择第一个
         className('android.widget.RadioButton').depth(depth_option).findOne().click();
     } else {
         // 发送http请求获取答案
-        var r = http.get('https://www.souwen123.com/search/select.php?age=' + encodeURI(question));
-        var result = r.body.string().match(/答案：./);
-        if (result) {
+        var question1 = question.slice(0, 10);
+        var r1 = http.get('http://www.syiban.com/search/index/init.html?modelid=1&q=' + encodeURI(question1));
+        var r2 = http.get('https://www.souwen123.com/search/select.php?age=' + encodeURI(question));
+        var result1 = r1.body.string().match(/答案：./);
+        var result2 = r2.body.string().match(/答案：./);
+        var result;
+        if (result1 || result2) {
+            if (result2 && -1 < result2[0].charCodeAt(3) - 65 < 4) result = result2;
+            else if (result1 && -1 < result1[0].charCodeAt(3) - 65 < 4) result = result1;
+            else result = result1;
             try {
                 className('android.widget.RadioButton').depth(depth_option).findOnce(result[0].charCodeAt(3) - 65).click();
             } catch (error) {
@@ -273,10 +282,10 @@ function do_contest_answer(depth_option, question) {
         } else {
             // 如果没找到结果则选择第一个
             if (className('android.widget.RadioButton').depth(depth_option).exists())
-            className('android.widget.RadioButton').depth(depth_option).findOne().click();
+                className('android.widget.RadioButton').depth(depth_option).findOne().click();
         }
     }
-}
+  }
 
 /*
 **********挑战答题*********
@@ -493,8 +502,9 @@ function get_token() {
 var token = get_token();
 
 /**
- * 点击对应的去答题或去看看
+ * 华为ocr接口，传入图片返回文字
  * @param {image} img 传入图片
+ * @returns {string} answer 文字
  */
 function huawei_ocr_api(img) {
     var answer = "";
@@ -662,17 +672,30 @@ if (!finish_list[7] && four_players_scored < 3) {
     for (var i = 0; i < 2; i++) {
         sleep(random_time(delay_time));
         my_click_clickable('开始比赛');
-        // 等待题目加载
-        className('android.view.View').depth(29).waitFor();
+        
         while (!text('继续挑战').exists()) {
-            sleep(random_time(delay_time * 3));
-            var img = images.inRange(captureScreen(), '#000000', '#444444');
+            do {
+                var img = captureScreen();
+                var point = findColor(img, '#1B1F25', {
+                    region: [device.width / 14, device.height * 9 / 30, device.width * 12 / 14, device.height * 15 / 30],
+                    threshold: 10,
+                });
+            } while (!point);
+            var img = images.inRange(img, '#000000', '#444444');
             var question = huawei_ocr_api(img);
             question = question.slice(question.indexOf('.') + 1);
             question = question.slice(0, 20);
             question = question.replace(/\s*/g,"");
-            question = question.replace(/,/g, "，"); 
+            question = question.replace(/,/g, "，");
+            className('android.widget.RadioButton').depth(32).waitFor();
             if (question) do_contest_answer(32, question);
+            do {
+                var img = captureScreen();
+                var point = findColor(img, '#555AB6', {
+                region: [device.width / 14, device.height * 9 / 30, device.width * 12 / 14, device.height * 15 / 30],
+                threshold: 10,
+            });
+            } while (!point);
         }
         if (i == 0) {
             sleep(random_time(delay_time));
@@ -697,19 +720,35 @@ if (!finish_list[8] && two_players_scored < 1) {
     text('随机匹配').waitFor();
     sleep(random_time(delay_time * 2));
     className('android.view.View').clickable(true).depth(24).findOnce(1).click();
-    // 等待题目加载
-    className('android.view.View').depth(29).waitFor();
+
     while (!text('继续挑战').exists()) {
-        sleep(random_time(delay_time * 3));
-        var img = images.inRange(captureScreen(), '#000000', '#444444');
+        do {
+            var img = captureScreen();
+            var point = findColor(img, '#1B1F25', {
+                region: [device.width / 14, device.height * 9 / 30, device.width * 12 / 14, device.height * 15 / 30],
+                threshold: 10,
+            });
+        } while (!point);
+        var img = images.inRange(img, '#000000', '#444444');
         var question = huawei_ocr_api(img);
         // 对识别出的题目进行处理
         question = question.slice(question.indexOf('.') + 1);
-        question = question.slice(0, 20);
         question = question.replace(/\s*/g,"");
         question = question.replace(/,/g, "，"); 
+        question = question.slice(0, 20);
+        // 等待选项加载
+        className('android.widget.RadioButton').depth(32).waitFor();
         if (question) do_contest_answer(32, question);
+        // 等待下一题加载
+        do {
+            var img = captureScreen();
+            var point = findColor(img, '#555AB6', {
+                region: [device.width / 14, device.height * 9 / 30, device.width * 12 / 14, device.height * 15 / 30],
+                threshold: 10,
+            });
+        } while (!point);
     }
+    
     sleep(random_time(delay_time));
     back();
     sleep(random_time(delay_time));
