@@ -3,14 +3,12 @@
     "name": "province",
     "type": "text",
     "label": "省份",
-    "validation": "required",
     "help": "用于打开本地频道可以积一分（一分也是分!注意不要多加一个省字），比如:江西"
   },
   {
     "name": "channel",
     "type": "text",
     "label": "本地频道名（随意选一个就行）",
-    "validation": "required",
     "help": "用于打开本地频道可以积一分（一分也是分!）比如：江西卫视"
   },
   {
