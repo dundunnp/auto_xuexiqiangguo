@@ -6,9 +6,9 @@ var { distance1, distance2, distance3, width, height } = hamibot.env;
 var delay_time = 1000;
 count = Number(count);
 if (!distance1 && !distance2 && !distance3 && !width && !height) {
-  distance1 = 0.3;
-  distance2 = 2.7;
-  distance3 = 0.3;
+  distance1 = 0.4;
+  distance2 = 2.8;
+  distance3 = 0.4;
   width = 5.5;
   height = 10.4;
 } else {
@@ -36,6 +36,7 @@ function random_time(time) {
 }
 
 function entry_model(number) {
+  sleep(random_time(delay_time * 2));
   var model = className('android.view.View').depth(22).findOnce(number);
   while (!model.child(3).click());
 }
