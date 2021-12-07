@@ -3,9 +3,9 @@
 
 如果能帮到你的话可以帮忙去[GitHub](https://github.com/dundunnp/hamibot-auto_xuexiqiangguo) star一下噢，谢谢！
 
-# v2.1更新内容
-1. 测量距离变化
-2. 修复一些bug
+# v3.0更新内容
+1. 解决全选a的问题
+2. 可能解决第一题不能答得问题
 3. 现可在hamibot日志里查看ocr出来的题目
 
 # 脚本声明
