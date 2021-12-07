@@ -65,8 +65,8 @@ function do_contest_answer(depth_option, question) {
     var result2 = r2.body.string().match(/答案：./);
     var result;
     if (result1 || result2) {
-      if (result2 && -1 < result2[0].charCodeAt(3) - 65 < 4) result = result2;
-      else if (result1 && -1 < result1[0].charCodeAt(3) - 65 < 4) result = result1;
+      if (result2 && result2[0].charCodeAt(3) > 64 && result2[0].charCodeAt(3) < 69) result = result2;
+      else if (result1 && result1[0].charCodeAt(3) > 64 && result1[0].charCodeAt(3) < 69) result = result1;
       else result = result1;
       try {
         className('android.widget.RadioButton').depth(depth_option).findOnce(result[0].charCodeAt(3) - 65).click();
@@ -160,7 +160,7 @@ function huawei_ocr_api(img) {
        * 分别表示文字块4个顶点的（x,y）坐标；采用图像坐标系，
        * 图像坐标原点为图像左上角，x轴沿水平方向，y轴沿竖直方向。
        */
-    if (words_list[0].words[1] == '.' && i > 0 &&
+    if (words_list[0].words.indexOf('.') != -1 && i > 0 &&
       Math.abs(words_list[i].location[0][0] -
         words_list[i - 1].location[0][0]) > 100) break;
     answer += words_list[i].words;
@@ -168,17 +168,20 @@ function huawei_ocr_api(img) {
   return answer.replace(/\s*/g, "");
 }
 
-app.launchApp('学习强国');
-sleep(random_time(delay_time * 3));
-var while_count = 0;
-while (!id('comm_head_title').exists() && while_count < 5) {
-  while_count++;
-  back();
+if (!className('android.view.View').depth(21).text('学习积分').exists()) {
+  app.launchApp('学习强国');
+  sleep(random_time(delay_time * 3));
+  var while_count = 0;
+  while (!id('comm_head_title').exists() && while_count < 5) {
+    while_count++;
+    back();
+    sleep(random_time(delay_time));
+  }
+  app.launchApp('学习强国');
   sleep(random_time(delay_time));
+  my_click_clickable('我的');
+  my_click_clickable('学习积分');
 }
-app.launchApp('学习强国');
-my_click_clickable('我的');
-my_click_clickable('学习积分');
 
 /*
 **********四人赛*********
@@ -190,7 +193,7 @@ if (four_player_battle == 'yes') {
   for (var i = 0; i < count; i++) {
     sleep(random_time(delay_time));
     my_click_clickable('开始比赛');
-
+    className('android.widget.RadioButton').depth(32).waitFor();
     while (!text('继续挑战').exists()) {
       do {
         var img = captureScreen();
@@ -201,12 +204,13 @@ if (four_player_battle == 'yes') {
         });
       } while (!point);
       var img = images.inRange(img, '#000000', '#444444');
+      img = images.clip(img, device.width * distance1 / width, device.height * distance2 / height,
+        device.width * (1 - 2 * distance1 / width), device.height * (1 - distance2 / height - distance3 / height));
       var question = huawei_ocr_api(img);
-      log(question);
       question = question.slice(question.indexOf('.') + 1);
       question = question.slice(0, 20);
-      question = question.replace(/\s*/g, "");
       question = question.replace(/,/g, "，");
+      log(question);
       className('android.widget.RadioButton').depth(32).waitFor();
       if (question) do_contest_answer(32, question);
       do {
@@ -240,7 +244,12 @@ if (two_player_battle == 'yes') {
   // 点击随机匹配
   text('随机匹配').waitFor();
   sleep(random_time(delay_time * 2));
-  className('android.view.View').clickable(true).depth(24).findOnce(1).click();
+  try {
+    className('android.view.View').clickable(true).depth(24).findOnce(1).click();
+  } catch (error) {
+    className("android.view.View").text("").findOne().click();
+  }
+
   while (!text('继续挑战').exists()) {
     // 等待题目加载
     do {
@@ -252,13 +261,13 @@ if (two_player_battle == 'yes') {
       });
     } while (!point);
     var img = images.inRange(img, '#000000', '#444444');
+    img = images.clip(img, device.width * distance1 / width, device.height * distance2 / height,
+      device.width * (1 - 2 * distance1 / width), device.height * (1 - distance2 / height - distance3 / height));
     var question = huawei_ocr_api(img);
-    log(question);
-    // 对识别出的题目进行处理
     question = question.slice(question.indexOf('.') + 1);
-    question = question.replace(/\s*/g, "");
-    question = question.replace(/,/g, "，");
     question = question.slice(0, 20);
+    question = question.replace(/,/g, "，");
+    log(question);
     // 等待选项加载
     className('android.widget.RadioButton').depth(32).waitFor();
     if (question) do_contest_answer(32, question);
