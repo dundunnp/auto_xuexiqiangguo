@@ -86,5 +86,35 @@
     "type": "text",
     "label": "projectname",
     "help": ""
+  },
+  {
+    "name": "distance1",
+    "type": "text",
+    "label": "distance1",
+    "help": "如果正确率你认为还可以，可以选择忽略，如何配置请看脚本说明"
+  },
+  {
+    "name": "distance2",
+    "type": "text",
+    "label": "distance2",
+    "help": "如果正确率你认为还可以，可以选择忽略"
+  },
+  {
+    "name": "distance3",
+    "type": "text",
+    "label": "distance3",
+    "help": "如果正确率你认为还可以，可以选择忽略"
+  },
+  {
+    "name": "width",
+    "type": "text",
+    "label": "width屏幕总宽度",
+    "help": "如果正确率你认为还可以，可以选择忽略"
+  },
+  {
+    "name": "height",
+    "type": "text",
+    "label": "height屏幕总长度",
+    "help": "如果正确率你认为还可以，可以选择忽略"
   }
 ]
