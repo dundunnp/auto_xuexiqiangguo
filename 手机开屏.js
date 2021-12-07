@@ -11,9 +11,9 @@ function number_click(num) {
 
 function scroll() {
     if (select == 'a') {
-        swipe(500, 1700, 500, 300, Number(slide_time));
+        swipe(device.width / 2, device.height * 12 / 15, device.width / 2, device.height * 6 / 15, Number(slide_time));
     } else {
-        swipe(500, 300, 500, 1700, Number(slide_time));
+        swipe(device.width / 2, device.height * 6 / 15, device.width / 2, device.height * 12 / 15, Number(slide_time));
     }
 }
 
