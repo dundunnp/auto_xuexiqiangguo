@@ -4,6 +4,12 @@
  * 2. 订阅和发表观点模块未编写
  */
 
+/**
+ * 已知bug：
+ * 1. 每日答题最后会进去点点通
+ * 2. 专项答题完成后会卡住
+ */
+
 auto.waitFor()
 
 // setScreenMetrics(1080, 2340);
@@ -225,7 +231,6 @@ while ((count < 6 - completed_count) && !finish_list[0]) {
         count++;
     }
     sleep(random_time(500));
-    refresh();
 }
 
 /*
@@ -241,9 +246,9 @@ if (!finish_list[1] || !finish_list[2]) {
     my_click_clickable('百灵');
     my_click_clickable('竖')
     // 等待视频加载
-    sleep(random_time(delay_time));
+    sleep(random_time(delay_time * 3));
     // 点击第一个视频
-    while (!className('android.widget.FrameLayout').clickable(true).depth(24).findOne().click());
+    while (!className('android.widget.FrameLayout').clickable(true).depth(24).findOnce(7).click());
     sleep(random_time(delay_time));
     if (text('继续播放').exists()) click('继续播放');
     // 阅读时间
@@ -681,7 +686,7 @@ if (!finish_list[7] && four_players_scored < 3) {
     className('android.view.View').depth(21).text('学习积分').waitFor();
     entry_model(11);
     for (var i = 0; i < 2; i++) {
-        sleep(random_time(delay_time));
+        sleep(random_time(delay_time * 2));
         my_click_clickable('开始比赛');
         className('android.widget.RadioButton').depth(32).waitFor();
         while (!text('继续挑战').exists()) {
@@ -689,7 +694,7 @@ if (!finish_list[7] && four_players_scored < 3) {
                 var img = captureScreen();
                 var point = findColor(img, '#1B1F25', {
                     region: [device.width * distance1 / width, device.height * distance2 / height,
-                    device.width * (1 - 2 * distance1 / width), device.height * (1 - distance2 / height - distance3 / height)],
+                        device.width * (1 - 2 * distance1 / width), device.height * (1 - distance2 / height - distance3 / height)],
                     threshold: 10,
                 });
             } while (!point);
@@ -704,7 +709,7 @@ if (!finish_list[7] && four_players_scored < 3) {
             if (question) do_contest_answer(32, question);
             do {
                 var img = captureScreen();
-                var point = findColor(img, '#1B1F25', {
+                var point = findColor(img, '#555AB6', {
                     region: [device.width * distance1 / width, device.height * distance2 / height,
                     device.width * (1 - 2 * distance1 / width), device.height * (1 - distance2 / height - distance3 / height)],
                     threshold: 10,
@@ -712,9 +717,8 @@ if (!finish_list[7] && four_players_scored < 3) {
             } while (!point);
         }
         if (i == 0) {
-            sleep(random_time(delay_time));
+            sleep(random_time(delay_time * 2));
             while (!click('继续挑战'));
-            sleep(random_time(delay_time));
         }
     }
     sleep(random_time(delay_time));
@@ -745,7 +749,7 @@ if (!finish_list[8] && two_players_scored < 1) {
             var img = captureScreen();
             var point = findColor(img, '#1B1F25', {
                 region: [device.width * distance1 / width, device.height * distance2 / height,
-                device.width * (1 - 2 * distance1 / width), device.height * (1 - distance2 / height - distance3 / height)],
+                    device.width * (1 - 2 * distance1 / width), device.height * (1 - distance2 / height - distance3 / height)],
                 threshold: 10,
             });
         } while (!point);
@@ -762,9 +766,9 @@ if (!finish_list[8] && two_players_scored < 1) {
         // 等待下一题加载
         do {
             var img = captureScreen();
-            var point = findColor(img, '#1B1F25', {
+            var point = findColor(img, '#555AB6', {
                 region: [device.width * distance1 / width, device.height * distance2 / height,
-                device.width * (1 - 2 * distance1 / width), device.height * (1 - distance2 / height - distance3 / height)],
+                    device.width * (1 - 2 * distance1 / width), device.height * (1 - distance2 / height - distance3 / height)],
                 threshold: 10,
             });
         } while (!point);
