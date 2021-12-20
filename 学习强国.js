@@ -87,7 +87,7 @@ function random_time(time) {
  */
 function counting_time(waiting_time)
 {
-  	var seconds = parseInt(waiting_time)
+    var seconds = parseInt(waiting_time/1000)
     for(var i=0;i<seconds;i++)
     {
         sleep(1000);
