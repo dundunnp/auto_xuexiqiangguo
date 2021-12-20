@@ -45,7 +45,15 @@ var { endpoint } = hamibot.env;
 var { projectId } = hamibot.env;
 
 //请求横屏截图权限
-if (whether_answer_questions == 'yes') requestScreenCapture(false);
+if (whether_answer_questions == 'yes') {
+    threads.start(function () {
+        var beginBtn;
+        if (beginBtn = classNameContains("Button").textContains("开始").findOne(delay_time));
+        else (beginBtn = classNameContains("Button").textContains("允许").findOne(delay_time)); 
+        beginBtn.click();
+    });
+    requestScreenCapture(false);
+}
 
 // 模拟点击不可以点击元素
 function my_click_non_clickable(target) {
