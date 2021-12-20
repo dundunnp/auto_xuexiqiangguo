@@ -27,8 +27,15 @@ var { projectname } = hamibot.env;
 var { endpoint } = hamibot.env;
 var { projectId } = hamibot.env;
 
+threads.start(function () {
+    var beginBtn;
+    if (beginBtn = classNameContains("Button").textContains("开始").findOne(delay_time));
+    else (beginBtn = classNameContains("Button").textContains("允许").findOne(delay_time)); 
+    beginBtn.click();
+});
 requestScreenCapture(false);
-sleep(1000);
+
+sleep(delay_time);
 
 // 模拟随机时间
 function random_time(time) {
