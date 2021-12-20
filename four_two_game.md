@@ -3,10 +3,8 @@
 
 如果能帮到你的话可以帮忙去[GitHub](https://github.com/dundunnp/hamibot-auto_xuexiqiangguo) star一下噢，谢谢！
 
-# v3.0更新内容
-1. 解决全选a的问题
-2. 可能解决第一题不能答得问题
-3. 现可在hamibot日志里查看ocr出来的题目
+# v3.1更新内容
+1. 增加自动点击获取屏幕录制权限功能，感谢mtnobody贡献的代码
 
 # 脚本声明
 此脚本仅运行完成四人赛、双人对战模块，通过优化题目之间的切换间隔，增加新的题库，双题库保证正确率，现脚本已经达到**秒答与80%正确率**，如想了解其他更多信息或者想完成所有模块请安装[主脚本](https://hamibot.com/marketplace/aQlXd)
