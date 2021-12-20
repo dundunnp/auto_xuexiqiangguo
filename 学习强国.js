@@ -80,6 +80,22 @@ function random_time(time) {
     return time + random(100, 1000);
 }
 
+/**
+ * @description: 学习计时函数
+ * @param: 学习时间 (秒数*1000)
+ * @return: null
+ */
+function counting_time(waiting_time)
+{
+    var seconds = parseInt(waiting_time/1000)
+    for(var i=0;i<seconds;i++)
+    {
+        sleep(1000);
+        toastLog("已经观看"+(i+1)+"秒,剩余"+(seconds-i-1)+"秒!");
+    }
+    sleep(waiting_time-seconds*1000) // 补上剩余的时间
+}
+
 // 刷新页面
 function refresh() {
     swipe(device.width / 2, device.height * 6 / 15, device.width / 2, device.height * 12 / 15, random_time(delay_time / 2));
@@ -221,7 +237,7 @@ while ((count < 6 - completed_count) && !finish_list[0]) {
         }
 
         // 观看时长
-        sleep(random_time(65000));
+        counting_time(random_time(65000));
 
         // 分享两次
         if (count < 2 && !finish_list[10]) {
@@ -260,7 +276,7 @@ if (!finish_list[1] || !finish_list[2]) {
     sleep(random_time(delay_time));
     if (text('继续播放').exists()) click('继续播放');
     // 阅读时间
-    sleep(random_time(370000 - completed_time));
+    counting_time(random_time(370000 - completed_time));
     back();
 }
 
