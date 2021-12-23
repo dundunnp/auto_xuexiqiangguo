@@ -49,7 +49,7 @@ if (whether_answer_questions == 'yes') {
     threads.start(function () {
         var beginBtn;
         if (beginBtn = classNameContains("Button").textContains("开始").findOne(delay_time));
-        else (beginBtn = classNameContains("Button").textContains("允许").findOne(delay_time)); 
+        else (beginBtn = classNameContains("Button").textContains("允许").findOne(delay_time));
         beginBtn.click();
     });
     requestScreenCapture(false);
@@ -252,15 +252,16 @@ back_track_flag = 1;
 if (!finish_list[1] || !finish_list[2]) {
     if (!id('comm_head_title').exists()) back_track();
     my_click_clickable('百灵');
-    my_click_clickable('竖')
+    my_click_clickable('竖');
     // 等待视频加载
     sleep(random_time(delay_time * 3));
     // 点击第一个视频
     while (!className('android.widget.FrameLayout').clickable(true).depth(24).findOnce(7).click());
     sleep(random_time(delay_time));
     if (text('继续播放').exists()) click('继续播放');
+    if (text('刷新重试').exists()) click('刷新重试');
     // 阅读时间
-    sleep(random_time(370000 - completed_time));
+    sleep(random_time(380000 - completed_time));
     back();
 }
 
@@ -287,14 +288,17 @@ function do_contest_answer(depth_option, question) {
         // 发送http请求获取答案
         var question1 = question.slice(0, 10);
         var r1 = http.get('http://www.syiban.com/search/index/init.html?modelid=1&q=' + encodeURI(question1));
-        var r2 = http.get('https://www.souwen123.com/search/select.php?age=' + encodeURI(question));
+        // 网站挂了
+        // var r2 = http.get('https://www.souwen123.com/search/select.php?age=' + encodeURI(question));
         var result1 = r1.body.string().match(/答案：./);
-        var result2 = r2.body.string().match(/答案：./);
+        // var result2 = r2.body.string().match(/答案：./);
         var result;
-        if (result1 || result2) {
-            if (result2 && result2[0].charCodeAt(3) > 64 && result2[0].charCodeAt(3) < 69) result = result2;
-            else if (result1 && result1[0].charCodeAt(3) > 64 && result1[0].charCodeAt(3) < 69) result = result1;
-            else result = result1;
+        if (result1) {
+        // if (result1 || result2) {
+            // if (result2 && result2[0].charCodeAt(3) > 64 && result2[0].charCodeAt(3) < 69) result = result2;
+            // else if (result1 && result1[0].charCodeAt(3) > 64 && result1[0].charCodeAt(3) < 69) result = result1;
+            // else result = result1;
+            result = result1;
             try {
                 className('android.widget.RadioButton').depth(depth_option).findOnce(result[0].charCodeAt(3) - 65).click();
             } catch (error) {
@@ -585,9 +589,24 @@ function do_periodic_answer(number) {
         var answer = "";
         var num = 0;
         for (num; num < number; num++) {
+            // 如果存在视频题
             if (className("android.widget.Image").exists()) {
-                restart();
-                break;
+                // 如果是每周答题那么重做也没用就直接跳过
+                if (restart_flag == 1) {
+                    fill_in_blank('cao');
+                    sleep(random_time(delay_time * 2));
+                    if (text('下一题').exists()) click('下一题');
+                    if (text('确定').exists()) click('确定');
+                    sleep(random_time(delay_time));
+                    if (text('完成').exists()) {
+                        click('完成');
+                        flag = true;
+                        break;
+                    }
+                } else {
+                    restart();
+                    break;
+                }
             }
 
             // 下滑到底防止题目过长，选项没有读取到
@@ -702,7 +721,7 @@ if (!finish_list[7] && four_players_scored < 3) {
                 var img = captureScreen();
                 var point = findColor(img, '#1B1F25', {
                     region: [device.width * distance1 / width, device.height * distance2 / height,
-                        device.width * (1 - 2 * distance1 / width), device.height * (1 - distance2 / height - distance3 / height)],
+                    device.width * (1 - 2 * distance1 / width), device.height * (1 - distance2 / height - distance3 / height)],
                     threshold: 10,
                 });
             } while (!point);
@@ -757,13 +776,13 @@ if (!finish_list[8] && two_players_scored < 1) {
             var img = captureScreen();
             var point = findColor(img, '#1B1F25', {
                 region: [device.width * distance1 / width, device.height * distance2 / height,
-                    device.width * (1 - 2 * distance1 / width), device.height * (1 - distance2 / height - distance3 / height)],
+                device.width * (1 - 2 * distance1 / width), device.height * (1 - distance2 / height - distance3 / height)],
                 threshold: 10,
             });
         } while (!point);
         var img = images.inRange(img, '#000000', '#444444');
         img = images.clip(img, device.width * distance1 / width, device.height * distance2 / height,
-          device.width * (1 - 2 * distance1 / width), device.height * (1 - distance2 / height - distance3 / height));
+            device.width * (1 - 2 * distance1 / width), device.height * (1 - distance2 / height - distance3 / height));
         var question = huawei_ocr_api(img);
         question = question.slice(question.indexOf('.') + 1);
         question = question.slice(0, 20);
@@ -776,7 +795,7 @@ if (!finish_list[8] && two_players_scored < 1) {
             var img = captureScreen();
             var point = findColor(img, '#555AB6', {
                 region: [device.width * distance1 / width, device.height * distance2 / height,
-                    device.width * (1 - 2 * distance1 / width), device.height * (1 - distance2 / height - distance3 / height)],
+                device.width * (1 - 2 * distance1 / width), device.height * (1 - distance2 / height - distance3 / height)],
                 threshold: 10,
             });
         } while (!point);
