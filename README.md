@@ -6,14 +6,14 @@
 # 希望得到你的协作
 本地ocr识别的错误率太高例如它将此题目识别为
 <div align=center>
-<img src="https://usercontent.hamibot.com/screenshots/u/20211227/YTAJ9DsNCP28oKG82Olnpk4m" width="600px" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
+<img src="https://s3.bmp.ovh/imgs/2021/12/3ab3854db323c785.jpg" width="300px" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
 </div>
 <div align=center>
-<img src="https://usercontent.hamibot.com/screenshots/u/20211227/UUwfSg5L8Nw7IvzQKsHM2fRf" width="600px" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
+<img src="https://s3.bmp.ovh/imgs/2021/12/042b9208fb579a9b.jpg" width="300px" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
 </div>
 因此，需要人为的在识别的基础上进行修改，以下是我测试中遇到的一些错误，比如标点符号的错误，比如“管理”会识别成“营理”，但我一个人的力量有限，大家可以在答题错误的时候看一下日志识别错误的情况，并发出错误，非常感谢
 <div align=center>
-<img src="https://usercontent.hamibot.com/screenshots/u/20211227/Xw3x1DBmjwjjl9E6jPOX394L" width="600px" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
+<img src="https://s3.bmp.ovh/imgs/2021/12/ecaa291952da6279.png" width="300px" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
 </div>
 
 # v6.0 更新内容:
