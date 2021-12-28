@@ -18,23 +18,10 @@ auto.waitFor()
 var { province } = hamibot.env;
 var { channel } = hamibot.env;
 var { delay_time } = hamibot.env;
-var { whether_answer_questions } = hamibot.env;
+var { whether_improve_accuracy } = hamibot.env;
 var { all_weekly_answers_completed } = hamibot.env;
 var { all_special_answer_completed } = hamibot.env;
-var { distance1, distance2, distance3, width, height } = hamibot.env;
-if (!distance1 && !distance2 && !distance3 && !width && !height) {
-    distance1 = 0.4;
-    distance2 = 2.8;
-    distance3 = 0.4;
-    width = 5.5;
-    height = 10.4;
-} else {
-    distance1 = Number(distance1);
-    distance2 = Number(distance2);
-    distance3 = Number(distance3);
-    width = Number(width);
-    height = Number(height);
-}
+
 delay_time = Number(delay_time) * 1000;
 // 调用华为api所需参数
 var { username } = hamibot.env;
@@ -45,15 +32,14 @@ var { endpoint } = hamibot.env;
 var { projectId } = hamibot.env;
 
 //请求横屏截图权限
-if (whether_answer_questions == 'yes') {
-    threads.start(function () {
-        var beginBtn;
-        if (beginBtn = classNameContains("Button").textContains("开始").findOne(delay_time));
-        else (beginBtn = classNameContains("Button").textContains("允许").findOne(delay_time));
-        beginBtn.click();
-    });
-    requestScreenCapture(false);
-}
+threads.start(function () {
+    var beginBtn;
+    if (beginBtn = classNameContains("Button").textContains("开始").findOne(delay_time));
+    else (beginBtn = classNameContains("Button").textContains("允许").findOne(delay_time));
+    beginBtn.click();
+});
+requestScreenCapture(false);
+sleep(delay_time);
 
 // 模拟点击不可以点击元素
 function my_click_non_clickable(target) {
@@ -256,7 +242,7 @@ if (!finish_list[1] || !finish_list[2]) {
     // 等待视频加载
     sleep(random_time(delay_time * 3));
     // 点击第一个视频
-    while (!className('android.widget.FrameLayout').clickable(true).depth(24).findOnce(7).click());
+    while (!className('android.widget.FrameLayout').clickable(true).depth(24).findOne().click());
     sleep(random_time(delay_time));
     if (text('继续播放').exists()) click('继续播放');
     if (text('刷新重试').exists()) click('刷新重试');
@@ -286,9 +272,9 @@ function do_contest_answer(depth_option, question) {
         className('android.widget.RadioButton').depth(depth_option).findOne().click();
     } else {
         // 发送http请求获取答案
-        var question1 = question.slice(0, 10);
-        var r1 = http.get('http://www.syiban.com/search/index/init.html?modelid=1&q=' + encodeURI(question1));
         var r2 = http.get('https://www.souwen123.com/search/select.php?age=' + encodeURI(question));
+        var question = question.slice(0, 10);
+        var r1 = http.get('http://www.syiban.com/search/index/init.html?modelid=1&q=' + encodeURI(question));
         var result1 = r1.body.string().match(/答案：./);
         var result2 = r2.body.string().match(/答案：./);
         var result;
@@ -469,7 +455,7 @@ function get_token() {
     return res.headers['X-Subject-Token'];
 }
 
-var token = get_token();
+if (whether_improve_accuracy == 'yes') var token = get_token();
 
 /**
  * 华为ocr接口，传入图片返回文字
@@ -477,6 +463,9 @@ var token = get_token();
  * @returns {string} answer 文字
  */
 function huawei_ocr_api(img) {
+    var right_flag = false;
+    var answer_left = "";
+    var answer_right = "";
     var answer = "";
     var res = http.postJson(
         'https://' + endpoint + '/v2/' + projectId + '/ocr/web-image',
@@ -500,7 +489,7 @@ function huawei_ocr_api(img) {
         for (var i in words_list) {
             // 如果是选项则后面不需要读取
             if (words_list[i].words[0] == "A") break;
-            // 如果两词块之间有分割线，则不读取
+            // 将题目以分割线分为两块
             // 利用location之差判断是否之中有分割线
             /**
              * location:
@@ -510,10 +499,18 @@ function huawei_ocr_api(img) {
              */
             if (words_list[0].words.indexOf('.') != -1 && i > 0 &&
                 Math.abs(words_list[i].location[0][0] -
-                    words_list[i - 1].location[0][0]) > 100) break;
-            answer += words_list[i].words;
+                    words_list[i - 1].location[0][0]) > 100) right_flag = true;
+            if (right_flag) answer_right += words_list[i].words;
+            else answer_left += words_list[i].words;
+            if (answer_left.length >= 20 || answer_right.length >= 20) break;
         }
     }
+    // 取信息最多的块
+    answer = answer_right.length > answer_left.length ? answer_right : answer_left;
+    answer = answer.replace(/\s*/g, "");
+    answer = answer.replace(/,/g, "，");
+    answer = answer.slice(answer.indexOf('.') + 1);
+    answer = answer.slice(0, 20);
     return answer;
 }
 
@@ -533,13 +530,17 @@ function ocr_processing(text, if_question) {
     text = text.replace(/o/g, "");
     text = text.replace(/。/g, "");
     text = text.replace(/`/g, "、");
+    text = text.replace(/\?/g, "？");
     // 文字修改
     text = text.replace(/营理/g, "管理");
     text = text.replace(/土也/g, "地");
     text = text.replace(/未口/g, "和");
+    text = text.replace(/晋查/g, "普查");
+    text = text.replace(/扶悌/g, "扶梯");
+
     if (if_question) {
         text = text.slice(text.indexOf('.') + 1);
-        text = text.slice(0, 20);
+        text = text.slice(0, 10);
     }
     return text;
 }
@@ -594,7 +595,7 @@ function do_periodic_answer(number) {
                 // 打开查看提示的时间
                 sleep(random_time(delay_time));
                 var img = images.inRange(captureScreen(), '#800000', '#FF0000');
-                if (if_restart_flag) answer = huawei_ocr_api(img);
+                if (if_restart_flag && whether_improve_accuracy == 'yes') answer = huawei_ocr_api(img);
                 else {
                     try {
                         answer = ocr.ocrImage(img).text;
@@ -626,8 +627,13 @@ function do_periodic_answer(number) {
                 sleep(random_time(delay_time)); // 等待提交的时间
                 // 如果错误（ocr识别有误）则重来
                 if (text('下一题').exists() || (text('完成').exists() && !special_flag)) {
-                    restart();
-                    break;
+                    // 如果没有选择精确答题，则每周答题就不需要重新答
+                    if (restart_flag == 1 && whether_improve_accuracy == 'no') {
+                        click('下一题');
+                    } else {
+                        restart();
+                        break;
+                    }
                 }
             }
 
@@ -801,8 +807,56 @@ if (!finish_list[6]) {
     back();
 }
 
-// ********************************以下都需要ocr功能****************************************
-if (whether_answer_questions == 'no') exit();
+/*
+********************四人赛、双人对战********************
+*/
+function do_contest() {
+    if (whether_improve_accuracy == 'no') {
+        var min_pos_width = device.width;
+        var min_pos_height = device.height;
+    }
+    while (!text('开始').exists());
+    while (!text('继续挑战').exists()) {
+        className("android.view.View").depth(28).waitFor();
+        var pos = className("android.view.View").depth(28).findOne().bounds();
+        if (className("android.view.View").text("        ").exists())
+            pos = className("android.view.View").text("        ").findOne().bounds();
+        do {
+            var point = findColor(captureScreen(), '#1B1F25', {
+                region: [pos.left, pos.top, pos.width(), pos.height()],
+                threshold: 10,
+            });
+        } while (!point);
+
+        if (whether_improve_accuracy == 'no') {
+            min_pos_width = Math.min(pos.width(), min_pos_width);
+            min_pos_height = Math.min(pos.height(), min_pos_height);
+            var img = images.clip(captureScreen(), pos.left, pos.top, min_pos_width, min_pos_height);
+        } else {
+            var img = images.inRange(captureScreen(), '#000000', '#444444');
+            img = images.clip(img, pos.left, pos.top, pos.width(), pos.height());
+        }
+
+        if (whether_improve_accuracy == 'yes') var question = huawei_ocr_api(img);
+        else {
+            try {
+                var question = ocr.ocrImage(img).text;
+            } catch (error) {
+                toast("请将hamibot软件升级至最新版本");
+                exit();
+            }
+            var question = ocr_processing(question, true);
+        }
+
+
+        log(question);
+        className('android.widget.RadioButton').depth(32).waitFor();
+        if (question) do_contest_answer(32, question);
+        else className('android.widget.RadioButton').depth(32).findOne().click();
+        // 等待新题目加载
+        while (!textMatches(/第\d题/).exists() && !text('继续挑战').exists() && !text('开始').exists());
+    }
+}
 
 /*
 **********四人赛*********
@@ -812,39 +866,15 @@ if (!finish_list[7] && four_players_scored < 3) {
     if (!className('android.view.View').depth(21).text('学习积分').exists()) back_track();
     className('android.view.View').depth(21).text('学习积分').waitFor();
     entry_model(11);
+
     for (var i = 0; i < 2; i++) {
-        sleep(random_time(delay_time * 2));
+        sleep(random_time(delay_time));
         my_click_clickable('开始比赛');
-        className('android.widget.RadioButton').depth(32).waitFor();
-        while (!text('继续挑战').exists()) {
-            do {
-                var img = captureScreen();
-                var point = findColor(img, '#1B1F25', {
-                    region: [device.width * distance1 / width, device.height * distance2 / height,
-                    device.width * (1 - 2 * distance1 / width), device.height * (1 - distance2 / height - distance3 / height)],
-                    threshold: 10,
-                });
-            } while (!point);
-            var img = images.inRange(img, '#000000', '#444444');
-            img = images.clip(img, device.width * distance1 / width, device.height * distance2 / height,
-                device.width * (1 - 2 * distance1 / width), device.height * (1 - distance2 / height - distance3 / height));
-            var question = huawei_ocr_api(img);
-            question = ocr_processing(question, true);
-            className('android.widget.RadioButton').depth(32).waitFor();
-            if (question) do_contest_answer(32, question);
-            else className('android.widget.RadioButton').depth(32).findOne().click();
-            do {
-                var img = captureScreen();
-                var point = findColor(img, '#555AB6', {
-                    region: [device.width * distance1 / width, device.height * distance2 / height,
-                    device.width * (1 - 2 * distance1 / width), device.height * (1 - distance2 / height - distance3 / height)],
-                    threshold: 10,
-                });
-            } while (!point);
-        }
+        do_contest();
         if (i == 0) {
-            sleep(random_time(delay_time * 2));
+            sleep(random_time(delay_time));
             while (!click('继续挑战'));
+            sleep(random_time(delay_time));
         }
     }
     sleep(random_time(delay_time));
@@ -861,6 +891,7 @@ if (!finish_list[8] && two_players_scored < 1) {
     if (!className('android.view.View').depth(21).text('学习积分').exists()) back_track();
     className('android.view.View').depth(21).text('学习积分').waitFor();
     entry_model(12);
+
     // 点击随机匹配
     text('随机匹配').waitFor();
     sleep(random_time(delay_time * 2));
@@ -869,62 +900,12 @@ if (!finish_list[8] && two_players_scored < 1) {
     } catch (error) {
         className("android.view.View").text("").findOne().click();
     }
-
-    while (!text('继续挑战').exists()) {
-        do {
-            var img = captureScreen();
-            var point = findColor(img, '#1B1F25', {
-                region: [device.width * distance1 / width, device.height * distance2 / height,
-                device.width * (1 - 2 * distance1 / width), device.height * (1 - distance2 / height - distance3 / height)],
-                threshold: 10,
-            });
-        } while (!point);
-        var img = images.inRange(img, '#000000', '#444444');
-        img = images.clip(img, device.width * distance1 / width, device.height * distance2 / height,
-            device.width * (1 - 2 * distance1 / width), device.height * (1 - distance2 / height - distance3 / height));
-        var question = huawei_ocr_api(img);
-        question = ocr_processing(question, true);
-        // 等待选项加载
-        className('android.widget.RadioButton').depth(32).waitFor();
-        if (question) do_contest_answer(32, question);
-        else className('android.widget.RadioButton').depth(32).findOne().click();
-        // 等待下一题加载
-        do {
-            var img = captureScreen();
-            var point = findColor(img, '#555AB6', {
-                region: [device.width * distance1 / width, device.height * distance2 / height,
-                device.width * (1 - 2 * distance1 / width), device.height * (1 - distance2 / height - distance3 / height)],
-                threshold: 10,
-            });
-        } while (!point);
-    }
-
+    do_contest();
     sleep(random_time(delay_time));
     back();
     sleep(random_time(delay_time));
     back();
     my_click_clickable('退出');
-}
-
-/*
-**********订阅*********
-*/
-if (!finish_list[9]) {
-    sleep(random_time(delay_time));
-    if (!className('android.view.View').depth(21).text('学习积分').exists()) back_track();
-    entry_model(13);
-    // 待编写
-    // 可以用image匹配红色的
-}
-
-/*
-**********发表观点*********
-*/
-if (!finish_list[11]) {
-    sleep(random_time(delay_time));
-    if (!className('android.view.View').depth(21).text('学习积分').exists()) back_track();
-    entry_model(15);
-    // 待编写
 }
 
 toast('脚本运行完成');
