@@ -14,6 +14,11 @@ var { projectname } = hamibot.env;
 var { endpoint } = hamibot.env;
 var { projectId } = hamibot.env;
 
+if (whether_improve_accuracy == 'yes' && !password) {
+  toast("如果你选择了增强版，请配置信息，具体看脚本说明");
+  exit();
+}
+
 //请求横屏截图权限
 threads.start(function () {
   var beginBtn;
@@ -82,7 +87,12 @@ function do_contest_answer(depth_option, question) {
  * @param {image} img 传入图片
  */
 function ocr_api(img) {
-  var answer = ocr.ocrImage(img);
+  try {
+    var answer = ocr.ocrImage(img);
+  } catch (error) {
+    toast("请将脚本升级至最新版");
+    exit();
+  }
   answer = answer.text;
   // 标点修改
   answer = answer.replace(/,/g, "，");
@@ -101,6 +111,7 @@ function ocr_api(img) {
   answer = answer.replace(/土也/g, "地");
   answer = answer.replace(/未口/g, "和");
   answer = answer.replace(/晋查/g, "普查");
+  answer = answer.replace(/扶悌/g, "扶梯");
 
   answer = answer.slice(answer.indexOf('.') + 1);
   answer = answer.slice(0, 10);
