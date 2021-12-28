@@ -12,7 +12,11 @@
 此脚本仅运行完成四人赛、双人对战模块，通过优化题目之间的切换间隔，增加新的题库，双题库保证正确率，现脚本已经达到**秒答与80%正确率**，如想了解其他更多信息或者想完成所有模块请安装[主脚本](https://hamibot.com/marketplace/aQlXd)
 
 # 配置信息说明
-**脚本默认不为增强版**，非增强版利用本地ocr识别题目，在识别速度、识别正确率上比第三方ocr差，因此，如果你想用增强版还需要配置以下信息
+**脚本默认不为增强版**，非增强版利用本地ocr识别题目，在识别速度、识别正确率上比第三方ocr差。此脚本选用华为API实现OCR功能，注意这里通过华为API的收费标准如下，可以看到每个月有一千次免费使用，是完全够用的，相当于**免费**。
+
+因此，如果你想用增强版还需要配置以下信息
+
+<div align=center><img src="https://usercontent.hamibot.com/avatars/ml/0/aQlXd/3.png" style="zoom:50%;" /></div>
 
 将配置选项选择“是”
 <div align=center><img src="https://usercontent.hamibot.com/screenshots/u/20211228/mPyOGc7ID67KV9q0UWUObCNR"/></div>
