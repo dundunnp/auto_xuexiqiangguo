@@ -53,8 +53,9 @@ function do_contest_answer(depth_option, question) {
     className('android.widget.RadioButton').depth(depth_option).findOne().click();
   } else {
     // 发送http请求获取答案
-    var r1 = http.get('http://www.syiban.com/search/index/init.html?modelid=1&q=' + encodeURI(question));
     var r2 = http.get('https://www.souwen123.com/search/select.php?age=' + encodeURI(question));
+    var question = question.slice(0, 10);
+    var r1 = http.get('http://www.syiban.com/search/index/init.html?modelid=1&q=' + encodeURI(question));
     var result1 = r1.body.string().match(/答案：./);
     var result2 = r2.body.string().match(/答案：./);
     var result;
