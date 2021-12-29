@@ -20,8 +20,9 @@
 <img src="https://s3.bmp.ovh/imgs/2021/12/ecaa291952da6279.png" width="300px" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
 </div>
 
-# v10.0 更新内容:
+# v10.1 更新内容:
 1. 可以完成发表言论模块，将在以下言论中"好好学习，天天向上", "大国领袖，高瞻远瞩", "请党放心，强国有我", "坚持信念，砥砺奋进", "团结一致，共建美好"随机选择一句话发表，并在发表得分后删除
+2. 修复专项答题之后卡住的bug
 
 <!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
 
