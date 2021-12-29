@@ -692,8 +692,13 @@ if (!finish_list[5]) {
     // 等待列表加载
     className('android.view.View').clickable(true).depth(23).waitFor();
     // 打开第一个出现未完成作答的题目
+    // 第一个未完成作答的索引
     var special_i = 0;
+    // 是否找到未作答的标志
     var special_flag = false;
+    // 是否答题的标志
+    var is_answer_special_flag = false;
+    
     // 如果之前的答题全部完成则不向下搜索
     if (all_special_answer_completed == 'yes') {
         special_flag = true;
@@ -717,6 +722,7 @@ if (!finish_list[5]) {
 
     if (text('开始答题').exists()) {
         text('开始答题').findOne().click();
+        is_answer_special_flag = true;
         do_periodic_answer(10);
     } else if (text('继续答题').exists()) {
         text('继续答题').findOnce(special_i).click();
@@ -724,25 +730,27 @@ if (!finish_list[5]) {
         sleep(random_time(delay_time));
         // 已完成题数
         var completed_num = parseInt(className('android.view.View').depth(24).findOnce(1).text());
+        is_answer_special_flag = true;
         do_periodic_answer(10 - completed_num + 1);
     } else {
-        toast('你居然做完了，我很佩服你！！！');
         sleep(random_time(delay_time));
         className('android.view.View').clickable(true).depth(23).waitFor();
         className('android.view.View').clickable(true).depth(23).findOne().click();
-        exit();
     }
-    // 点击完成
-    sleep(random_time(delay_time));
-    text('完成').waitFor();
-    text('完成').click();
-    // 点击退出
-    sleep(random_time(delay_time));
-    className('android.view.View').clickable(true).depth(20).waitFor();
-    className('android.view.View').clickable(true).depth(20).findOne().click();
-    sleep(random_time(delay_time));
-    className('android.view.View').clickable(true).depth(23).waitFor();
-    className('android.view.View').clickable(true).depth(23).findOne().click();
+
+    if (is_answer_special_flag) {
+        // 点击完成
+        sleep(random_time(delay_time));
+        text('完成').waitFor();
+        text('完成').click();
+        // 点击退出
+        sleep(random_time(delay_time));
+        className('android.view.View').clickable(true).depth(20).waitFor();
+        className('android.view.View').clickable(true).depth(20).findOne().click();
+        sleep(random_time(delay_time));
+        className('android.view.View').clickable(true).depth(23).waitFor();
+        className('android.view.View').clickable(true).depth(23).findOne().click();
+    }
 }
 
 /*
