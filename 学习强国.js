@@ -8,6 +8,12 @@ auto.waitFor()
 // 将设备保持常亮
 device.keepScreenDim();
 
+// 检查Hamibot是否为最新版
+if (app.versionName != "1.1.0") {
+    toast("请在Hamibot更新至最新版v1.1.0");
+    exit();
+}
+
 // setScreenMetrics(1080, 2340);
 
 // 获取基础数据
@@ -129,6 +135,8 @@ for (var i = 4; i < 17; i++) {
         // 已观看视频时间
         var completed_time = Math.min(parseInt(model.child(2).text().match(/\d+/)),
             parseInt(other_model.child(2).text().match(/\d+/))) * 60000;
+    } else if (i == 8) {
+        var weekly_answer_scored = parseInt(model.child(2).text().match(/\d+/));
     } else if (i == 11) {
         // 四人赛已得分
         var four_players_scored = parseInt(model.child(2).text().match(/\d+/));
@@ -661,7 +669,7 @@ var restart_flag = 1;
 // 是否重做过，如果重做，也即错了，则换用精度更高的华为ocr
 var if_restart_flag = false;
 
-if (!finish_list[4]) {
+if (!finish_list[4] && weekly_answer_scored < 4) {
     sleep(random_time(delay_time));
     if (!className('android.view.View').depth(21).text('学习积分').exists()) back_track();
     entry_model(8);
@@ -701,7 +709,7 @@ if (!finish_list[5]) {
     var special_flag = false;
     // 是否答题的标志
     var is_answer_special_flag = false;
-    
+
     // 如果之前的答题全部完成则不向下搜索
     if (all_special_answer_completed == 'yes') {
         special_flag = true;
@@ -910,59 +918,6 @@ if (!finish_list[8] && two_players_scored < 1) {
     back();
     my_click_clickable('退出');
 }
-
-// var num_subscribe = 0;
-
-// while (num_subscribe < 2) {
-//     // 奇数为按钮
-//     var i = 1;
-//     while (className('android.widget.ImageView').clickable(true).depth(16).findOnce(i) && num_subscribe < 2) {
-//         var subscribe_button_pos = className('android.widget.ImageView').clickable(true).depth(16).findOnce(i).bounds();
-//         if (i == 1) {
-//             var first_subscribe_button_pos_top = subscribe_button_pos.top;
-//             // 是否有一个是未订阅的
-//             var all_is_subscribe = findColor(captureScreen(), '#E42417', {
-//                 region: [subscribe_button_pos.left, subscribe_button_pos.top,
-//                 subscribe_button_pos.width(), device.height - subscribe_button_pos.top],
-//                 threshold: 10,
-//             });
-//         }
-//         if (all_is_subscribe) {
-//             var subscribe = findColor(captureScreen(), '#E42417', {
-//                 region: [subscribe_button_pos.left, subscribe_button_pos.top,
-//                 subscribe_button_pos.width(), subscribe_button_pos.height()],
-//                 threshold: 10,
-//             });
-//             if (subscribe) {
-//                 className('android.widget.ImageView').clickable(true).depth(16).findOnce(i).click();
-//                 num_subscribe++;
-//                 sleep(random_time(delay_time));
-//             }
-//         } else {
-//             // 如果到底则直接退出
-//             if (num_fine_tuning && num_fine_tuning >= 8) {
-//                 toast('已经没有新的平台可以订阅');
-//                 num_subscribe = 2;
-//                 break;
-//             }
-//         }
-//         i += 2;
-//     }
-//     // 滑到上个页面中最后一个按钮的下一个
-//     if (num_subscribe < 2) {
-//         var last_subscribe_button_pos_top = className('android.widget.ImageView').clickable(true).depth(16).findOnce(i - 2).bounds().top;
-//         var last_subscribe_desc = className('android.widget.ImageView').clickable(true).depth(16).findOnce(i - 2).parent().child(1).desc();
-
-//         swipe(device.width / 2, last_subscribe_button_pos_top - subscribe_button_pos.width(), device.width / 2, first_subscribe_button_pos_top, random_time(0));
-//         // 微调次数如果过大则表明到底了
-//         var num_fine_tuning = 0;
-//         while (desc(last_subscribe_desc).exists() && num_fine_tuning < 8) {
-//             swipe(device.width / 2, device.height / 2 + subscribe_button_pos.width() * 2, device.width / 2, device.height / 2, random_time(0));
-//             num_fine_tuning++;
-//         }
-//         sleep(random_time(delay_time));
-//     }
-// }
 
 device.cancelKeepingAwake();
 
