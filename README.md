@@ -20,9 +20,8 @@
 <img src="https://s3.bmp.ovh/imgs/2021/12/ecaa291952da6279.png" width="300px" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
 </div>
 
-# v10.4 更新内容:
-1. 修复当最新版只能是v2.32.0时无法点击视频的bug
-2. 增加脚本运行结束时的震动提示
+# v10.5 更新内容:
+1. 增加是否完成订阅、发表言论的配置选项
 
 <!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
 
