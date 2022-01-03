@@ -23,6 +23,8 @@ var { delay_time } = hamibot.env;
 var { whether_improve_accuracy } = hamibot.env;
 var { all_weekly_answers_completed } = hamibot.env;
 var { all_special_answer_completed } = hamibot.env;
+var { whether_complete_subscription } = hamibot.env;
+var { whether_complete_speech } = hamibot.env;
 
 delay_time = Number(delay_time) * 1000;
 // 调用华为api所需参数
@@ -247,7 +249,7 @@ if (!finish_list[1] || !finish_list[2]) {
     sleep(random_time(delay_time * 3));
     // 点击第一个视频
     className('android.widget.FrameLayout').clickable(true).depth(24).findOne().click();
-    
+
     sleep(random_time(delay_time));
     if (!id('iv_back').exists()) {
         // 最新版为v2.32.0
@@ -929,7 +931,7 @@ if (!finish_list[8] && two_players_scored < 1) {
 /*
 **********订阅*********
 */
-if (!finish_list[9]) {
+if (!finish_list[9] && whether_complete_subscription == "yes") {
     sleep(random_time(delay_time));
     if (!className('android.view.View').depth(21).text('学习积分').exists()) back_track();
     entry_model(13);
@@ -979,7 +981,7 @@ if (!finish_list[9]) {
 /*
 **********发表观点*********
 */
-if (!finish_list[11]) {
+if (!finish_list[11] && whether_complete_speech == "yes") {
     sleep(random_time(delay_time));
     if (!className('android.view.View').depth(21).text('学习积分').exists()) back_track();
     entry_model(15);
