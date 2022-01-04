@@ -152,11 +152,12 @@ for (var i = 4; i < 17; i++) {
 // 返回首页
 className('android.view.View').clickable(true).depth(21).findOne().click();
 id('my_back').waitFor();
+sleep(random_time(delay_time / 2));
 id('my_back').findOne().click();
 // 去province模块
-// 这里有未知bug跳转不了
 sleep(random_time(delay_time));
 text(province).depth(17).waitFor();
+sleep(random_time(delay_time / 2));
 var province_index = text(province).depth(17).findOne().bounds();
 click(province_index.centerX(), province_index.centerY());
 
@@ -165,7 +166,7 @@ click(province_index.centerX(), province_index.centerY());
 */
 if (!finish_list[12]) {
     my_click_clickable(channel);
-    sleep(random_time(1000));
+    sleep(random_time(delay_time));
     back();
 }
 
@@ -244,6 +245,7 @@ back_track_flag = 1;
 if (!finish_list[1] || !finish_list[2]) {
     if (!id('comm_head_title').exists()) back_track();
     my_click_clickable('百灵');
+    sleep(random_time(delay_time / 2));
     my_click_clickable('竖');
     // 等待视频加载
     sleep(random_time(delay_time * 3));
@@ -266,7 +268,9 @@ if (!finish_list[1] || !finish_list[2]) {
 
 // 过渡
 my_click_clickable('我的');
+sleep(random_time(delay_time / 2));
 my_click_clickable('学习积分');
+sleep(random_time(delay_time / 2));
 
 /*
 *********************竞赛部分********************
