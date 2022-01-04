@@ -10,7 +10,7 @@ device.keepScreenDim();
 
 // 检查Hamibot是否为最新版
 if (app.versionName != "1.1.0") {
-    toast("请在Hamibot更新至最新版v1.1.0");
+    toast("请将Hamibot更新至最新版v1.1.0");
     exit();
 }
 
@@ -286,7 +286,7 @@ back_track_flag = 2;
 function do_contest_answer(depth_option, question) {
     if (question == "选择正确的读音" || question == "选择词语的正确词形" || question == "下列词形正确的是") {
         // 选择第一个
-        className('android.widget.RadioButton').depth(32).waitFor();
+        className('android.widget.RadioButton').depth(depth_option).waitFor();
         className('android.widget.RadioButton').depth(depth_option).findOne().click();
     } else {
         var result;
@@ -305,7 +305,7 @@ function do_contest_answer(depth_option, question) {
             }
         }
 
-        className('android.widget.RadioButton').depth(32).waitFor();
+        className('android.widget.RadioButton').depth(depth_option).waitFor();
 
         if (result) {
             try {
