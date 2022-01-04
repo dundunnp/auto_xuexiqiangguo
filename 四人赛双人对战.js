@@ -55,30 +55,37 @@ function my_click_clickable(target) {
 function do_contest_answer(depth_option, question) {
   if (question == "选择正确的读音" || question == "选择词语的正确词形" || question == "下列词形正确的是") {
     // 选择第一个
+    className('android.widget.RadioButton').depth(32).waitFor();
     className('android.widget.RadioButton').depth(depth_option).findOne().click();
   } else {
-    // 发送http请求获取答案
-    var r2 = http.get('https://www.souwen123.com/search/select.php?age=' + encodeURI(question));
-    var question = question.slice(0, 10);
-    var r1 = http.get('http://www.syiban.com/search/index/init.html?modelid=1&q=' + encodeURI(question));
-    var result1 = r1.body.string().match(/答案：./);
-    var result2 = r2.body.string().match(/答案：./);
     var result;
-    if (result1 || result2) {
-      if (result2 && result2[0].charCodeAt(3) > 64 && result2[0].charCodeAt(3) < 69) result = result2;
-      else if (result1 && result1[0].charCodeAt(3) > 64 && result1[0].charCodeAt(3) < 69) result = result1;
-      else result = result1;
+    // 发送http请求获取答案 网站搜题速度 r1 > r2
+    try {
+      var r1 = http.get('http://www.syiban.com/search/index/init.html?modelid=1&q=' + encodeURI(question.slice(0, 10)));
+      result = r1.body.string().match(/答案：./);
+    } catch (error) {
+    }
+    // 如果第一个网站没获取到正确答案，则利用第二个网站
+    if (!(result && result[0].charCodeAt(3) > 64 && result[0].charCodeAt(3) < 69)) {
+      try {
+        var r2 = http.get('https://www.souwen123.com/search/select.php?age=' + encodeURI(question));
+        result = r2.body.string().match(/答案：./);
+      } catch (error) {
+      }
+    }
+
+    className('android.widget.RadioButton').depth(32).waitFor();
+
+    if (result) {
       try {
         className('android.widget.RadioButton').depth(depth_option).findOnce(result[0].charCodeAt(3) - 65).click();
       } catch (error) {
         // 如果选项不存在，则点击第一个
-        if (className('android.widget.RadioButton').depth(depth_option).exists())
-          className('android.widget.RadioButton').depth(depth_option).findOne().click();
+        className('android.widget.RadioButton').depth(depth_option).findOne().click();
       }
     } else {
       // 如果没找到结果则选择第一个
-      if (className('android.widget.RadioButton').depth(depth_option).exists())
-        className('android.widget.RadioButton').depth(depth_option).findOne().click();
+      className('android.widget.RadioButton').depth(depth_option).findOne().click();
     }
   }
 }
@@ -246,9 +253,11 @@ function do_it() {
     else var question = ocr_api(img);
 
     log(question);
-    className('android.widget.RadioButton').depth(32).waitFor();
     if (question) do_contest_answer(32, question);
-    else className('android.widget.RadioButton').depth(32).findOne().click();
+    else {
+      className('android.widget.RadioButton').depth(32).waitFor();
+      className('android.widget.RadioButton').depth(32).findOne().click();
+    }
     // 等待新题目加载
     while (!textMatches(/第\d题/).exists() && !text('继续挑战').exists() && !text('开始').exists());
   }
@@ -316,4 +325,6 @@ if (two_player_battle == 'yes') {
   my_click_clickable('退出');
 }
 
+//震动两秒
+device.vibrate(1000);
 toast('脚本运行完成');
