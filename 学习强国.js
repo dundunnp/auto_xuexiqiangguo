@@ -286,30 +286,37 @@ back_track_flag = 2;
 function do_contest_answer(depth_option, question) {
     if (question == "选择正确的读音" || question == "选择词语的正确词形" || question == "下列词形正确的是") {
         // 选择第一个
+        className('android.widget.RadioButton').depth(32).waitFor();
         className('android.widget.RadioButton').depth(depth_option).findOne().click();
     } else {
-        // 发送http请求获取答案
-        var r2 = http.get('https://www.souwen123.com/search/select.php?age=' + encodeURI(question));
-        var question = question.slice(0, 10);
-        var r1 = http.get('http://www.syiban.com/search/index/init.html?modelid=1&q=' + encodeURI(question));
-        var result1 = r1.body.string().match(/答案：./);
-        var result2 = r2.body.string().match(/答案：./);
         var result;
-        if (result1 || result2) {
-            if (result2 && result2[0].charCodeAt(3) > 64 && result2[0].charCodeAt(3) < 69) result = result2;
-            else if (result1 && result1[0].charCodeAt(3) > 64 && result1[0].charCodeAt(3) < 69) result = result1;
-            else result = result1;
+        // 发送http请求获取答案 网站搜题速度 r1 > r2
+        try {
+            var r1 = http.get('http://www.syiban.com/search/index/init.html?modelid=1&q=' + encodeURI(question.slice(0, 10)));
+            result = r1.body.string().match(/答案：./);
+        } catch (error) {
+        }
+        // 如果第一个网站没获取到正确答案，则利用第二个网站
+        if (!(result && result[0].charCodeAt(3) > 64 && result[0].charCodeAt(3) < 69)) {
+            try {
+                var r2 = http.get('https://www.souwen123.com/search/select.php?age=' + encodeURI(question));
+                result = r2.body.string().match(/答案：./);
+            } catch (error) {
+            }
+        }
+
+        className('android.widget.RadioButton').depth(32).waitFor();
+
+        if (result) {
             try {
                 className('android.widget.RadioButton').depth(depth_option).findOnce(result[0].charCodeAt(3) - 65).click();
             } catch (error) {
                 // 如果选项不存在，则点击第一个
-                if (className('android.widget.RadioButton').depth(depth_option).exists())
-                    className('android.widget.RadioButton').depth(depth_option).findOne().click();
+                className('android.widget.RadioButton').depth(depth_option).findOne().click();
             }
         } else {
             // 如果没找到结果则选择第一个
-            if (className('android.widget.RadioButton').depth(depth_option).exists())
-                className('android.widget.RadioButton').depth(depth_option).findOne().click();
+            className('android.widget.RadioButton').depth(depth_option).findOne().click();
         }
     }
 }
@@ -329,6 +336,24 @@ function fill_in_blank(answer) {
     for (var i = 0; i < blanks.length; i++) {
         blanks[i].paste();
     }
+}
+
+/**
+ * 视频题
+ * @param {string} video_question 视频题问题
+ * @returns {string} video_answer 答案
+ */
+function video_answer_question(video_question) {
+    // 找到中文标点符号
+    var punctuation_index = video_question.search(/[\u3002|\uff1f|\uff01|\uff0c|\u3001|\uff1b|\uff1a|\u201c|\u201d|\u2018|\u2019|\uff08|\uff09|\u300a|\u300b|\u3008|\u3009|\u3010|\u3011|\u300e|\u300f|\u300c|\u300d|\ufe43|\ufe44|\u3014|\u3015|\u2026|\u2014|\uff5e|\ufe4f|\uffe5]/);
+    video_question = video_question.slice(0, Math.max(5, punctuation_index));
+    try {
+        var video_result = http.get('https://www.365shenghuo.com/?s=' + encodeURI(video_question));
+    } catch (error) {
+    }
+    var video_answer = video_result.body.string().match(/答案：.+</);
+    video_answer = video_answer[0].slice(3, video_answer[0].indexOf('<'));
+    return video_answer;
 }
 
 /**
@@ -576,25 +601,6 @@ function do_periodic_answer(number) {
         var answer = "";
         var num = 0;
         for (num; num < number; num++) {
-            // 如果存在视频题
-            if (className("android.widget.Image").exists()) {
-                // 如果是每周答题那么重做也没用就直接跳过
-                if (restart_flag == 1) {
-                    fill_in_blank('cao');
-                    sleep(random_time(delay_time * 2));
-                    if (text('下一题').exists()) click('下一题');
-                    if (text('确定').exists()) click('确定');
-                    sleep(random_time(delay_time));
-                    if (text('完成').exists()) {
-                        click('完成');
-                        flag = true;
-                        break;
-                    }
-                } else {
-                    restart();
-                    break;
-                }
-            }
 
             // 下滑到底防止题目过长，选项没有读取到
             swipe(500, 1700, 500, 500, random_time(delay_time / 2));
@@ -607,6 +613,33 @@ function do_periodic_answer(number) {
                 for (var i = 1; i < options.length; i += 2) {
                     my_click_non_clickable(options[i].text());
                 }
+
+            } else if (className("android.widget.Image").exists()) {
+                // 如果存在视频题
+                var video_question = className("android.view.View").depth(24).findOnce(2).text();
+                answer = video_answer_question(video_question);
+                if (answer) {
+                    fill_in_blank(answer);
+                } else {
+                    // 如果没搜到答案
+                    // 如果是每周答题那么重做也没用就直接跳过
+                    if (restart_flag == 1) {
+                        fill_in_blank('cao');
+                        sleep(random_time(delay_time * 2));
+                        if (text('下一题').exists()) click('下一题');
+                        if (text('确定').exists()) click('确定');
+                        sleep(random_time(delay_time));
+                        if (text('完成').exists()) {
+                            click('完成');
+                            flag = true;
+                            break;
+                        }
+                    } else {
+                        restart();
+                        break;
+                    }
+                }
+
             } else {
                 my_click_clickable('查看提示');
                 // 打开查看提示的时间
@@ -644,9 +677,10 @@ function do_periodic_answer(number) {
                 sleep(random_time(delay_time)); // 等待提交的时间
                 // 如果错误（ocr识别有误）则重来
                 if (text('下一题').exists() || (text('完成').exists() && !special_flag)) {
-                    // 如果没有选择精确答题，则每周答题就不需要重新答
-                    if (restart_flag == 1 && whether_improve_accuracy == 'no') {
-                        click('下一题');
+                    // 如果没有选择精确答题或视频题错误，则每周答题就不需要重新答
+                    if (restart_flag == 1 && (whether_improve_accuracy == 'no' || className("android.widget.Image").exists())) {
+                        if (text('下一题').exists()) click('下一题');
+                        else click('完成');
                     } else {
                         restart();
                         break;
@@ -872,11 +906,12 @@ function do_contest() {
             var question = ocr_processing(question, true);
         }
 
-
         log(question);
-        className('android.widget.RadioButton').depth(32).waitFor();
         if (question) do_contest_answer(32, question);
-        else className('android.widget.RadioButton').depth(32).findOne().click();
+        else {
+            className('android.widget.RadioButton').depth(32).waitFor();
+            className('android.widget.RadioButton').depth(32).findOne().click();
+        }
         // 等待新题目加载
         while (!textMatches(/第\d题/).exists() && !text('继续挑战').exists() && !text('开始').exists());
     }
@@ -947,7 +982,7 @@ if (!finish_list[9] && whether_complete_subscription == "yes") {
     // 订阅数
     var num_subscribe = 0;
 
-    for (var i = 0; i < 8; i++) {
+    for (var i = 0; i < 9; i++) {
         className('android.view.View').clickable(true).depth(15).findOnce(i).click();
         sleep(random_time(delay_time));
         // 刷新次数
