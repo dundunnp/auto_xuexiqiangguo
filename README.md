@@ -20,8 +20,9 @@
 <img src="https://s3.bmp.ovh/imgs/2021/12/ecaa291952da6279.png" width="300px" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
 </div>
 
-# v10.6 更新内容:
-1. 增加一些随机等待时间，使得更像人为操作
+# v10.7 更新内容:
+1. 优化答题速度
+2. 视频题也可以做了
 
 <!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
 
