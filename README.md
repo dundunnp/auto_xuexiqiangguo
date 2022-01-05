@@ -50,6 +50,10 @@
 **如果遇到bug问题，请先查看[常见问题](#常见问题)，如果没有找到类似问题或还是不行请反馈bug给我，对于其他问题，由于我还在上课实在无暇顾及，抱歉**
 **所有模块均可完成！！**因为本人是在校学生无法把全部精力放在这，因此如果有想合作的小伙伴请在Github上一起完成更新项目
 
+# 额外衍生脚本
+1. [单独四人赛双人对战脚本](https://hamibot.com/marketplace/sp1Lc)，相关配置说明见four_two_game.md
+2. [四人赛双人对战答错脚本](https://hamibot.com/marketplace/XuKDy)，相关配置说明见four_two_game_false.md
+
 # 使用说明
 
 ## [Hamibot](https://hamibot.com/)
