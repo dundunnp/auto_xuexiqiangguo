@@ -3,9 +3,11 @@ var { four_player_battle } = hamibot.env;
 var { two_player_battle } = hamibot.env;
 var { four_player_count } = hamibot.env;
 var { two_player_count } = hamibot.env;
+var { contest_delay_time } = hamibot.env;
 var delay_time = 1000;
 four_player_count = Number(four_player_count);
 two_player_count = Number(two_player_count);
+contest_delay_time = Number(contest_delay_time) * 1000;
 
 sleep(delay_time);
 
@@ -29,10 +31,12 @@ function my_click_clickable(target) {
 function do_it() {
     while (!text('开始').exists());
     while (!text('继续挑战').exists()) {
-        sleep(random_time(delay_time * 4));
+        sleep(random_time(contest_delay_time));
         // 全选A
         try {
-            className('android.widget.RadioButton').depth(32).findOne(delay_time * 2).click();
+            var options = className('android.widget.RadioButton').depth(32).find();
+            var select = random(0, options.length - 1);
+            className('android.widget.RadioButton').depth(32).findOnce(select).click();
         } catch (error) {
         }
         while (!textMatches(/第\d题/).exists() && !text('继续挑战').exists() && !text('开始').exists());
