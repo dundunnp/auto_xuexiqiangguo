@@ -352,7 +352,7 @@ function video_answer_question(video_question) {
     } catch (error) {
     }
     var video_answer = video_result.body.string().match(/答案：.+</);
-    video_answer = video_answer[0].slice(3, video_answer[0].indexOf('<'));
+    if (video_answer) video_answer = video_answer[0].slice(3, video_answer[0].indexOf('<'));
     return video_answer;
 }
 
