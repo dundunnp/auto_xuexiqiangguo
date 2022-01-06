@@ -20,8 +20,8 @@
 <img src="https://s3.bmp.ovh/imgs/2021/12/ecaa291952da6279.png" width="300px" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
 </div>
 
-# v10.8 更新内容:
-1. 修复挑战答题卡住的bug
+# v10.9 更新内容:
+1. 修复视频题的bug
 
 <!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
 
