@@ -1,0 +1,26 @@
+name: push-to-techxuexi
+on:
+  push:
+    branches:
+      - main
+jobs:
+  push-to-techxuexi:
+    runs-on: ubuntu-18.04
+    steps:
+    - name: check
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Init
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        git config --global user.name 'GitHub' && git config --global user.email 'noreply@github.com'
+        
+    - name: Push Code
+      run: |
+        mkdir -p ~/.ssh
+        echo -e "${{ secrets.SSHKEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan github.com > ~/.ssh/known_hosts
+        git push -f "git@github.com:TechXueXi/hamibot-auto_xuexiqiangguo.git" "main:main" --tags
