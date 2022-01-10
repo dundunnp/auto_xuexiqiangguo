@@ -20,8 +20,8 @@
 <img src="https://s3.bmp.ovh/imgs/2021/12/ecaa291952da6279.png" width="300px" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
 </div>
 
-# v10.9 更新内容:
-1. 修复视频题的bug
+# v10.10 更新内容:
+1. 修复如果没配置是否完成每周答题，会一直向下搜素的问题
 
 <!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
 
@@ -152,56 +152,39 @@
 
 # 常见问题
 
-Q1: 运行脚本后出现这个报错
+Q1: 点击运行脚本没有反应，甚至连学习强国都没有打开
 
-<div align=center>
-<img src="http://r32wozj47.hn-bkt.clouddn.com/img/msedge_nGw9SZG0Ov.png" width="300px" alt="HwMirror_zmj2eavi85" style="zoom:50%;" />
-</div>
-
-A: 配置信息没有填写，这个脚本不是给连安装说明都不看、配置信息都不填，点击安装就想拿分的人用的
+A: 
+1. 请确保Hamibot已经打开**无障碍服务权限**
+2. 由于hamibot软件原因或某种原因，脚本无法运行（我也出现过这种情况）你可以重新下载hamibot软件
 
 ***
 
-Q2: 点击运行脚本没有反应，甚至连学习强国都没有打开
+Q2: 在四人赛、双人对战正确率感人
 
-A: 请确保Hamibot已经打开**无障碍服务权限**
-
-***
-
-Q3: 在四人赛、双人对战正确率感人
-
-A: 我用自己手机测试答题正确率能在80%以上，大家出现错误率高的主要原因在于：**手机性能和网速。每人的手机不同，导致还没有等待题目加载就ocr了，题目并没有识别正确**。次要原因是：题库的数目有限。
-解决方法：适当提高延迟时间，让题目加载出来，后续版本会利用更好的题库
+A: 我用自己手机测试答题正确率能在80%以上，大家出现错误率高的主要原因在于：题库的数目有限。
+解决方法：后续版本会利用更好的题库，并增加本地题库
 **另：错误是无法避免的，如果你有特殊的需求我一定要拿满分，非常抱歉这个脚本可能不能满足你**
 
 ***
-
-Q4: 进去到“我的”->“学习积分”，再退回到首页后，脚本卡主不动了
-
+Q3: 进去到“我的”->“学习积分”，再退回到首页后，脚本卡主不动了
 A: 请确保配置信息中的**省份与本地频道名是自己学习强国界面对应的，而不是你自己现居地**，比如假设我现在住在北京，而我学习强国界面如下，那么我应该填写的是江西，而不是北京
 
 <div align=center>
-<img src="http://r32wozj47.hn-bkt.clouddn.com/img/16.png" width="400px" alt="HwMirror_zmj2eavi85" style="zoom:50%;" />
+<img src="https://usercontent.hamibot.com/screenshots/u/20211202/kI3ZrwD6rqzsL8eay9OlcQDK" alt="HwMirror_zmj2eavi85" style="zoom:50%;" />
 </div>
 
 ***
-
-Q5: 为什么我按照步骤配置好了华为ocr服务，但还是不答题
-
-A: 首先检查配置信息是否正确，其次检查是否打开如图所示的权限，如果运行脚本时，手机没有自动弹出打开权限的提示，可能原因是：
-
-1. 配置信息里是否答题选择了否 
-2. 软件没有弹窗权限
-
-<div align=center>
-<img src="http://r32wozj47.hn-bkt.clouddn.com/img/18.jpg" width="300px" alt="18" style="zoom:33%;" />
-</div>
+Q4: 为什么我按照步骤配置好了华为ocr服务，但正确率还是跟本地ocr差不多
+A: 首先检查配置信息是否在提高正确率上选择了是
 
 ***
+Q5: 一直要求打开无障碍服务权限
+A: 已经打开了，但还是不想，一般是因为服务被系统结束了，解决方法是重启手机或者重新下载hamibot
 
+***
 Q6: 除上面的问题
-
-A: 请在[GitHub](https://github.com/dundunnp/hamibot-auto_xuexiqiangguo/issues)上提出问题，问题尽量详细，最好包含图片或视频，这样对大家解决问题都快
+A: 请在[GitHub](https://github.com/dundunnp/hamibot-auto_xuexiqiangguo/issues)或议题上提出问题，问题尽量详细，包含图片（配置信息、学习强国主页等有助于了解问题的图片）或视频，这样对大家解决问题都快
 
 # 待编写
 1. 填空题如果文本框有分开的情况还未解决
