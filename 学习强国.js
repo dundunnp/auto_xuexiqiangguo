@@ -8,8 +8,8 @@ auto.waitFor()
 // 将设备保持常亮
 device.keepScreenDim();
 
-// 检查Hamibot是否为最新版
-if (app.versionName != "1.1.0") {
+// 检查Hamibot版本是否支持ocr
+if (app.versionName < "1.1.0") {
     toast("请将Hamibot更新至最新版v1.1.0");
     exit();
 }
@@ -221,6 +221,7 @@ while ((count < 6 - completed_count) && !finish_list[0]) {
             try {
                 // 分享按键
                 className("ImageView").depth(10).clickable(true).findOnce(1).click();
+                sleep(random_time(delay_time / 2));
                 my_click_clickable('分享到学习强国');
                 sleep(random_time(delay_time));
                 back();
@@ -726,7 +727,7 @@ if (!finish_list[4] && weekly_answer_scored < 4) {
     // 打开第一个出现未作答的题目
     // 如果之前的答题全部完成则不向下搜索
     if (all_weekly_answers_completed == 'no') {
-        while (!text('未作答').exists()) {
+        while (!text('未作答').exists() && !text('您已经看到了我的底线').exists()) {
             swipe(500, 1700, 500, 500, random_time(delay_time / 2));
         }
     }
@@ -1097,6 +1098,6 @@ if (!finish_list[11] && whether_complete_speech == "yes") {
 
 device.cancelKeepingAwake();
 
-//震动两秒
+//震动一秒
 device.vibrate(1000);
 toast('脚本运行完成');
