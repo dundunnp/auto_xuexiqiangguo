@@ -55,14 +55,12 @@ function my_click_non_clickable(target) {
 // 模拟点击可点击元素
 function my_click_clickable(target) {
     text(target).waitFor();
-    // 由于部分机型在boundsInside函数上有bug，无法点击，遗弃
-    // 防止点到页面中其他有包含“我的”的控件
-    // if (target == '我的') {
-    //     text('我的').boundsInside(device.width * 3/4 , 0, device.width, device.height / 2).findOne().click();
-    // } else {
-    //     click(target);
-    // }
-    click(target);
+    // 防止点到页面中其他有包含“我的”的控件，比如搜索栏
+    if (target == '我的') {
+        id("comm_head_xuexi_mine").findOne().click();
+    } else {
+        click(target);
+    }
 }
 
 // 模拟随机时间
