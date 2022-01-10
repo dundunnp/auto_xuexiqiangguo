@@ -22,6 +22,7 @@
 
 # v10.10 更新内容:
 1. 修复如果没配置是否完成每周答题，会一直向下搜素的问题
+2. 修复会跳转到导航栏并卡住的bug
 
 <!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
 
