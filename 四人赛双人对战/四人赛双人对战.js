@@ -123,6 +123,11 @@ function ocr_api(img) {
   answer = answer.replace(/。/g, "");
   answer = answer.replace(/`/g, "、");
   answer = answer.replace(/\?/g, "？");
+  answer = answer.replace(/:/g, "：");
+  answer = answer.replace(/!/g, "!");
+  answer = answer.replace(/\(/g, "（");
+  answer = answer.replace(/\)/g, "）");
+  // OCR会输出英文的",但是如何转换是个问题，因为中文的引号“ ”是区分上下的。含引号的题目还是很多，尤其是一个题目里还有好几对“”。
 
   // 文字修改
   answer = answer.replace(/营理/g, "管理");
