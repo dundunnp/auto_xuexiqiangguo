@@ -20,9 +20,9 @@
 <img src="https://s3.bmp.ovh/imgs/2021/12/ecaa291952da6279.png" width="300px" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
 </div>
 
-# v10.10 更新内容:
-1. 修复如果没配置是否完成每周答题，会一直向下搜素的问题
-2. 修复会跳转到导航栏并卡住的bug
+# v10.11 更新内容:
+1. 修复专项答题打完会一直往下搜索的情况
+2. 增加新特性特性，可以通过微信获取今日得分消息
 
 <!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
 
@@ -147,6 +147,25 @@
 
 <div align=center>
 <img src="http://r32wozj47.hn-bkt.clouddn.com/img/msedge_4qInvihBwb.png" width="400px" alt="msedge_4qInvihBwb" style="zoom:50%;" />
+</div>
+
+如何配置微信接受消息（可选）
+通过[https://pushplus.hxtrip.com/](https://pushplus.hxtrip.com/)该网站，
+<div align=center>
+<img src="https://img1.imgtp.com/2022/01/19/HBMMJMc0.png" width="300px" alt="msedge_WRzp0mov3N"/>
+</div>
+点击一对一推送
+<div align=center>
+<img src="https://img1.imgtp.com/2022/01/19/UHmvwvCa.png" width="300px" alt="msedge_WRzp0mov3N"/>
+</div>
+用微信扫码二维码，并关注公众号
+<div align=center>
+<img src="https://img1.imgtp.com/2022/01/19/J8HMJGkG.png" width="300px" alt="msedge_WRzp0mov3N"/>
+</div>
+将下面的token复制到编辑信息里
+在每次运行完脚本后，消息会自动推送到你的微信上，效果如下
+<div align=center>
+<img src="https://img1.imgtp.com/2022/01/19/BBY4LwTs.jpg" width="300px" alt="msedge_WRzp0mov3N"/>
 </div>
 
 恭喜你，到这里就算是完成了!
