@@ -25,6 +25,7 @@ var { all_weekly_answers_completed } = hamibot.env;
 var { all_special_answer_completed } = hamibot.env;
 var { whether_complete_subscription } = hamibot.env;
 var { whether_complete_speech } = hamibot.env;
+var { pushplus_token } = hamibot.env;
 
 delay_time = Number(delay_time) * 1000;
 // 调用华为api所需参数
@@ -72,6 +73,22 @@ function random_time(time) {
 function refresh() {
     swipe(device.width / 2, device.height * 6 / 15, device.width / 2, device.height * 12 / 15, random_time(delay_time / 2));
     sleep(random_time(delay_time * 2));
+}
+
+/**
+ * 推送通知到微信
+ * @param {string} account 账号
+ * @param {string} score 分数
+ */
+function push_weixin_message(account, score) {
+    http.postJson(
+        'http://pushplus.hxtrip.com/send',
+        {
+            token: pushplus_token,
+            title: '强国学习通知',
+            content: '账号名' + account + '今日已经获得' + score + '分'
+        }
+    );
 }
 
 /**
@@ -152,6 +169,7 @@ className('android.view.View').clickable(true).depth(21).findOne().click();
 id('my_back').waitFor();
 sleep(random_time(delay_time / 2));
 id('my_back').findOne().click();
+
 // 去province模块
 sleep(random_time(delay_time));
 text(province).depth(17).waitFor();
@@ -236,6 +254,8 @@ while ((count < 6 - completed_count) && !finish_list[0]) {
 /*
 *********************视听部分********************
 */
+// 把音乐暂停
+media.pauseMusic();
 back_track_flag = 1;
 
 /*
@@ -274,6 +294,8 @@ sleep(random_time(delay_time / 2));
 /*
 *********************竞赛部分********************
 */
+// 把音乐打开
+media.resumeMusic();
 back_track_flag = 2;
 // 注意：四人赛和双人对战因无法获取题目，需要ocr
 
@@ -572,6 +594,10 @@ function ocr_processing(text, if_question) {
     text = text.replace(/。/g, "");
     text = text.replace(/`/g, "、");
     text = text.replace(/\?/g, "？");
+    text = text.replace(/:/g, "：");
+    text = text.replace(/!/g, "!");
+    text = text.replace(/\(/g, "（");
+    text = text.replace(/\)/g, "）");
     // 文字修改
     text = text.replace(/营理/g, "管理");
     text = text.replace(/土也/g, "地");
@@ -777,7 +803,7 @@ if (!finish_list[5]) {
             swipe(500, 1700, 500, 500, random_time(delay_time / 2));
     }
 
-    if (text('开始答题').exists()) {
+    if (text('开始答题').exists() || text('您已经看到了我的底线').exists()) {
         text('开始答题').findOne().click();
         is_answer_special_flag = true;
         do_periodic_answer(10);
@@ -1041,58 +1067,20 @@ if (!finish_list[11] && whether_complete_speech == "yes") {
     my_click_clickable('确认');
 }
 
-// var num_subscribe = 0;
+if (pushplus_token) {
+    back_track_flag = 2;
+    back_track();
+    // 获取今日得分
+    var score = textStartsWith('今日已累积').findOne().text();
+    score = score.match(/\d+/)
+    sleep(random_time(delay_time));
+    back();
+    // 获取账号名
+    var account = id('my_display_name').findOne().text();
 
-// while (num_subscribe < 2) {
-//     // 奇数为按钮
-//     var i = 1;
-//     while (className('android.widget.ImageView').clickable(true).depth(16).findOnce(i) && num_subscribe < 2) {
-//         var subscribe_button_pos = className('android.widget.ImageView').clickable(true).depth(16).findOnce(i).bounds();
-//         if (i == 1) {
-//             var first_subscribe_button_pos_top = subscribe_button_pos.top;
-//             // 是否有一个是未订阅的
-//             var all_is_subscribe = findColor(captureScreen(), '#E42417', {
-//                 region: [subscribe_button_pos.left, subscribe_button_pos.top,
-//                 subscribe_button_pos.width(), device.height - subscribe_button_pos.top],
-//                 threshold: 10,
-//             });
-//         }
-//         if (all_is_subscribe) {
-//             var subscribe = findColor(captureScreen(), '#E42417', {
-//                 region: [subscribe_button_pos.left, subscribe_button_pos.top,
-//                 subscribe_button_pos.width(), subscribe_button_pos.height()],
-//                 threshold: 10,
-//             });
-//             if (subscribe) {
-//                 className('android.widget.ImageView').clickable(true).depth(16).findOnce(i).click();
-//                 num_subscribe++;
-//                 sleep(random_time(delay_time));
-//             }
-//         } else {
-//             // 如果到底则直接退出
-//             if (num_fine_tuning && num_fine_tuning >= 8) {
-//                 toast('已经没有新的平台可以订阅');
-//                 num_subscribe = 2;
-//                 break;
-//             }
-//         }
-//         i += 2;
-//     }
-//     // 滑到上个页面中最后一个按钮的下一个
-//     if (num_subscribe < 2) {
-//         var last_subscribe_button_pos_top = className('android.widget.ImageView').clickable(true).depth(16).findOnce(i - 2).bounds().top;
-//         var last_subscribe_desc = className('android.widget.ImageView').clickable(true).depth(16).findOnce(i - 2).parent().child(1).desc();
-
-//         swipe(device.width / 2, last_subscribe_button_pos_top - subscribe_button_pos.width(), device.width / 2, first_subscribe_button_pos_top, random_time(0));
-//         // 微调次数如果过大则表明到底了
-//         var num_fine_tuning = 0;
-//         while (desc(last_subscribe_desc).exists() && num_fine_tuning < 8) {
-//             swipe(device.width / 2, device.height / 2 + subscribe_button_pos.width() * 2, device.width / 2, device.height / 2, random_time(0));
-//             num_fine_tuning++;
-//         }
-//         sleep(random_time(delay_time));
-//     }
-// }
+    // 推送消息
+    push_weixin_message(account, score);
+}
 
 device.cancelKeepingAwake();
 
