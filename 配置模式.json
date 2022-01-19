@@ -43,6 +43,26 @@
     "help": "如果完成就不需要浪费时间向下搜索"
   },
   {
+    "name": "whether_complete_subscription",
+    "type": "radio",
+    "options": {
+      "yes": "是",
+      "no": "否"
+    },
+    "label": "是否完成订阅模块",
+    "validation": "required"
+  },
+  {
+    "name": "whether_complete_speech",
+    "type": "radio",
+    "options": {
+      "yes": "是",
+      "no": "否"
+    },
+    "label": "是否完成发表言论模块",
+    "validation": "required"
+  },
+  {
     "label": "是否提高四人赛双人对战正确率",
     "type": "radio",
     "name": "whether_improve_accuracy",
@@ -88,5 +108,11 @@
     "type": "text",
     "label": "projectname",
     "help": ""
+  },
+  {
+    "name": "pushplus_token",
+    "type": "text",
+    "label": "pushplus_token",
+    "help": "填写pushplus的token，如何获取请见脚本说明"
   }
 ]
