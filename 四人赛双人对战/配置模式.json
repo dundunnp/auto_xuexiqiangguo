@@ -1,85 +1,100 @@
 [
-  {
-    "name": "four_player_battle",
-    "type": "radio",
-    "options": {
-      "yes": "是",
-      "no": "否"
+    {
+        "name": "four_player_battle",
+        "type": "radio",
+        "options": {
+            "yes": "是",
+            "no": "否"
+        },
+        "label": "是否完成四人赛",
+        "validation": "required"
     },
-    "label": "是否完成四人赛",
-    "validation": "required"
-  },
-  {
-    "name": "count",
-    "type": "radio",
-    "options": {
-      "1": "一次",
-      "2": "两次"
+    {
+        "name": "count",
+        "type": "radio",
+        "options": {
+            "1": "一次",
+            "2": "两次"
+        },
+        "label": "完成四人赛几次",
+        "validation": "required"
     },
-    "label": "完成四人赛几次",
-    "validation": "required"
-  },
-  {
-    "label": "是否选择完成双人对战",
-    "type": "radio",
-    "name": "two_player_battle",
-    "options": {
-      "yes": "是",
-      "no": "否"
+    {
+        "label": "是否选择完成双人对战",
+        "type": "radio",
+        "name": "two_player_battle",
+        "options": {
+            "yes": "是",
+            "no": "否"
+        },
+        "validation": "required"
     },
-    "validation": "required"
-  },
-  {
-    "label": "是否提高四人赛双人对战正确率",
-    "type": "radio",
-    "name": "whether_improve_accuracy",
-    "options": {
-      "yes": "是",
-      "no": "否"
+    {
+        "label": "是否提高四人赛双人对战正确率",
+        "type": "radio",
+        "name": "whether_improve_accuracy",
+        "options": {
+            "yes": "是",
+            "no": "否"
+        },
+        "validation": "required",
+        "help": "如果选择是，请填写如下内容（具体如何填写请看说明），否则不需填写"
     },
-    "validation": "required",
-    "help": "如果选择是，请填写如下所有内容（具体如何填写请看说明），否则不需填写"
-  },
-  {
-    "name": "endpoint",
-    "type": "text",
-    "label": "Endpoint",
-    "help": "具体如何配置请看主脚本",
-    "validation": "required"
-  },
-  {
-    "name": "projectId",
-    "type": "text",
-    "label": "project_id",
-    "help": "",
-    "validation": "required"
-  },
-  {
-    "name": "username",
-    "type": "text",
-    "label": "username",
-    "help": "",
-    "validation": "required"
-  },
-  {
-    "name": "password",
-    "type": "text",
-    "label": "password",
-    "help": "",
-    "validation": "required"
-  },
-  {
-    "name": "domainname",
-    "type": "text",
-    "label": "domainname",
-    "help": "",
-    "validation": "required"
-  },
-  {
-    "name": "projectname",
-    "type": "text",
-    "label": "projectname",
-    "help": "",
-    "validation": "required"
-  }
+    {
+      "label": "选择使用百度ocr还是华为ocr",
+      "type": "radio",
+      "name": "baidu_or_huawei",
+      "options": {
+        "baidu": "百度",
+        "huawei": "华为"
+      }
+    },
+    {
+      "name": "AK",
+      "type": "text",
+      "label": "API KEY",
+      "help": "如果选择百度，请填写，否则空着"
+    },
+    {
+      "name": "SK",
+      "type": "text",
+      "label": "Secret KEY",
+      "help": "如果选择百度，请填写，否则空着"
+    },
+    {
+      "name": "endpoint",
+      "type": "text",
+      "label": "Endpoint",
+      "help": "如果选择华为，请填写，否则空着"
+    },
+    {
+      "name": "projectId",
+      "type": "text",
+      "label": "project_id",
+      "help": "如果选择华为，请填写，否则空着"
+    },
+    {
+      "name": "username",
+      "type": "text",
+      "label": "username",
+      "help": "如果选择华为，请填写，否则空着"
+    },
+    {
+      "name": "password",
+      "type": "text",
+      "label": "password",
+      "help": "如果选择华为，请填写，否则空着"
+    },
+    {
+      "name": "domainname",
+      "type": "text",
+      "label": "domainname",
+      "help": "如果选择华为，请填写，否则空着"
+    },
+    {
+      "name": "projectname",
+      "type": "text",
+      "label": "projectname",
+      "help": "如果选择华为，请填写，否则空着"
+    }
 ]
