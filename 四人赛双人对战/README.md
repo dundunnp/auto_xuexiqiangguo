@@ -3,19 +3,49 @@
 
 如果能帮到你的话可以帮忙去[GitHub](https://github.com/dundunnp/hamibot-auto_xuexiqiangguo) star一下噢，谢谢！
 
-# v4.1更新内容
-1. 优化答题速度
+# v5.0更新内容
+1. 新增百度ocr接口（强烈建议更换使用百度ocr）
+
+# 百度or华为？
+## 收费标准
+
+百度API的收费标准如下，可以看到每个月有一千次免费使用，是完全够用的
+
+<div align=center><img src="https://usercontent.hamibot.com/screenshots/u/20220121/6YVMdT6fmQ35awrMYXvh0jGJ" style="zoom:50%;" /></div>
+
+华为API的收费标准如下，可以看到每个月也有一千次免费使用，和百度大差不差
+
+<div align=center><img src="https://usercontent.hamibot.com/avatars/ml/0/aQlXd/3.png" style="zoom:50%;" /></div>
+
+## 识别准确率和速度
+
+测试结果如下：
+<div align=center><img src="https://usercontent.hamibot.com/screenshots/u/20220121/X9HmOiRBEWISF8PhHfRr1x0C" style="zoom:33%;" /></div>
+
+可以看到华为和百度在识别准确率上大差不差，但在速度上百度比华为平均快了一半
+
+## 配置难度
+
+百度在配置信息方面只需填两个参数，比华为方便
+
+**因此强烈建议大家将华为ocr换为百度ocr**
 
 # 脚本声明
 此脚本仅运行完成四人赛、双人对战模块，通过优化题目之间的切换间隔，增加新的题库，双题库保证正确率，现脚本已经达到**秒答与80%正确率**，如想了解其他更多信息或者想完成所有模块请安装[主脚本](https://hamibot.com/marketplace/aQlXd)
 
 # 配置信息说明
-**脚本默认不为增强版**，非增强版利用本地ocr识别题目，在识别速度、识别正确率上比第三方ocr差。此脚本选用华为API实现OCR功能，注意这里通过华为API的收费标准如下，可以看到每个月有一千次免费使用，是完全够用的，相当于**免费**。
+**脚本默认不为增强版**，非增强版利用本地ocr识别题目，在识别速度、识别正确率上比第三方ocr差。此脚本选用华为API或者百度API实现OCR功能，如果你想使用增强版，选择其中一个配置即可
 
-因此，如果你想用增强版还需要配置以下信息
+# 百度API配置
+登录[百度AI官网](https://ai.baidu.com/)，点击注册（如果已经有账号可以直接登录）并完成个人认证，操作基本与华为云一致
 
-<div align=center><img src="https://usercontent.hamibot.com/avatars/ml/0/aQlXd/3.png" style="zoom:50%;" /></div>
+找到[文字识别新手操作指引](https://cloud.baidu.com/doc/OCR/s/dk3iqnq51)
 
+<div align=center><img src="https://usercontent.hamibot.com/screenshots/u/20220121/ACkmSCFjtSHScr2Nh1aBgWHb" style="zoom:50%;" /></div>
+
+在完成第二步时，你就获取了你的**API KEY以及Secret KEY**，将其填入配置信息中，就完成了 
+
+# 华为API配置
 将配置选项选择“是”
 <div align=center><img src="https://usercontent.hamibot.com/screenshots/u/20211228/mPyOGc7ID67KV9q0UWUObCNR"/></div>
 
