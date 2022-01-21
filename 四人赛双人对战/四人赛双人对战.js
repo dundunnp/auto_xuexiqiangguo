@@ -3,6 +3,7 @@ var { four_player_battle } = hamibot.env;
 var { two_player_battle } = hamibot.env;
 var { count } = hamibot.env;
 var { whether_improve_accuracy } = hamibot.env;
+var { baidu_or_huawei } = hamibot.env;
 var delay_time = 1000;
 count = Number(count);
 
@@ -14,7 +15,11 @@ var { projectname } = hamibot.env;
 var { endpoint } = hamibot.env;
 var { projectId } = hamibot.env;
 
-if (whether_improve_accuracy == 'yes' && !password) {
+// 调用百度api所需参数
+var { AK } = hamibot.env;
+var { SK } = hamibot.env;
+
+if (whether_improve_accuracy == 'yes' && (!password || !AK)) {
   toast("如果你选择了增强版，请配置信息，具体看脚本说明");
   exit();
 }
@@ -141,10 +146,14 @@ function ocr_api(img) {
   return answer;
 }
 
+/*
+********************调用华为API实现ocr********************
+*/
+
 /**
  * 获取用户token
  */
-function get_token() {
+function get_huawei_token() {
   var res = http.postJson(
     'https://iam.cn-north-4.myhuaweicloud.com/v3/auth/tokens',
     {
@@ -179,7 +188,7 @@ function get_token() {
   return res.headers['X-Subject-Token'];
 }
 
-if (whether_improve_accuracy == 'yes') var token = get_token();
+if (whether_improve_accuracy == 'yes' && baidu_or_huawei == 'huawei') var token = get_huawei_token();
 
 /**
 * 华为ocr接口，传入图片返回文字
@@ -238,6 +247,80 @@ function huawei_ocr_api(img) {
   return answer;
 }
 
+/*
+********************调用百度API实现ocr********************
+*/
+
+/**
+* 获取用户token
+*/
+function get_baidu_token() {
+  var res = http.post(
+    'https://aip.baidubce.com/oauth/2.0/token',
+    {
+      grant_type: 'client_credentials',
+      client_id: AK,
+      client_secret: SK
+    }
+  );
+  return res.body.json()['access_token'];
+}
+
+if (whether_improve_accuracy == 'yes' && baidu_or_huawei == 'baidu') var token = get_baidu_token();
+
+/**
+* 百度ocr接口，传入图片返回文字
+* @param {image} img 传入图片
+* @returns {string} answer 文字
+*/
+function baidu_ocr_api(img) {
+  var right_flag = false;
+  var answer_left = "";
+  var answer_right = "";
+  var answer = "";
+  var res = http.post(
+    'https://aip.baidubce.com/rest/2.0/ocr/v1/general',
+    {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      access_token: token,
+      image: images.toBase64(img),
+    }
+  );
+  var res = res.body.json();
+  try {
+    var words_list = res.words_result;
+  } catch (error) {
+  }
+  if (words_list) {
+    for (var i in words_list) {
+      // 如果是选项则后面不需要读取
+      if (words_list[i].words[0] == "A") break;
+      // 将题目以分割线分为两块
+      // 利用location之差判断是否之中有分割线
+      /**
+       * location:
+       * 识别到的文字块的区域位置信息，列表形式，
+       * location['left']表示定位位置的长方形左上顶点的水平坐标
+       * location['top']表示定位位置的长方形左上顶点的垂直坐标
+       */
+      if (words_list[0].words.indexOf('.') != -1 && i > 0 &&
+        Math.abs(words_list[i].location['left'] -
+          words_list[i - 1].location['left']) > 100) right_flag = true;
+      if (right_flag) answer_right += words_list[i].words;
+      else answer_left += words_list[i].words;
+      if (answer_left.length >= 20 || answer_right.length >= 20) break;
+    }
+  }
+  answer = answer_right.length > answer_left.length ? answer_right : answer_left;
+  answer = answer.replace(/\s*/g, "");
+  answer = answer.replace(/,/g, "，");
+  answer = answer.slice(answer.indexOf('.') + 1);
+  answer = answer.slice(0, 20);
+  return answer;
+}
+
 function do_it() {
   if (whether_improve_accuracy == 'no') {
     var min_pos_width = device.width;
@@ -265,7 +348,10 @@ function do_it() {
       img = images.clip(img, pos.left, pos.top, pos.width(), pos.height());
     }
 
-    if (whether_improve_accuracy == 'yes') var question = huawei_ocr_api(img);
+    if (whether_improve_accuracy == 'yes') {
+      if (baidu_or_huawei == 'huawei') var question = huawei_ocr_api(img);
+      else var question = baidu_ocr_api(img);
+    }
     else var question = ocr_api(img);
 
     log(question);
