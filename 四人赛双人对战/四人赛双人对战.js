@@ -19,7 +19,7 @@ var { projectId } = hamibot.env;
 var { AK } = hamibot.env;
 var { SK } = hamibot.env;
 
-if (whether_improve_accuracy == 'yes' && (!password || !AK)) {
+if (whether_improve_accuracy == 'yes' && !password && !AK) {
   toast("如果你选择了增强版，请配置信息，具体看脚本说明");
   exit();
 }
