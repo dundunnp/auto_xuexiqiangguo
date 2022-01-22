@@ -17,17 +17,17 @@ if (app.versionName < "1.1.0") {
 // setScreenMetrics(1080, 2340);
 
 // 获取基础数据
-var { province } = hamibot.env;
-var { channel } = hamibot.env;
 var { delay_time } = hamibot.env;
 var { whether_improve_accuracy } = hamibot.env;
 var { all_weekly_answers_completed } = hamibot.env;
 var { all_special_answer_completed } = hamibot.env;
 var { whether_complete_subscription } = hamibot.env;
 var { whether_complete_speech } = hamibot.env;
+var { baidu_or_huawei } = hamibot.env;
 var { pushplus_token } = hamibot.env;
 
 delay_time = Number(delay_time) * 1000;
+
 // 调用华为api所需参数
 var { username } = hamibot.env;
 var { password } = hamibot.env;
@@ -35,6 +35,10 @@ var { domainname } = hamibot.env;
 var { projectname } = hamibot.env;
 var { endpoint } = hamibot.env;
 var { projectId } = hamibot.env;
+
+// 调用百度api所需参数
+var { AK } = hamibot.env;
+var { SK } = hamibot.env;
 
 //请求横屏截图权限
 threads.start(function () {
@@ -45,6 +49,11 @@ threads.start(function () {
 });
 requestScreenCapture(false);
 sleep(delay_time);
+
+if (whether_improve_accuracy == 'yes' && !password && !AK) {
+    toast("如果你选择了增强版，请配置信息，具体看脚本说明");
+    exit();
+}
 
 // 模拟点击不可以点击元素
 function my_click_non_clickable(target) {
@@ -69,9 +78,13 @@ function random_time(time) {
     return time + random(100, 1000);
 }
 
-// 刷新页面
-function refresh() {
-    swipe(device.width / 2, device.height * 6 / 15, device.width / 2, device.height * 12 / 15, random_time(delay_time / 2));
+/**
+ * 刷新页面
+ * @param {boolean} orientation 方向标识 true表示从下至上 false表示从上至下
+ */
+function refresh(orientation) {
+    if (orientation) swipe(device.width / 2, device.height * 13 / 15, device.width / 2, device.height * 2 / 15, random_time(delay_time / 2));
+    else swipe(device.width / 2, device.height * 6 / 15, device.width / 2, device.height * 12 / 15, random_time(delay_time / 2));
     sleep(random_time(delay_time * 2));
 }
 
@@ -112,57 +125,73 @@ function back_track() {
         case 0:
             // 去中心模块
             id('home_bottom_tab_icon_large').waitFor();
+            sleep(random_time(delay_time));
             var home_bottom = id('home_bottom_tab_icon_large').findOne().bounds();
             click(home_bottom.centerX(), home_bottom.centerY());
             // 去province模块
-            text(province).depth(17).waitFor();
-            var province_index = text(province).depth(17).findOne().bounds();
-            click(province_index.centerX(), province_index.centerY());
+            className('adnroid.view.ViewGroup').depth(15).waitFor();
+            sleep(random_time(delay_time));
+            className('android.view.ViewGroup').depth(15).findOnce(2).child(3).click();
             break;
         case 1:
             break;
         case 2:
             my_click_clickable('我的');
+            sleep(random_time(delay_time));
             my_click_clickable('学习积分');
+            sleep(random_time(delay_time));
             text('登录').waitFor();
             break;
     }
 }
 
-/*
-*********************准备部分********************
-*/
-var back_track_flag = 2;
-
 /**
+ * 获取各模块完成情况的列表、以及全局变量
  * 先获取有哪些模块还没有完成，并生成一个列表，其中第一个是我要选读文章模块，以此类推
  * 再获取阅读模块和视听模块已完成的时间和次数
  */
 
-back_track();
+// 已阅读文章次数
+var completed_read_count;
+// 已观看视频次数
+var completed_watch_count;
+// 每周答题已得分
+var weekly_answer_scored;
+// 专项答题已得分
+var special_answer_scored;
+// 四人赛已得分
+var four_players_scored;
+// 双人对战已得分
+var two_players_scored;
 
-var finish_list = [];
-for (var i = 4; i < 17; i++) {
-    var model = className('android.view.View').depth(22).findOnce(i);
-    if (i == 4) {
-        // 已阅读文章次数
-        var completed_count = parseInt(model.child(2).text().match(/\d+/)) / 2;
-    } else if (i == 5) {
-        var other_model = className('android.view.View').depth(22).findOnce(i + 1);
-        // 已观看视频时间
-        var completed_time = Math.min(parseInt(model.child(2).text().match(/\d+/)),
-            parseInt(other_model.child(2).text().match(/\d+/))) * 60000;
-    } else if (i == 8) {
-        var weekly_answer_scored = parseInt(model.child(2).text().match(/\d+/));
-    } else if (i == 11) {
-        // 四人赛已得分
-        var four_players_scored = parseInt(model.child(2).text().match(/\d+/));
-    } else if (i == 12) {
-        // 双人对战已得分
-        var two_players_scored = parseInt(model.child(2).text().match(/\d+/));
+function get_finish_list() {
+    var finish_list = [];
+    for (var i = 4; i < 17; i++) {
+        var model = className('android.view.View').depth(22).findOnce(i);
+        if (i == 4) {
+            completed_read_count = parseInt(model.child(2).text().match(/\d+/)) / 2;
+        } else if (i == 5) {
+            completed_watch_count = parseInt(model.child(2).text().match(/\d+/));
+        } else if (i == 8) {
+            weekly_answer_scored = parseInt(model.child(2).text().match(/\d+/));
+        } else if (i == 9) {
+            special_answer_scored = parseInt(model.child(2).text().match(/\d+/));
+        } else if (i == 11) {
+            four_players_scored = parseInt(model.child(2).text().match(/\d+/));
+        } else if (i == 12) {
+            two_players_scored = parseInt(model.child(2).text().match(/\d+/));
+        }
+        finish_list.push(model.child(3).text() == '已完成');
     }
-    finish_list.push(model.child(3).text() == '已完成');
+    return finish_list;
 }
+/*
+*********************准备部分********************
+*/
+
+var back_track_flag = 2;
+back_track();
+var finish_list = get_finish_list();
 
 // 返回首页
 className('android.view.View').clickable(true).depth(21).findOne().click();
@@ -172,16 +201,17 @@ id('my_back').findOne().click();
 
 // 去province模块
 sleep(random_time(delay_time));
-text(province).depth(17).waitFor();
-sleep(random_time(delay_time / 2));
-var province_index = text(province).depth(17).findOne().bounds();
-click(province_index.centerX(), province_index.centerY());
+className('android.view.ViewGroup').depth(15).waitFor();
+sleep(random_time(delay_time));
+className('android.view.ViewGroup').depth(15).findOnce(2).child(3).click();
 
 /*
 **********本地频道*********
 */
 if (!finish_list[12]) {
-    my_click_clickable(channel);
+    className('android.widget.LinearLayout').clickable(true).depth(26).waitFor();
+    sleep(random_time(delay_time));
+    className('android.widget.LinearLayout').clickable(true).depth(26).findOne().click();
     sleep(random_time(delay_time));
     back();
 }
@@ -189,24 +219,45 @@ if (!finish_list[12]) {
 /*
 *********************阅读部分********************
 */
+
+// 把音乐暂停
+media.pauseMusic();
 var back_track_flag = 0;
+
 /*
-**********我要选读文章与分享*********
+**********我要选读文章与分享与广播学习*********
 */
+
+// 打开电台广播
+if (!finish_list[2] && !finish_list[0]) {
+    sleep(random_time(delay_time));
+    my_click_clickable('电台');
+    sleep(random_time(delay_time));
+    my_click_clickable('听广播');
+    sleep(random_time(delay_time));
+    id("lay_state_icon").waitFor();
+    var lay_state_icon_pos = id("lay_state_icon").findOne().bounds();
+    click(lay_state_icon_pos.centerX(), lay_state_icon_pos.centerY());
+
+    sleep(random_time(delay_time));
+    var home_bottom = id('home_bottom_tab_icon_large').findOne().bounds();
+    click(home_bottom.centerX(), home_bottom.centerY());
+}
 
 // 阅读文章次数
 var count = 0;
 
-while ((count < 6 - completed_count) && !finish_list[0]) {
-    refresh();
+while ((count < 6 - completed_read_count) && !finish_list[0]) {
 
     if (!id('comm_head_title').exists() || !className('android.widget.TextView').depth(27).text('切换地区').exists()) back_track();
     sleep(random_time(delay_time));
 
+    refresh(false);
+
     var article = id('general_card_image_id').find();
 
     if (article.length == 0) {
-        refresh();
+        refresh(false);
         continue;
     }
 
@@ -254,8 +305,22 @@ while ((count < 6 - completed_count) && !finish_list[0]) {
 /*
 *********************视听部分********************
 */
-// 把音乐暂停
-media.pauseMusic();
+
+// 关闭电台广播
+if (!finish_list[2] && !finish_list[0]) {
+    sleep(random_time(delay_time));
+    my_click_clickable('电台');
+    sleep(random_time(delay_time));
+    my_click_clickable('听广播');
+    sleep(random_time(delay_time));
+    id('v_playing').waitFor();
+    id('v_playing').findOne().click();
+    // 获取新的完成情况列表
+    var back_track_flag = 2;
+    back_track();
+    var finish_list = get_finish_list();
+}
+
 back_track_flag = 1;
 
 /*
@@ -280,8 +345,24 @@ if (!finish_list[1] || !finish_list[2]) {
     sleep(random_time(delay_time));
     if (text('继续播放').exists()) click('继续播放');
     if (text('刷新重试').exists()) click('刷新重试');
-    // 阅读时间
-    sleep(random_time(380000 - completed_time));
+
+    while (completed_watch_count < 6) {
+        sleep(random_time(delay_time / 2));
+        className('android.widget.LinearLayout').clickable(true).depth(16).waitFor();
+        // 当前视频
+        var current_video = className('android.widget.LinearLayout').clickable(true).depth(16).findOne().child(1).text();
+        // 当前视频的时间长度
+        var current_video_time = className('android.widget.TextView').clickable(false).depth(16).findOne().text().match(/\/.*/).toString().slice(1);
+        // 如果视频超过一分钟就跳过
+        if (current_video_time >= "01:00") {
+            refresh(true);
+            sleep(random_time(delay_time));
+            continue;
+        }
+        sleep(parseInt(current_video_time.slice(4)) * 1000);
+        completed_watch_count++;
+    }
+
     back();
 }
 
@@ -483,7 +564,7 @@ function restart() {
 /**
  * 获取用户token
  */
-function get_token() {
+function get_huawei_token() {
     var res = http.postJson(
         'https://iam.cn-north-4.myhuaweicloud.com/v3/auth/tokens',
         {
@@ -518,7 +599,7 @@ function get_token() {
     return res.headers['X-Subject-Token'];
 }
 
-if (whether_improve_accuracy == 'yes') var token = get_token();
+if (whether_improve_accuracy == 'yes' && baidu_or_huawei == 'huawei') var token = get_huawei_token();
 
 /**
  * 华为ocr接口，传入图片返回文字
@@ -576,6 +657,81 @@ function huawei_ocr_api(img) {
     answer = answer.slice(0, 20);
     return answer;
 }
+
+/*
+********************调用百度API实现ocr********************
+*/
+
+/**
+ * 获取用户token
+ */
+function get_baidu_token() {
+    var res = http.post(
+        'https://aip.baidubce.com/oauth/2.0/token',
+        {
+            grant_type: 'client_credentials',
+            client_id: AK,
+            client_secret: SK
+        }
+    );
+    return res.body.json()['access_token'];
+}
+
+if (whether_improve_accuracy == 'yes' && baidu_or_huawei == 'baidu') var token = get_baidu_token();
+
+/**
+ * 百度ocr接口，传入图片返回文字
+ * @param {image} img 传入图片
+ * @returns {string} answer 文字
+ */
+function baidu_ocr_api(img) {
+    var right_flag = false;
+    var answer_left = "";
+    var answer_right = "";
+    var answer = "";
+    var res = http.post(
+        'https://aip.baidubce.com/rest/2.0/ocr/v1/general',
+        {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            access_token: token,
+            image: images.toBase64(img),
+        }
+    );
+    var res = res.body.json();
+    try {
+        var words_list = res.words_result;
+    } catch (error) {
+    }
+    if (words_list) {
+        for (var i in words_list) {
+            // 如果是选项则后面不需要读取
+            if (words_list[i].words[0] == "A") break;
+            // 将题目以分割线分为两块
+            // 利用location之差判断是否之中有分割线
+            /**
+             * location:
+             * 识别到的文字块的区域位置信息，列表形式，
+             * location['left']表示定位位置的长方形左上顶点的水平坐标
+             * location['top']表示定位位置的长方形左上顶点的垂直坐标
+             */
+            if (words_list[0].words.indexOf('.') != -1 && i > 0 &&
+                Math.abs(words_list[i].location['left'] -
+                    words_list[i - 1].location['left']) > 100) right_flag = true;
+            if (right_flag) answer_right += words_list[i].words;
+            else answer_left += words_list[i].words;
+            if (answer_left.length >= 20 || answer_right.length >= 20) break;
+        }
+    }
+    answer = answer_right.length > answer_left.length ? answer_right : answer_left;
+    answer = answer.replace(/\s*/g, "");
+    answer = answer.replace(/,/g, "，");
+    answer = answer.slice(answer.indexOf('.') + 1);
+    answer = answer.slice(0, 20);
+    return answer;
+}
+
 
 /**
  * ocr处理
@@ -670,8 +826,10 @@ function do_periodic_answer(number) {
                 // 打开查看提示的时间
                 sleep(random_time(delay_time));
                 var img = images.inRange(captureScreen(), '#800000', '#FF0000');
-                if (if_restart_flag && whether_improve_accuracy == 'yes') answer = huawei_ocr_api(img);
-                else {
+                if (if_restart_flag && whether_improve_accuracy == 'yes') {
+                    if (baidu_or_huawei == 'huawei') answer = huawei_ocr_api(img);
+                    else answer = baidu_ocr_api(img);
+                } else {
                     try {
                         answer = ocr.ocrImage(img).text;
                     } catch (error) {
@@ -768,7 +926,7 @@ if (!finish_list[4] && weekly_answer_scored < 4) {
 /*
 **********专项答题*********
 */
-if (!finish_list[5]) {
+if (!finish_list[5] && special_answer_scored < 9) {
     sleep(random_time(delay_time));
     if (!className('android.view.View').depth(21).text('学习积分').exists()) back_track();
     entry_model(9);
@@ -920,8 +1078,10 @@ function do_contest() {
             img = images.clip(img, pos.left, pos.top, pos.width(), pos.height());
         }
 
-        if (whether_improve_accuracy == 'yes') var question = huawei_ocr_api(img);
-        else {
+        if (whether_improve_accuracy == 'yes') {
+            if (baidu_or_huawei == 'huawei') var question = huawei_ocr_api(img);
+            else var question = baidu_ocr_api(img);
+        } else {
             try {
                 var question = ocr.ocrImage(img).text;
             } catch (error) {
