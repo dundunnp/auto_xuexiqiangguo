@@ -1,19 +1,5 @@
 [
   {
-    "name": "province",
-    "type": "text",
-    "label": "省份",
-    "validation": "required",
-    "help": "用于打开本地频道可以积一分（一分也是分!注意不要多加一个省字），比如:江西"
-  },
-  {
-    "name": "channel",
-    "type": "text",
-    "label": "本地频道名（随意选一个就行）",
-    "validation": "required",
-    "help": "用于打开本地频道可以积一分（一分也是分!）比如：江西卫视"
-  },
-  {
     "name": "delay_time",
     "type": "number",
     "label": "跳转页面加载的时间(以秒s为单位)",
@@ -71,48 +57,69 @@
       "no": "否"
     },
     "validation": "required",
-    "help": "如果选择是，请填写如下所有内容（具体如何填写请看说明），否则不需填写"
+    "help": "如果选择是，请按照提示填写如以下内容（具体如何填写请看说明），否则不需填写"
+  },
+  {
+    "label": "选择使用百度ocr还是华为ocr",
+    "type": "radio",
+    "name": "baidu_or_huawei",
+    "options": {
+      "baidu": "百度",
+      "huawei": "华为"
+    }
+  },
+  {
+    "name": "AK",
+    "type": "text",
+    "label": "API KEY",
+    "help": "如果选择百度，请填写，否则空着"
+  },
+  {
+    "name": "SK",
+    "type": "text",
+    "label": "Secret KEY",
+    "help": "如果选择百度，请填写，否则空着"
   },
   {
     "name": "endpoint",
     "type": "text",
     "label": "Endpoint",
-    "help": ""
+    "help": "如果选择华为，请填写，否则空着"
   },
   {
     "name": "projectId",
     "type": "text",
     "label": "project_id",
-    "help": ""
+    "help": "如果选择华为，请填写，否则空着"
   },
   {
     "name": "username",
     "type": "text",
     "label": "username",
-    "help": ""
+    "help": "如果选择华为，请填写，否则空着"
   },
   {
     "name": "password",
     "type": "text",
     "label": "password",
-    "help": ""
+    "help": "如果选择华为，请填写，否则空着"
   },
   {
     "name": "domainname",
     "type": "text",
     "label": "domainname",
-    "help": ""
+    "help": "如果选择华为，请填写，否则空着"
   },
   {
     "name": "projectname",
     "type": "text",
     "label": "projectname",
-    "help": ""
+    "help": "如果选择华为，请填写，否则空着"
   },
   {
     "name": "pushplus_token",
     "type": "text",
     "label": "pushplus_token",
-    "help": "填写pushplus的token，如何获取请见脚本说明"
+    "help": "选填，是否要使用微信消息推送功能，如是请填写pushplus的token，如何获取请见说明"
   }
 ]
