@@ -322,32 +322,19 @@ function baidu_ocr_api(img) {
 }
 
 function do_it() {
-  if (whether_improve_accuracy == 'no') {
-    var min_pos_width = device.width;
-    var min_pos_height = device.height;
-  }
   while (!text('开始').exists());
   while (!text('继续挑战').exists()) {
     className("android.view.View").depth(28).waitFor();
-    var pos = className("android.view.View").depth(28).findOne().bounds();
-    if (className("android.view.View").text("        ").exists())
-      pos = className("android.view.View").text("        ").findOne().bounds();
     do {
-      var point = findColor(captureScreen(), '#1B1F25', {
-        region: [pos.left, pos.top, pos.width(), pos.height()],
-        threshold: 10,
-      });
+        var raw_img = captureScreen()
+        var point = findColor(raw_img, '#1B1F25', {
+            region: [102, 654, 876, 159], // 题目的位置：x、y、width都是定值,只height有在变，但是我们不关心，因为我只需要前两行文字就够了。
+            threshold: 10,
+        });
     } while (!point);
-
-    if (whether_improve_accuracy == 'no') {
-      min_pos_width = Math.min(pos.width(), min_pos_width);
-      min_pos_height = Math.min(pos.height(), min_pos_height);
-      var img = images.clip(captureScreen(), pos.left, pos.top, min_pos_width, min_pos_height);
-    } else {
-      var img = images.inRange(captureScreen(), '#000000', '#444444');
-      img = images.clip(img, pos.left, pos.top, pos.width(), pos.height());
-    }
-
+    var clip_img = images.clip(raw_img, 102, 654, 876, 159);
+    var img = images.inRange(clip_img, '#000000', '#444444'); 
+    
     if (whether_improve_accuracy == 'yes') {
       if (baidu_or_huawei == 'huawei') var question = huawei_ocr_api(img);
       else var question = baidu_ocr_api(img);
