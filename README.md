@@ -2,52 +2,52 @@
 由于某些原因，脚本已经在市场下架，但...开源万岁！，我们还是可以通过源码在自己的脚本控制台上运行，操作如下：
 点击脚本下的脚本控制台
 <div align=center>
-<img src="https://s3.bmp.ovh/imgs/2022/01/68c3e356367ccb8b.png" width="300px" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
+<img src="https://s3.bmp.ovh/imgs/2022/01/68c3e356367ccb8b.png" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
 </div>
 点击创建脚本
 <div align=center>
-<img src="https://s3.bmp.ovh/imgs/2022/01/405e9a45a9212735.png" width="300px" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
+<img src="https://s3.bmp.ovh/imgs/2022/01/405e9a45a9212735.png" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
 </div>
 随意取一个名字，然后点击创建
 <div align=center>
-<img src="https://s3.bmp.ovh/imgs/2022/01/c4b51f9c4a38d0f4.png" width="300px" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
+<img src="https://s3.bmp.ovh/imgs/2022/01/c4b51f9c4a38d0f4.png" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
 </div>
 点击源码
 <div align=center>
-<img src="https://s3.bmp.ovh/imgs/2022/01/362ac49b7ec05b84.png" width="300px" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
+<img src="https://s3.bmp.ovh/imgs/2022/01/362ac49b7ec05b84.png" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
 </div>
 点击学习强国.js文件
 <div align=center>
-<img src="https://s3.bmp.ovh/imgs/2022/01/f3fa59880c88552d.png" width="300px" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
+<img src="https://s3.bmp.ovh/imgs/2022/01/f3fa59880c88552d.png" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
 </div>
 点击复制图标
 <div align=center>
-<img src="https://s3.bmp.ovh/imgs/2022/01/6c9c9f70f4508006.png" width="300px" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
+<img src="https://s3.bmp.ovh/imgs/2022/01/6c9c9f70f4508006.png" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
 </div>
 将刚刚复制的源码粘贴到这里，注意要把那一行代码覆盖，同理将配置模式.json也复制粘贴到配置模式中
 <div align=center>
-<img src="https://s3.bmp.ovh/imgs/2022/01/9274fbc0cd701637.png" width="300px" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
+<img src="https://s3.bmp.ovh/imgs/2022/01/9274fbc0cd701637.png" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
 </div>
 粘贴完成后点击保存，并返回
 <div align=center>
-<img src="https://s3.bmp.ovh/imgs/2022/01/48004642fbdf0fbc.png" width="300px" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
+<img src="https://s3.bmp.ovh/imgs/2022/01/48004642fbdf0fbc.png" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
 </div>
 点击配置，将信息填入后保存
 <div align=center>
-<img src="https://s3.bmp.ovh/imgs/2022/01/2ce43a5d3b4e052a.png" width="300px" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
+<img src="https://s3.bmp.ovh/imgs/2022/01/2ce43a5d3b4e052a.png" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
 </div>
 就可以点运行了
 <div align=center>
-<img src="https://s3.bmp.ovh/imgs/2022/01/54884dc3a8fa9d01.png" width="300px" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
+<img src="https://s3.bmp.ovh/imgs/2022/01/54884dc3a8fa9d01.png" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
 </div>
 如果想要使用其他版本的如v10.11，可以点击这里其他流程一样（不建议）
 <div align=center>
-<img src="https://s3.bmp.ovh/imgs/2022/01/12258501b035ee0e.png" width="300px" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
+<img src="https://s3.bmp.ovh/imgs/2022/01/12258501b035ee0e.png" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
 </div>
 
 **如果喜欢的话可以star一下噢，谢谢！**
 <div align=center>
-<img src="https://s3.bmp.ovh/imgs/2022/01/2fc8345bdc719323.png" width="300px" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
+<img src="https://s3.bmp.ovh/imgs/2022/01/2fc8345bdc719323.png" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
 </div>
 
 # v11.0 更新内容:
@@ -262,3 +262,4 @@ A: 请在[GitHub](https://github.com/dundunnp/hamibot-auto_xuexiqiangguo/issues)
 
 # 待编写
 1. 填空题如果文本框有分开的情况还未解决
+2. 其他第三方ocr接口的编写
