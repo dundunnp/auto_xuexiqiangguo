@@ -59,7 +59,9 @@ if (whether_improve_accuracy == 'yes' && !password && !AK) {
 function my_click_non_clickable(target) {
     text(target).waitFor();
     var tmp = text(target).findOne().bounds();
-    click(tmp.centerX(), tmp.centerY());
+    var randomX = random(tmp.left, tmp.right);
+    var randomY = random(tmp.top, tmp.bottom);
+    click(randomX, randomY);
 }
 
 // 模拟点击可点击元素
