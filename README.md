@@ -50,7 +50,7 @@
 <img src="https://s3.bmp.ovh/imgs/2022/01/2fc8345bdc719323.png" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
 </div>
 
-# v11.0 更新内容:
+# v11.1 更新内容:
 1. 在阅读文章同时收听广播
 2. 优化看视频次数，减少看视频的时间
 3. 去除省份、频道配置信息
