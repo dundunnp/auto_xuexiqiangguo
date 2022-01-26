@@ -98,8 +98,8 @@
 **所有模块均可完成！！**因为本人是在校学生无法把全部精力放在这，因此如果有想合作的小伙伴请在Github上一起完成更新项目
 
 # 额外衍生脚本
-1. [单独四人赛双人对战脚本](https://hamibot.com/marketplace/sp1Lc)，相关配置说明见four_two_game.md
-2. [四人赛双人对战答错脚本](https://hamibot.com/marketplace/XuKDy)，相关配置说明见four_two_game_false.md
+1. [单独四人赛双人对战脚本](https://github.com/dundunnp/hamibot-auto_xuexiqiangguo/tree/main/%E5%9B%9B%E4%BA%BA%E8%B5%9B%E5%8F%8C%E4%BA%BA%E5%AF%B9%E6%88%98)，相关配置说明见README.md
+2. [四人赛双人对战答错脚本](https://github.com/dundunnp/hamibot-auto_xuexiqiangguo/tree/main/%E5%9B%9B%E4%BA%BA%E8%B5%9B%E5%8F%8C%E4%BA%BA%E5%AF%B9%E6%88%98%E7%AD%94%E9%94%99%E7%89%88)，相关配置说明见README.md
 
 # 使用说明
 
@@ -114,18 +114,7 @@
 3. 请不要使用花里胡哨的字体和输入法键盘，尽量使用系统默认，防止干扰ocr
 
 ## 编辑配置
-在控制台脚本中，在刚刚安装好的脚本中，点击编辑
-<div align=center>
-<img src="http://r32wozj47.hn-bkt.clouddn.com/img/msedge_WRzp0mov3N.png" width="600px" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
-</div>
-<div align=center>
-<img src="http://r32wozj47.hn-bkt.clouddn.com/img/b095b81f07d19bd4b347052e5b9ace0.png" width="350px" alt="b095b81f07d19bd4b347052e5b9ace0" style="zoom:50%;" />
-</div>
-填写你对应的省份，用于打开本地频道可以积一分（一分也是分!注意不要多加一个省字），比如我这里是江西，然后随意选择一个本地频道（比如我选择的是江西卫视）
-<div align=center>
-<img src="http://r32wozj47.hn-bkt.clouddn.com/img/HwMirror_zmj2eavi85.png" width="300px" alt="HwMirror_zmj2eavi85" style="zoom:50%;" />
-</div>
-而后填写跳转页面加载的时间(以秒s为单位)，默认为1s(支持小数点形式)，根据手机性能与网络情况自行而定，时间越长出bug的可能越小，但同时耗费的时间越长。
+填写跳转页面加载的时间(以秒s为单位)，默认为1s(支持小数点形式)，根据手机性能与网络情况自行而定，时间越长出bug的可能越小，但同时耗费的时间越长。
 我的手机是华为mate20 pro用的是1s，大家可以参考一下，不建议小于1s，太快不符合正常人类点击频率，容易被系统侦测出（当然我也设置了随机时间性，你的任何等待时间都是你设定的基础值加一个随机时间）
 
 目前脚本支持两种模式：
@@ -139,16 +128,16 @@
 
 百度API的收费标准如下，可以看到每个月有一千次免费使用，是完全够用的
 
-<div align=center><img src="https://usercontent.hamibot.com/screenshots/u/20220121/6YVMdT6fmQ35awrMYXvh0jGJ" style="zoom:50%;" /></div>
+<div align=center><img src="https://i.bmp.ovh/imgs/2022/01/ad3ffbce2ba13645.png" style="zoom:50%;" /></div>
 
 华为API的收费标准如下，可以看到每个月也有一千次免费使用，和百度大差不差
 
-<div align=center><img src="https://usercontent.hamibot.com/avatars/ml/0/aQlXd/3.png" style="zoom:50%;" /></div>
+<div align=center><img src="https://i.bmp.ovh/imgs/2022/01/02d4f51e4edd94ab.png" style="zoom:50%;" /></div>
 
 **识别准确率和速度:**
 
 测试结果如下：
-<div align=center><img src="https://usercontent.hamibot.com/screenshots/u/20220121/X9HmOiRBEWISF8PhHfRr1x0C" style="zoom:33%;" /></div>
+<div align=center><img src="https://i.bmp.ovh/imgs/2022/01/6a4e05d024bc17f5.png" style="zoom:66%;" /></div>
 
 可以看到华为和百度在识别准确率上大差不差，但在速度上百度比华为平均快了一半
 
@@ -163,13 +152,13 @@
 
 找到[文字识别新手操作指引](https://cloud.baidu.com/doc/OCR/s/dk3iqnq51)
 
-<div align=center><img src="https://usercontent.hamibot.com/screenshots/u/20220121/ACkmSCFjtSHScr2Nh1aBgWHb" style="zoom:50%;" /></div>
+<div align=center><img src="https://i.bmp.ovh/imgs/2022/01/40b19a9bc22969ff.png" style="zoom:50%;" /></div>
 
 在完成第二步时，你就获取了你的**API KEY以及Secret KEY**，将其填入配置信息中，就完成了 
 
 ### 华为API配置
 将配置选项选择“是”
-<div align=center><img src="https://usercontent.hamibot.com/screenshots/u/20211228/mPyOGc7ID67KV9q0UWUObCNR"/></div>
+<div align=center><img src="https://i.bmp.ovh/imgs/2022/01/143fefa456e002b1.png"/></div>
 
 登录[华为云官网](https://www.huaweicloud.com/)，点击注册（如果已经有账号可以直接登录）
 
