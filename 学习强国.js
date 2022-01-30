@@ -351,12 +351,10 @@ if (!finish_list[1] || !finish_list[2]) {
     while (completed_watch_count < 6) {
         sleep(random_time(delay_time / 2));
         className('android.widget.LinearLayout').clickable(true).depth(16).waitFor();
-        // 当前视频
-        var current_video = className('android.widget.LinearLayout').clickable(true).depth(16).findOne().child(1).text();
         // 当前视频的时间长度
         var current_video_time = className('android.widget.TextView').clickable(false).depth(16).findOne().text().match(/\/.*/).toString().slice(1);
         // 如果视频超过一分钟就跳过
-        if (current_video_time >= "01:00") {
+        if (Number(current_video_time.slice(0, 3)) >= 1) {
             refresh(true);
             sleep(random_time(delay_time));
             continue;
