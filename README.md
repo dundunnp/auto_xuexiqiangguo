@@ -55,8 +55,8 @@
 <img src="https://s3.bmp.ovh/imgs/2022/01/2fc8345bdc719323.png" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
 </div>
 
-# v11.2 更新内容:
-1. 修复视频超过一分钟无法跳过的bug
+# v11.3 更新内容:
+1. 修复选择完成之前每周、专项答题不继续搜索的bug
 
 # 希望得到你的协作
 本地ocr识别的错误率太高例如它将此题目识别为
