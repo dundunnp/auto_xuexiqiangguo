@@ -905,7 +905,7 @@ if (!finish_list[4] && weekly_answer_scored < 4) {
     entry_model(8);
     // 等待列表加载
     textContains('月').waitFor();
-    sleep(random_time(delay_time));
+    sleep(random_time(delay_time * 2));
     // 打开第一个出现未作答的题目
     // 如果之前的答题全部完成则不向下搜索
     if (all_weekly_answers_completed == 'no') {
@@ -913,6 +913,7 @@ if (!finish_list[4] && weekly_answer_scored < 4) {
             swipe(500, 1700, 500, 500, random_time(delay_time / 2));
         }
     }
+    sleep(random_time(delay_time * 2));
     if (text('未作答').exists()) {
         text('未作答').findOne().parent().click();
         do_periodic_answer(5);
@@ -960,7 +961,7 @@ if (!finish_list[5] && special_answer_scored < 9) {
         if (!special_flag)
             swipe(500, 1700, 500, 500, random_time(delay_time / 2));
     }
-
+    sleep(random_time(delay_time * 2));
     if (text('开始答题').exists() || text('您已经看到了我的底线').exists()) {
         text('开始答题').findOne().click();
         is_answer_special_flag = true;
