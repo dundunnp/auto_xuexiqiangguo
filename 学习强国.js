@@ -318,6 +318,7 @@ if (!finish_list[2] && !finish_list[0]) {
     id('v_playing').waitFor();
     id('v_playing').findOne().click();
     // 获取新的完成情况列表
+    sleep(random_time(delay_time));
     var back_track_flag = 2;
     back_track();
     var finish_list = get_finish_list();
