@@ -21,6 +21,7 @@ var { delay_time } = hamibot.env;
 var { whether_improve_accuracy } = hamibot.env;
 var { all_weekly_answers_completed } = hamibot.env;
 var { all_special_answer_completed } = hamibot.env;
+var { all_subscribe_completed } = hamibot.env;
 var { whether_complete_subscription } = hamibot.env;
 var { whether_complete_speech } = hamibot.env;
 var { baidu_or_huawei } = hamibot.env;
@@ -1169,7 +1170,11 @@ if (!finish_list[9] && whether_complete_subscription == "yes") {
     // 订阅数
     var num_subscribe = 0;
 
+    // 强国号
     for (var i = 0; i < 9; i++) {
+        if (all_subscribe_completed == 'yes' && i != 8) {
+            continue;
+        }
         className('android.view.View').clickable(true).depth(15).findOnce(i).click();
         sleep(random_time(delay_time));
         // 刷新次数
@@ -1200,6 +1205,44 @@ if (!finish_list[9] && whether_complete_subscription == "yes") {
         if (num_subscribe >= 2) break;
         sleep(random_time(delay_time * 2));
     }
+
+    if (num_subscribe < 2) {
+        // 地方平台 
+        desc("地方平台\nTab 2 of 2").findOne().click();
+        for (var i = 2; i < 5; i++) {
+            if (all_subscribe_completed == 'yes' && i != 4) {
+                continue;
+            }
+            className('android.view.View').clickable(true).depth(15).findOnce(i).click();
+            sleep(random_time(delay_time));
+            // 刷新次数
+            var num_refresh = 0;
+            // 定义最大刷新次数
+            if (i == 2) var max_num_refresh = 20;
+            else var max_num_refresh = 2;
+            while (num_subscribe < 2 && num_refresh < max_num_refresh) {
+                do {
+                    var subscribe_pos = findColor(captureScreen(), '#E42417', {
+                        region: [subscribe_button_pos.left, subscribe_button_pos.top,
+                        subscribe_button_pos.width(), device.height - subscribe_button_pos.top],
+                        threshold: 10,
+                    });
+                    if (subscribe_pos) {
+                        sleep(random_time(delay_time * 2));
+                        click(subscribe_pos.x + subscribe_button_pos.width() / 2, subscribe_pos.y + subscribe_button_pos.height() / 2);
+                        num_subscribe++;
+                        sleep(random_time(delay_time));
+                    }
+                } while (subscribe_pos && num_subscribe < 2);
+                swipe(device.width / 2, device.height - subscribe_button_pos.top, device.width / 2, subscribe_button_pos.top, random_time(0));
+                num_refresh++;
+                sleep(random_time(delay_time / 2));
+            }
+            if (num_subscribe >= 2) break;
+            sleep(random_time(delay_time * 2));
+        }
+    }
+
     // 退回
     className("android.widget.Button").clickable(true).depth(11).findOne().click();
 }
