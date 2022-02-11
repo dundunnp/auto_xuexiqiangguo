@@ -39,6 +39,16 @@
     "validation": "required"
   },
   {
+    "name": "all_subscribe_completed",
+    "type": "radio",
+    "options": {
+      "yes": "是",
+      "no": "否"
+    },
+    "label": "之前的订阅号是否全部订阅",
+    "help": "也即每次只寻找2022年新上线的订阅号，如果选择不完成订阅模块可以忽略"
+  },
+  {
     "name": "whether_complete_speech",
     "type": "radio",
     "options": {
