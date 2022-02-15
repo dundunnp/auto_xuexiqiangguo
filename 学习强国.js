@@ -21,11 +21,13 @@ var { delay_time } = hamibot.env;
 var { whether_improve_accuracy } = hamibot.env;
 var { all_weekly_answers_completed } = hamibot.env;
 var { all_special_answer_completed } = hamibot.env;
-var { all_subscribe_completed } = hamibot.env;
 var { whether_complete_subscription } = hamibot.env;
 var { whether_complete_speech } = hamibot.env;
 var { baidu_or_huawei } = hamibot.env;
 var { pushplus_token } = hamibot.env;
+
+// 本地存储数据
+var storage = storages.create('data');
 
 delay_time = Number(delay_time) * 1000;
 
@@ -43,10 +45,13 @@ var { SK } = hamibot.env;
 
 //请求横屏截图权限
 threads.start(function () {
-    var beginBtn;
-    if (beginBtn = classNameContains("Button").textContains("开始").findOne(delay_time));
-    else (beginBtn = classNameContains("Button").textContains("允许").findOne(delay_time));
-    beginBtn.click();
+    try {
+        var beginBtn;
+        if (beginBtn = classNameContains("Button").textContains("开始").findOne(delay_time));
+        else (beginBtn = classNameContains("Button").textContains("允许").findOne(delay_time));
+        beginBtn.click();
+    } catch (error) {
+    }
 });
 requestScreenCapture(false);
 sleep(delay_time);
@@ -354,14 +359,19 @@ if (!finish_list[1] || !finish_list[2]) {
         sleep(random_time(delay_time / 2));
         className('android.widget.LinearLayout').clickable(true).depth(16).waitFor();
         // 当前视频的时间长度
-        var current_video_time = className('android.widget.TextView').clickable(false).depth(16).findOne().text().match(/\/.*/).toString().slice(1);
-        // 如果视频超过一分钟就跳过
-        if (Number(current_video_time.slice(0, 3)) >= 1) {
-            refresh(true);
-            sleep(random_time(delay_time));
-            continue;
+        try {
+            var current_video_time = className('android.widget.TextView').clickable(false).depth(16).findOne().text().match(/\/.*/).toString().slice(1);
+            // 如果视频超过一分钟就跳过
+            if (Number(current_video_time.slice(0, 3)) >= 1) {
+                refresh(true);
+                sleep(random_time(delay_time));
+                continue;
+            }
+            sleep(Number(current_video_time.slice(4)) * 1000);
+        } catch (error) {
+            // 如果被"即将播放"将读取不到视频的时间长度，此时就sleep 3秒
+            sleep(3000);
         }
-        sleep(parseInt(current_video_time.slice(4)) * 1000);
         completed_watch_count++;
     }
 
@@ -1163,63 +1173,35 @@ if (!finish_list[9] && whether_complete_subscription == "yes") {
     if (!className('android.view.View').depth(21).text('学习积分').exists()) back_track();
     entry_model(13);
     // 等待加载
-    className("android.view.View").desc("强国号\nTab 1 of 2").waitFor();
-    sleep(random_time(delay_time));
-    // 获取第一个订阅按钮位置
-    var subscribe_button_pos = className('android.widget.ImageView').clickable(true).depth(16).findOnce(1).bounds();
-    // 订阅数
-    var num_subscribe = 0;
+    sleep(random_time(delay_time * 3));
 
-    // 强国号
-    for (var i = 0; i < 9; i++) {
-        if (all_subscribe_completed == 'yes' && i != 8) {
-            continue;
-        }
-        className('android.view.View').clickable(true).depth(15).findOnce(i).click();
-        sleep(random_time(delay_time));
-        // 刷新次数
-        var num_refresh = 0;
-        // 定义最大刷新次数
-        if (i == 3 || i == 4 || i == 6) var max_num_refresh = 40;
-        else if (i == 0) var max_num_refresh = 4;
-        else if (i == 1) var max_num_refresh = 6;
-        else var max_num_refresh = 8;
-        while (num_subscribe < 2 && num_refresh < max_num_refresh) {
-            do {
-                var subscribe_pos = findColor(captureScreen(), '#E42417', {
-                    region: [subscribe_button_pos.left, subscribe_button_pos.top,
-                    subscribe_button_pos.width(), device.height - subscribe_button_pos.top],
-                    threshold: 10,
-                });
-                if (subscribe_pos) {
-                    sleep(random_time(delay_time * 2));
-                    click(subscribe_pos.x + subscribe_button_pos.width() / 2, subscribe_pos.y + subscribe_button_pos.height() / 2);
-                    num_subscribe++;
-                    sleep(random_time(delay_time));
-                }
-            } while (subscribe_pos && num_subscribe < 2);
-            swipe(device.width / 2, device.height - subscribe_button_pos.top, device.width / 2, subscribe_button_pos.top, random_time(0));
-            num_refresh++;
-            sleep(random_time(delay_time / 2));
-        }
-        if (num_subscribe >= 2) break;
-        sleep(random_time(delay_time * 2));
-    }
+    if (!className("android.view.View").desc("强国号\nTab 1 of 2").exists()) {
+        toast('强国版本v2.34.0及以上不支持订阅功能');
+        back();
+    } else {
+        // 获取第一个订阅按钮位置
+        var subscribe_button_pos = className('android.widget.ImageView').clickable(true).depth(16).findOnce(1).bounds();
+        // 订阅数
+        var num_subscribe = 0;
 
-    if (num_subscribe < 2) {
-        // 地方平台 
-        desc("地方平台\nTab 2 of 2").findOne().click();
-        for (var i = 2; i < 5; i++) {
-            if (all_subscribe_completed == 'yes' && i != 4) {
-                continue;
-            }
+
+        // 强国号
+        // 创建本地存储，记忆每次遍历起始点
+        if (!storage.contains('subscription_strong_country_startup')) {
+            storage.put('subscription_strong_country_startup', 0);
+        }
+        var subscription_strong_country_startup = storage.get('subscription_strong_country_startup');
+
+        for (var i = subscription_strong_country_startup; i < 10; i++) {
             className('android.view.View').clickable(true).depth(15).findOnce(i).click();
             sleep(random_time(delay_time));
             // 刷新次数
             var num_refresh = 0;
             // 定义最大刷新次数
-            if (i == 2) var max_num_refresh = 20;
-            else var max_num_refresh = 2;
+            if (i == 4 || i == 6 || i == 7) var max_num_refresh = 30;
+            else if (i == 0 || i == 8) var max_num_refresh = 4;
+            else if (i == 1 || i == 9) var max_num_refresh = 2;
+            else var max_num_refresh = 8;
             while (num_subscribe < 2 && num_refresh < max_num_refresh) {
                 do {
                     var subscribe_pos = findColor(captureScreen(), '#E42417', {
@@ -1238,13 +1220,57 @@ if (!finish_list[9] && whether_complete_subscription == "yes") {
                 num_refresh++;
                 sleep(random_time(delay_time / 2));
             }
+            // 更新本地存储值
+            if (i > subscription_strong_country_startup) storage.put('subscription_strong_country_startup', i);
             if (num_subscribe >= 2) break;
             sleep(random_time(delay_time * 2));
         }
-    }
 
-    // 退回
-    className("android.widget.Button").clickable(true).depth(11).findOne().click();
+        // 地方平台
+        // 创建本地存储，记忆每次遍历起始点
+        if (!storage.contains('subscription_local_platform_startup')) {
+            storage.put('subscription_local_platform_startup', 0);
+        }
+        var subscription_local_platform_startup = storage.get('subscription_local_platform_startup');
+
+        if (num_subscribe < 2) {
+            desc("地方平台\nTab 2 of 2").findOne().click();
+            sleep(random_time(delay_time));
+            for (var i = subscription_local_platform_startup; i < 5; i++) {
+                className('android.view.View').clickable(true).depth(15).findOnce(i).click();
+                sleep(random_time(delay_time));
+                // 刷新次数
+                var num_refresh = 0;
+                // 定义最大刷新次数
+                if (i == 2) var max_num_refresh = 20;
+                else var max_num_refresh = 2;
+                while (num_subscribe < 2 && num_refresh < max_num_refresh) {
+                    do {
+                        var subscribe_pos = findColor(captureScreen(), '#E42417', {
+                            region: [subscribe_button_pos.left, subscribe_button_pos.top,
+                            subscribe_button_pos.width(), device.height - subscribe_button_pos.top],
+                            threshold: 10,
+                        });
+                        if (subscribe_pos) {
+                            sleep(random_time(delay_time * 2));
+                            click(subscribe_pos.x + subscribe_button_pos.width() / 2, subscribe_pos.y + subscribe_button_pos.height() / 2);
+                            num_subscribe++;
+                            sleep(random_time(delay_time));
+                        }
+                    } while (subscribe_pos && num_subscribe < 2);
+                    swipe(device.width / 2, device.height - subscribe_button_pos.top, device.width / 2, subscribe_button_pos.top, random_time(0));
+                    num_refresh++;
+                    sleep(random_time(delay_time / 2));
+                }
+                if (i > subscription_local_platform_startup) storage.put('subscription_local_platform_startup', i);
+                if (num_subscribe >= 2) break;
+                sleep(random_time(delay_time * 2));
+            }
+        }
+
+        // 退回
+        className("android.widget.Button").clickable(true).depth(11).findOne().click();
+    }
 }
 
 /*
