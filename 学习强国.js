@@ -393,6 +393,22 @@ back_track_flag = 2;
 // 注意：四人赛和双人对战因无法获取题目，需要ocr
 
 /**
+ * 等待需要点击的选项出现，如果出现 第？题、继续挑战，就break
+ * @param {int} option 第？个选项
+ */
+ function waitForRadioButton(optionIndex) {
+    var endNow = 0
+    while(!className('android.widget.RadioButton').depth(32).exists()) {
+        if(textMatches(/第\d题/).exists() || text('继续挑战').exists()) {
+            endNow = 1;
+            break;
+        }
+    };
+    if (endNow == 0) className('android.widget.RadioButton').depth(32).findOnce(optionIndex).click();
+    slp(1.8);
+}
+
+/**
  * 答题
  * @param {int} depth_option 选项控件的深度
  * @param {string} question 问题
@@ -400,8 +416,7 @@ back_track_flag = 2;
 function do_contest_answer(depth_option, question) {
     if (question == "选择正确的读音" || question == "选择词语的正确词形" || question == "下列词形正确的是") {
         // 选择第一个
-        className('android.widget.RadioButton').depth(depth_option).waitFor();
-        className('android.widget.RadioButton').depth(depth_option).findOne().click();
+        waitForRadioButton(0)
     } else {
         var result;
         // 发送http请求获取答案 网站搜题速度 r1 > r2
@@ -419,18 +434,12 @@ function do_contest_answer(depth_option, question) {
             }
         }
 
-        className('android.widget.RadioButton').depth(depth_option).waitFor();
-
         if (result) {
-            try {
-                className('android.widget.RadioButton').depth(depth_option).findOnce(result[0].charCodeAt(3) - 65).click();
-            } catch (error) {
-                // 如果选项不存在，则点击第一个
-                className('android.widget.RadioButton').depth(depth_option).findOne().click();
-            }
+            answer = result[0].charCodeAt(3) - 65
+                waitForRadioButton(answer)
         } else {
             // 如果没找到结果则选择第一个
-            className('android.widget.RadioButton').depth(depth_option).findOne().click();
+            waitForRadioButton(0)
         }
     }
 }
@@ -1107,8 +1116,7 @@ function do_contest() {
         log(question);
         if (question) do_contest_answer(32, question);
         else {
-            className('android.widget.RadioButton').depth(32).waitFor();
-            className('android.widget.RadioButton').depth(32).findOne().click();
+            waitForRadioButton(0)
         }
         // 等待新题目加载
         while (!textMatches(/第\d题/).exists() && !text('继续挑战').exists() && !text('开始').exists());
