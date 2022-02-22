@@ -910,6 +910,13 @@ if (!finish_list[3]) {
 var restart_flag = 1;
 // 是否重做过，如果重做，也即错了，则换用精度更高的华为ocr
 var if_restart_flag = false;
+// 保存本地变量，如果已经做完之前的所有题目则跳过
+if (!storage.contains('all_weekly_answers_completed_storage')) {
+    storage.put('all_weekly_answers_completed_storage', "no");
+}
+if (all_weekly_answers_completed == "no") {
+    all_weekly_answers_completed = storage.get('all_weekly_answers_completed_storage');
+}
 
 if (!finish_list[4] && weekly_answer_scored < 4) {
     sleep(random_time(delay_time));
@@ -924,6 +931,7 @@ if (!finish_list[4] && weekly_answer_scored < 4) {
         while (!text('未作答').exists() && !text('您已经看到了我的底线').exists()) {
             swipe(500, 1700, 500, 500, random_time(delay_time / 2));
         }
+        if (text('您已经看到了我的底线').exists()) storage.put('all_weekly_answers_completed_storage', "yes");
     }
     sleep(random_time(delay_time * 2));
     if (text('未作答').exists()) {
@@ -939,7 +947,15 @@ if (!finish_list[4] && weekly_answer_scored < 4) {
 /*
 **********专项答题*********
 */
-if (!finish_list[5] && special_answer_scored < 9) {
+// 保存本地变量，如果已经做完之前的所有题目则跳过
+if (!storage.contains('all_special_answer_completed_storage')) {
+    storage.put('all_special_answer_completed_storage', "no");
+}
+if (all_special_answer_completed == "no") {
+    all_special_answer_completed = storage.get('all_special_answer_completed_storage');
+}
+
+if (!finish_list[5] && special_answer_scored < 8) {
     sleep(random_time(delay_time));
     if (!className('android.view.View').depth(21).text('学习积分').exists()) back_track();
     entry_model(9);
@@ -970,8 +986,8 @@ if (!finish_list[5] && special_answer_scored < 9) {
                 special_i++;
             }
         }
-        if (!special_flag)
-            swipe(500, 1700, 500, 500, random_time(delay_time / 2));
+        if (!special_flag) swipe(500, 1700, 500, 500, random_time(delay_time / 2));
+        if (text('您已经看到了我的底线').exists()) storage.put('all_special_answers_completed_storage', "yes");
     }
     sleep(random_time(delay_time * 2));
     if (text('开始答题').exists() || text('您已经看到了我的底线').exists()) {
