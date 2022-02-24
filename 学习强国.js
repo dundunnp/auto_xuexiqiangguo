@@ -1294,7 +1294,7 @@ if (!finish_list[10]) {
     sleep(random_time(delay_time * 2));
     for (var i = 0; i < 2; i++) {
         // 分享按键
-        className("ImageView").depth(10).clickable(true).findOnce(1).click();
+        className("ImageView").depth(10).clickable(true).findOnce(2).click();
         sleep(random_time(delay_time / 2));
         my_click_clickable('分享到学习强国');
         sleep(random_time(delay_time));
