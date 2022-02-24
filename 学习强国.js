@@ -291,19 +291,6 @@ while ((count < 6 - completed_read_count) && !finish_list[0]) {
         // 观看时长
         sleep(random_time(65000));
 
-        // 分享两次
-        if (count < 2 && !finish_list[10]) {
-            try {
-                // 分享按键
-                className("ImageView").depth(10).clickable(true).findOnce(1).click();
-                sleep(random_time(delay_time / 2));
-                my_click_clickable('分享到学习强国');
-                sleep(random_time(delay_time));
-                back();
-                sleep(random_time(delay_time));
-            } catch (error) {
-            }
-        }
         back();
         count++;
     }
@@ -1289,20 +1276,48 @@ if (!finish_list[9] && whether_complete_subscription == "yes") {
     }
 }
 
+
 /*
-**********发表观点*********
+**********分享与发表观点*********
 */
-if (!finish_list[11] && whether_complete_speech == "yes") {
+
+// 分享两次
+if (!finish_list[10]) {
     sleep(random_time(delay_time));
     if (!className('android.view.View').depth(21).text('学习积分').exists()) back_track();
     entry_model(15);
-    var speechs = ["好好学习，天天向上", "大国领袖，高瞻远瞩", "请党放心，强国有我", "坚持信念，砥砺奋进", "团结一致，共建美好"];
     // 随意找一篇文章
     sleep(random_time(delay_time));
     my_click_clickable('推荐');
     sleep(random_time(delay_time * 2));
     className('android.widget.FrameLayout').clickable(true).depth(22).findOnce(0).click();
     sleep(random_time(delay_time * 2));
+    for (var i = 0; i < 2; i++) {
+        // 分享按键
+        className("ImageView").depth(10).clickable(true).findOnce(1).click();
+        sleep(random_time(delay_time / 2));
+        my_click_clickable('分享到学习强国');
+        sleep(random_time(delay_time));
+        back();
+        sleep(random_time(delay_time));
+    }
+}
+
+if (!finish_list[11] && whether_complete_speech == "yes") {
+
+    var speechs = ["好好学习，天天向上", "大国领袖，高瞻远瞩", "请党放心，强国有我", "坚持信念，砥砺奋进", "团结一致，共建美好"];
+
+    sleep(random_time(delay_time));
+    if (!text('欢迎发表你的观点').exists()) {
+        if (!className('android.view.View').depth(21).text('学习积分').exists()) back_track();
+        entry_model(15);
+        // 随意找一篇文章
+        sleep(random_time(delay_time));
+        my_click_clickable('推荐');
+        sleep(random_time(delay_time * 2));
+        className('android.widget.FrameLayout').clickable(true).depth(22).findOnce(0).click();
+        sleep(random_time(delay_time * 2));
+    }
     my_click_clickable('欢迎发表你的观点');
     sleep(random_time(delay_time));
     setText(speechs[random(0, speechs.length - 1)]);
