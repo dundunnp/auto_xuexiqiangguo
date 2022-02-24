@@ -103,7 +103,7 @@ function refresh(orientation) {
  */
 function push_weixin_message(account, score) {
     http.postJson(
-        'http://pushplus.hxtrip.com/send',
+        'http://www.pushplus.plus/send',
         {
             token: pushplus_token,
             title: '强国学习通知',
