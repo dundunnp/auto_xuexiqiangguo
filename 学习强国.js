@@ -1198,14 +1198,8 @@ if (!finish_list[9] && whether_complete_subscription == "yes") {
         for (var i = subscription_strong_country_startup; i < 10; i++) {
             className('android.view.View').clickable(true).depth(15).findOnce(i).click();
             sleep(random_time(delay_time));
-            // 刷新次数
-            var num_refresh = 0;
-            // 定义最大刷新次数
-            if (i == 4 || i == 6 || i == 7) var max_num_refresh = 30;
-            else if (i == 0 || i == 8) var max_num_refresh = 4;
-            else if (i == 1 || i == 9) var max_num_refresh = 2;
-            else var max_num_refresh = 8;
-            while (num_subscribe < 2 && num_refresh < max_num_refresh) {
+
+            while (num_subscribe < 2) {
                 do {
                     var subscribe_pos = findColor(captureScreen(), '#E42417', {
                         region: [subscribe_button_pos.left, subscribe_button_pos.top,
@@ -1219,9 +1213,23 @@ if (!finish_list[9] && whether_complete_subscription == "yes") {
                         sleep(random_time(delay_time));
                     }
                 } while (subscribe_pos && num_subscribe < 2);
+                // 通过对比 检测到的已订阅控件 的位置来判断是否滑到底部
+                // 滑动前的已订阅控件的位置
+                var complete_subscribe_pos1 = findColor(captureScreen(), '#B2B3B7', {
+                    region: [subscribe_button_pos.left, subscribe_button_pos.top,
+                    subscribe_button_pos.width(), device.height - subscribe_button_pos.top],
+                    threshold: 10,
+                });
                 swipe(device.width / 2, device.height - subscribe_button_pos.top, device.width / 2, subscribe_button_pos.top, random_time(0));
-                num_refresh++;
                 sleep(random_time(delay_time / 2));
+                // 滑动后的已订阅控件的位置
+                var complete_subscribe_pos2 = findColor(captureScreen(), '#B2B3B7', {
+                    region: [subscribe_button_pos.left, subscribe_button_pos.top,
+                    subscribe_button_pos.width(), device.height - subscribe_button_pos.top],
+                    threshold: 10,
+                });
+                // 如果滑动前后已订阅控件的位置不变则判断滑到底部
+                if (complete_subscribe_pos1.x == complete_subscribe_pos2.x && complete_subscribe_pos1.y == complete_subscribe_pos2.y) break;
             }
             // 更新本地存储值
             if (i > subscription_strong_country_startup) storage.put('subscription_strong_country_startup', i);
