@@ -4,7 +4,7 @@
 如果喜欢的话可以star一下噢，谢谢！
 
 # 如何运行脚本
-先跟随[Hamibot指导](https://hamibot.com/guide)安装Hamibot并配对好机器人后，进行如下步骤进行安装脚本：
+先跟随者[Hamibot指导](https://hamibot.com/guide)安装Hamibot并配对好机器人后，进行如下步骤进行安装脚本：
 
 由于某些原因，脚本已经在市场下架，但...开源万岁！，我们还是可以通过源码在自己的脚本控制台上运行，操作如下：
 点击脚本下的脚本控制台
@@ -57,8 +57,8 @@
 <img src="https://s3.bmp.ovh/imgs/2022/01/2fc8345bdc719323.png" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
 </div>
 
-# v12.2 更新内容:
-1. 分享模块分离出来了
+# v12.3 更新内容:
+1. 订阅滑动随着订阅号的数量自适应
 
 # 希望得到你的协作
 本地ocr识别的错误率太高例如它将此题目识别为
@@ -128,9 +128,7 @@
 
 <div align=center><img src="https://i.bmp.ovh/imgs/2022/01/ad3ffbce2ba13645.png" style="zoom:50%;" /></div>
 
-华为API的收费标准如下，可以看到每个月也有一千次免费使用，和百度大差不差
-
-<div align=center><img src="https://i.bmp.ovh/imgs/2022/01/02d4f51e4edd94ab.png" style="zoom:50%;" /></div>
+华为API调用不免费，具体费用请看官网
 
 **识别准确率和速度:**
 
@@ -146,16 +144,48 @@
 **因此强烈建议大家将华为ocr换为百度ocr**
 
 ### 百度API配置
-登录[百度AI官网](https://ai.baidu.com/)，点击注册（如果已经有账号可以直接登录）并完成个人认证，操作基本与华为云一致
 
-找到[文字识别新手操作指引](https://cloud.baidu.com/doc/OCR/s/dk3iqnq51)
+首先编辑脚本，将配置选项选择“是”
+<div align=center><img src="https://i.bmp.ovh/imgs/2022/01/143fefa456e002b1.png"/></div>
 
-<div align=center><img src="https://i.bmp.ovh/imgs/2022/01/40b19a9bc22969ff.png" style="zoom:50%;" /></div>
+*以下操作与百度[文字识别新手操作指引](https://cloud.baidu.com/doc/OCR/s/dk3iqnq51)一样*
 
-在完成第二步时，你就获取了你的**API KEY以及Secret KEY**，将其填入配置信息中，就完成了 
+第一步：注册百度账户
+
+点击链接注册百度账户[https://passport.baidu.com/v2/?reg](https://passport.baidu.com/v2/?reg)，并完成个人认证，操作基本与华为云一致
+
+第二步：开通文字识别服务
+
+1. 领取免费测试资源
+
+点击登录[文字识别控制台](https://console.bce.baidu.com/ai/?_=1634647029968&fromai=1#/ai/ocr/overview/index)，找到「领取免费资源」按钮。
+
+<div align=center><img src="https://bce.bdstatic.com/doc/ai-cloud-share/OCR/%E5%9B%BE%E7%89%874_d439db4.png" style="zoom:50%;" /></div>
+
+选择通用场景OCR，选择完成后点击「0元领取」，领取免费测试资源
+
+<div align=center><img src="https://bce.bdstatic.com/doc/ai-cloud-share/OCR/%E5%9B%BE%E7%89%875_6babcb4.png" style="zoom:50%;" /></div>
+
+领取成功的免费测试资源将会显示在[资源列表](https://console.bce.baidu.com/ai/?_=1625726102409#/ai/ocr/overview/resource/list)的「已领取资源」中。您可以选择「查看领取记录」去往「资源列表」查看。刚领取的资源大约30分钟生效，若领取接口长时间未在「资源列表」上生效显示，可[提交工单](https://ticket.bce.baidu.com/?_=1625726102409#/ticket/create~productId=96)咨询
+
+<div align=center><img src="https://bce.bdstatic.com/doc/ai-cloud-share/OCR/%E5%9B%BE%E7%89%878_92b62f6.png" style="zoom:50%;" /></div>
+
+2. 创建应用
+领取完免费测试资源后，您需要创建应用才可正式调用文字识别能力。
+
+进入[文字识别控制台](https://passport.baidu.com/v2/?reg)，点击 「创建应用」。
+<div align=center><img src="https://bce.bdstatic.com/doc/ai-cloud-share/OCR/%E5%9B%BE%E7%89%876_7a1e4c7.png" style="zoom:50%;" /></div>
+
+根据您的需要，填写完毕相应信息后，点击「立即创建」，即可完成应用的创建。应用创建完毕后，点击左侧导航中的「应用列表」，进行应用查看。
+
+<div align=center><img src="https://bce.bdstatic.com/doc/ai-cloud-share/OCR/%E5%9B%BE%E7%89%873_86de384.png" style="zoom:50%;" /></div>
+
+然后就能看到创建完的应用 API KEY 以及 Secret KEY 了。将其填入配置信息中，就完成了
+
+<div align=center><img src="https://bce.bdstatic.com/doc/ai-cloud-share/OCR/%E5%9B%BE%E7%89%877_fa8935a.png" style="zoom:50%;" /></div>
 
 ### 华为API配置
-将配置选项选择“是”
+首先编辑脚本，将配置选项选择“是”
 <div align=center><img src="https://i.bmp.ovh/imgs/2022/01/143fefa456e002b1.png"/></div>
 
 登录[华为云官网](https://www.huaweicloud.com/)，点击注册（如果已经有账号可以直接登录）
