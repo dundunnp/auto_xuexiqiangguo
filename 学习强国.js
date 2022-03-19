@@ -422,7 +422,7 @@ function do_contest_answer(depth_option, depth_click_option, question) {
     try {
         // 此网站只支持十个字符的搜索
         var r1 = http.get('http://www.syiban.com/search/index/init.html?modelid=1&q=' + encodeURI(question.slice(0, 10)));
-        result = r1.body.string().match(/答案：.*</);
+        result = r1.body.string().match(/答案：[A-D]、([^<]*?)</)[1];
     } catch (error) {
     }
     // 如果第一个网站没获取到正确答案，则利用第二个网站
@@ -430,14 +430,12 @@ function do_contest_answer(depth_option, depth_click_option, question) {
         try {
             // 此网站只支持六个字符的搜索
             var r2 = http.get('https://www.souwen123.com/search/select.php?age=' + encodeURI(question.slice(0, 6)));
-            result = r2.body.string().match(/答案：.*</);
+            result = r2.body.string().match(/答案：[A-D]、([^<]*?)</)[1];
         } catch (error) {
         }
     }
 
     if (result && options_text) {
-        // 答案文本
-        var result = result[0].slice(5, result[0].indexOf('<'));
         var option_i = options_text.indexOf(result);
         if (option_i != -1) {
             try {
