@@ -395,20 +395,26 @@ function do_contest_answer(depth_option, depth_click_option, question) {
     // 等待选项加载
     className('android.widget.RadioButton').depth(depth_click_option).clickable(true).waitFor();
     // 选项文字列表
-    var options_text = []
-    // 获取所有选项控件
-    var options = className('android.view.View').depth(depth_option).text('').find();
-    if (!options.empty()) {
-        for (var i = 0; i < options.length; ++i) {
-            var pos = options[i].bounds();
+    var options_text = [];
+    // 获取所有选项控件，以RadioButton对象为基准，根据UI控件树相对位置寻找选项文字内容
+    var options = className('android.widget.RadioButton').depth(depth_click_option).find();
+    try {
+        options.forEach((element, index) => {
+            //挑战答题中，选项文字位于RadioButton对象的兄弟对象中
+            options_text[index] = element.parent().child(1).text();
+        });
+    } catch (error) {
+        options.forEach((element, index) => {
+            // 对战答题中，选项截图区域为RadioButton的祖父对象
+            var pos = element.parent().parent().bounds();
             var img = images.clip(captureScreen(), pos.left, pos.top, pos.width(), pos.height());
             var option_text = ocr.recognizeText(img);
             // 如果是四人赛双人对战还会带有A.需要处理
             if (option_text[1] == '.') {
                 option_text = option_text.slice(2);
             }
-            options_text.push(option_text);
-        }
+            options_text[index] = option_text;
+        });
     }
 
     // 如果question如下，则不能通过题目搜索，应该通过选项搜索
