@@ -391,24 +391,30 @@ back_track_flag = 2;
  * @param {int} depth_click_option 点击选项控件的深度，用于点击选项
  * @param {string} question 问题
  */
-function do_contest_answer(depth_option, depth_click_option, question) {
+function do_contest_answer(depth_click_option, question) {
     // 等待选项加载
     className('android.widget.RadioButton').depth(depth_click_option).clickable(true).waitFor();
     // 选项文字列表
-    var options_text = []
-    // 获取所有选项控件
-    var options = className('android.view.View').depth(depth_option).text('').find();
-    if (!options.empty()) {
-        for (var i = 0; i < options.length; ++i) {
-            var pos = options[i].bounds();
+    var options_text = [];
+    // 获取所有选项控件，以RadioButton对象为基准，根据UI控件树相对位置寻找选项文字内容
+    var options = className('android.widget.RadioButton').depth(depth_click_option).find();
+    try {
+        options.forEach((element, index) => {
+            //挑战答题中，选项文字位于RadioButton对象的兄弟对象中
+            options_text[index] = element.parent().child(1).text();
+        });
+    } catch (error) {
+        options.forEach((element, index) => {
+            // 对战答题中，选项截图区域为RadioButton的祖父对象
+            var pos = element.parent().parent().bounds();
             var img = images.clip(captureScreen(), pos.left, pos.top, pos.width(), pos.height());
             var option_text = ocr.recognizeText(img);
             // 如果是四人赛双人对战还会带有A.需要处理
             if (option_text[1] == '.') {
                 option_text = option_text.slice(2);
             }
-            options_text.push(option_text);
-        }
+            options_text[index] = option_text;
+        });
     }
 
     // 如果question如下，则不能通过题目搜索，应该通过选项搜索
@@ -422,7 +428,7 @@ function do_contest_answer(depth_option, depth_click_option, question) {
     try {
         // 此网站只支持十个字符的搜索
         var r1 = http.get('http://www.syiban.com/search/index/init.html?modelid=1&q=' + encodeURI(question.slice(0, 10)));
-        result = r1.body.string().match(/答案：.*</);
+        result = r1.body.string().match(/答案：[A-D]、([^<]*?)</)[1];
     } catch (error) {
     }
     // 如果第一个网站没获取到正确答案，则利用第二个网站
@@ -430,14 +436,12 @@ function do_contest_answer(depth_option, depth_click_option, question) {
         try {
             // 此网站只支持六个字符的搜索
             var r2 = http.get('https://www.souwen123.com/search/select.php?age=' + encodeURI(question.slice(0, 6)));
-            result = r2.body.string().match(/答案：.*</);
+            result = r2.body.string().match(/答案：[A-D]、([^<]*?)</)[1];
         } catch (error) {
         }
     }
 
     if (result && options_text) {
-        // 答案文本
-        var result = result[0].slice(5, result[0].indexOf('<'));
         var option_i = options_text.indexOf(result);
         if (option_i != -1) {
             try {
@@ -1087,7 +1091,7 @@ if (!finish_list[6]) {
             var question = className('android.view.View').depth(25).findOne().text();
             // 截取到下划线前
             question = question.slice(0, question.indexOf(' '));
-            do_contest_answer(26, 28, question);
+            do_contest_answer(28, question);
             num++;
         }
         sleep(random_time(delay_time * 2));
@@ -1143,7 +1147,7 @@ function do_contest() {
         }
 
         log(question);
-        if (question) do_contest_answer(30, 32, question);
+        if (question) do_contest_answer(32, question);
         else {
             // 如果没找到问题，则选择第一个选项
             className('android.widget.RadioButton').depth(32).waitFor();
