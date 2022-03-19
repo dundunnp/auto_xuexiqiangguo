@@ -391,7 +391,7 @@ back_track_flag = 2;
  * @param {int} depth_click_option 点击选项控件的深度，用于点击选项
  * @param {string} question 问题
  */
-function do_contest_answer(depth_option, depth_click_option, question) {
+function do_contest_answer(depth_click_option, question) {
     // 等待选项加载
     className('android.widget.RadioButton').depth(depth_click_option).clickable(true).waitFor();
     // 选项文字列表
@@ -1091,7 +1091,7 @@ if (!finish_list[6]) {
             var question = className('android.view.View').depth(25).findOne().text();
             // 截取到下划线前
             question = question.slice(0, question.indexOf(' '));
-            do_contest_answer(26, 28, question);
+            do_contest_answer(28, question);
             num++;
         }
         sleep(random_time(delay_time * 2));
@@ -1147,7 +1147,7 @@ function do_contest() {
         }
 
         log(question);
-        if (question) do_contest_answer(30, 32, question);
+        if (question) do_contest_answer(32, question);
         else {
             // 如果没找到问题，则选择第一个选项
             className('android.widget.RadioButton').depth(32).waitFor();
