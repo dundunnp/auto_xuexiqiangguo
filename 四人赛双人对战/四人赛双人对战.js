@@ -25,8 +25,8 @@ if (whether_improve_accuracy == 'yes' && !password && !AK) {
 }
 
 // 检查Hamibot版本是否支持ocr
-if (app.versionName < "1.1.0") {
-  toast("请将Hamibot更新至最新版v1.1.0");
+if (app.versionName < "1.3.1") {
+  toast("请到官网将Hamibot更新至v1.3.1版本或更高版本");
   exit();
 }
 
@@ -64,45 +64,97 @@ function my_click_clickable(target) {
 }
 
 /**
+ * 模拟点击不可以点击元素
+ * @param {UiObject} target 控件或者是控件文本
+ */
+function my_click_non_clickable(target) {
+  if (typeof (target) == 'string') {
+    text(target).waitFor();
+    var tmp = text(target).findOne().bounds();
+  } else {
+    var tmp = target.bounds();
+  }
+  var randomX = random(tmp.left, tmp.right);
+  var randomY = random(tmp.top, tmp.bottom);
+  click(randomX, randomY);
+}
+
+/**
  * 答题
  * @param {int} depth_option 选项控件的深度
  * @param {string} question 问题
  */
 function do_contest_answer(depth_option, question) {
+  // 等待选项加载
+  className('android.widget.RadioButton').depth(32).clickable(true).waitFor();
+  // 选项文字列表
+  var options_text = []
+  // 获取所有选项控件
+  var options = className('android.view.View').depth(depth_option).text('').find();
+  if (!options.empty()) {
+    for (var i = 0; i < options.length; ++i) {
+      var pos = options[i].bounds();
+      var img = images.clip(captureScreen(), pos.left, pos.top, pos.width(), pos.height());
+      var option_text = ocr.recognizeText(img);
+      // 如果是四人赛双人对战还会带有A.需要处理
+      if (option_text[1] == '.') {
+        option_text = option_text.slice(2);
+      }
+      options_text.push(option_text);
+    }
+  }
+
+  // 如果question如下，则不能通过题目搜索，应该通过选项搜索
   if (question == "选择正确的读音" || question == "选择词语的正确词形" || question == "下列词形正确的是") {
-    // 选择第一个
-    className('android.widget.RadioButton').depth(32).waitFor();
-    className('android.widget.RadioButton').depth(depth_option).findOne().click();
-  } else {
-    var result;
-    // 发送http请求获取答案 网站搜题速度 r1 > r2
+    question = options_text[0];
+  }
+
+  var result;
+
+  // 发送http请求获取答案 网站搜题速度 r1 > r2
+  try {
+    // 此网站只支持十个字符的搜索
+    var r1 = http.get('http://www.syiban.com/search/index/init.html?modelid=1&q=' + encodeURI(question.slice(0, 10)));
+    result = r1.body.string().match(/答案：.*</);
+  } catch (error) {
+  }
+  // 如果第一个网站没获取到正确答案，则利用第二个网站
+  if (!(result && result[0].charCodeAt(3) > 64 && result[0].charCodeAt(3) < 69)) {
     try {
-      var r1 = http.get('http://www.syiban.com/search/index/init.html?modelid=1&q=' + encodeURI(question.slice(0, 10)));
-      result = r1.body.string().match(/答案：./);
+      // 此网站只支持六个字符的搜索
+      var r2 = http.get('https://www.souwen123.com/search/select.php?age=' + encodeURI(question.slice(0, 6)));
+      result = r2.body.string().match(/答案：.*</);
     } catch (error) {
     }
-    // 如果第一个网站没获取到正确答案，则利用第二个网站
-    if (!(result && result[0].charCodeAt(3) > 64 && result[0].charCodeAt(3) < 69)) {
-      try {
-        var r2 = http.get('https://www.souwen123.com/search/select.php?age=' + encodeURI(question));
-        result = r2.body.string().match(/答案：./);
-      } catch (error) {
-      }
-    }
+  }
 
-    className('android.widget.RadioButton').depth(32).waitFor();
-
-    if (result) {
+  if (result && options_text) {
+    // 答案文本
+    var result = result[0].slice(5, result[0].indexOf('<'));
+    var option_i = options_text.indexOf(result);
+    if (option_i != -1) {
       try {
-        className('android.widget.RadioButton').depth(depth_option).findOnce(result[0].charCodeAt(3) - 65).click();
+        my_click_non_clickable(options[option_i]);
       } catch (error) {
         // 如果选项不存在，则点击第一个
-        className('android.widget.RadioButton').depth(depth_option).findOne().click();
+        my_click_non_clickable(options[0]);
       }
     } else {
-      // 如果没找到结果则选择第一个
-      className('android.widget.RadioButton').depth(depth_option).findOne().click();
+      // 如果没找到结果则根据相似度选择最相似的那个
+      var max_similarity = 0;
+      var max_similarity_index = 1;
+      for (var i = 0; i < options_text.length; ++i) {
+        var similarity = getSimilarity(options_text[i], result);
+        if (similarity > max_similarity) {
+          max_similarity = similarity;
+          max_similarity_index = i;
+        }
+      }
+      my_click_non_clickable(options[max_similarity_index]);
     }
+  } else {
+    // 没找到答案，点击第一个
+    className('android.widget.RadioButton').depth(32).clickable(true).findOne().click();
   }
 }
 
@@ -111,12 +163,11 @@ function do_contest_answer(depth_option, question) {
  */
 function ocr_api(img) {
   try {
-    var answer = ocr.ocrImage(img);
+    var answer = ocr.recognizeText(img);
   } catch (error) {
     toast("请将脚本升级至最新版");
     exit();
   }
-  answer = answer.text;
   // 标点修改
   answer = answer.replace(/,/g, "，");
   answer = answer.replace(/〈〈/g, "《");
@@ -142,10 +193,29 @@ function ocr_api(img) {
   answer = answer.replace(/扶悌/g, "扶梯");
 
   answer = answer.slice(answer.indexOf('.') + 1);
-  answer = answer.slice(0, 10);
   return answer;
 }
 
+/**
+ * 用于下面选择题
+ * 获取2个字符串的相似度
+ * @param {string} str1 字符串1
+ * @param {string} str2 字符串2
+ * @returns {number} 相似度 
+ */
+function getSimilarity(str1, str2) {
+  var sameNum = 0
+  //寻找相同字符
+  for (var i = 0; i < str1.length; i++) {
+    for (var j = 0; j < str2.length; j++) {
+      if (str1[i] === str2[j]) {
+        sameNum++;
+        break;
+      }
+    }
+  }
+  return sameNum / str2.length;
+}
 /*
 ********************调用华为API实现ocr********************
 */
@@ -322,10 +392,10 @@ function baidu_ocr_api(img) {
 }
 
 function do_it() {
-  if (whether_improve_accuracy == 'no') {
-    var min_pos_width = device.width;
-    var min_pos_height = device.height;
-  }
+
+  var min_pos_width = device.width;
+  var min_pos_height = device.height;
+
   while (!text('开始').exists());
   while (!text('继续挑战').exists()) {
     className("android.view.View").depth(28).waitFor();
@@ -339,14 +409,9 @@ function do_it() {
       });
     } while (!point);
 
-    if (whether_improve_accuracy == 'no') {
-      min_pos_width = Math.min(pos.width(), min_pos_width);
-      min_pos_height = Math.min(pos.height(), min_pos_height);
-      var img = images.clip(captureScreen(), pos.left, pos.top, min_pos_width, min_pos_height);
-    } else {
-      var img = images.inRange(captureScreen(), '#000000', '#444444');
-      img = images.clip(img, pos.left, pos.top, pos.width(), pos.height());
-    }
+    min_pos_width = Math.min(pos.width(), min_pos_width);
+    min_pos_height = Math.min(pos.height(), min_pos_height);
+    var img = images.clip(captureScreen(), pos.left, pos.top, min_pos_width, min_pos_height);
 
     if (whether_improve_accuracy == 'yes') {
       if (baidu_or_huawei == 'huawei') var question = huawei_ocr_api(img);
@@ -355,7 +420,7 @@ function do_it() {
     else var question = ocr_api(img);
 
     log(question);
-    if (question) do_contest_answer(32, question);
+    if (question) do_contest_answer(30, question);
     else {
       className('android.widget.RadioButton').depth(32).waitFor();
       className('android.widget.RadioButton').depth(32).findOne().click();
