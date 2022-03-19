@@ -9,8 +9,8 @@ auto.waitFor()
 device.keepScreenDim();
 
 // 检查Hamibot版本是否支持ocr
-if (app.versionName < "1.1.0") {
-    toast("请将Hamibot更新至最新版v1.1.0");
+if (app.versionName < "1.3.1") {
+    toast("请到官网将Hamibot更新至v1.3.1版本或更高版本");
     exit();
 }
 
@@ -61,10 +61,17 @@ if (whether_improve_accuracy == 'yes' && !password && !AK) {
     exit();
 }
 
-// 模拟点击不可以点击元素
+/**
+ * 模拟点击不可以点击元素
+ * @param {UiObject} target 控件或者是控件文本
+ */
 function my_click_non_clickable(target) {
-    text(target).waitFor();
-    var tmp = text(target).findOne().bounds();
+    if (typeof (target) == 'string') {
+        text(target).waitFor();
+        var tmp = text(target).findOne().bounds();
+    } else {
+        var tmp = target.bounds();
+    }
     var randomX = random(tmp.left, tmp.right);
     var randomY = random(tmp.top, tmp.bottom);
     click(randomX, randomY);
@@ -377,51 +384,86 @@ sleep(random_time(delay_time / 2));
 // 把音乐打开
 media.resumeMusic();
 back_track_flag = 2;
-// 注意：四人赛和双人对战因无法获取题目，需要ocr
 
 /**
  * 答题
- * @param {int} depth_option 选项控件的深度
+ * @param {int} depth_option 选项控件的深度，用于获取选项文本
+ * @param {int} depth_click_option 点击选项控件的深度，用于点击选项
  * @param {string} question 问题
  */
-function do_contest_answer(depth_option, question) {
-    if (question == "选择正确的读音" || question == "选择词语的正确词形" || question == "下列词形正确的是") {
-        // 选择第一个
-        className('android.widget.RadioButton').depth(depth_option).waitFor();
-        className('android.widget.RadioButton').depth(depth_option).findOne().click();
-    } else {
-        var result;
-        // 发送http请求获取答案 网站搜题速度 r1 > r2
-        try {
-            var r1 = http.get('http://www.syiban.com/search/index/init.html?modelid=1&q=' + encodeURI(question.slice(0, 10)));
-            result = r1.body.string().match(/答案：./);
-        } catch (error) {
-        }
-        // 如果第一个网站没获取到正确答案，则利用第二个网站
-        if (!(result && result[0].charCodeAt(3) > 64 && result[0].charCodeAt(3) < 69)) {
-            try {
-                var r2 = http.get('https://www.souwen123.com/search/select.php?age=' + encodeURI(question));
-                result = r2.body.string().match(/答案：./);
-            } catch (error) {
+function do_contest_answer(depth_option, depth_click_option, question) {
+    // 等待选项加载
+    className('android.widget.RadioButton').depth(depth_click_option).clickable(true).waitFor();
+    // 选项文字列表
+    var options_text = []
+    // 获取所有选项控件
+    var options = className('android.view.View').depth(depth_option).text('').find();
+    if (!options.empty()) {
+        for (var i = 0; i < options.length; ++i) {
+            var pos = options[i].bounds();
+            var img = images.clip(captureScreen(), pos.left, pos.top, pos.width(), pos.height());
+            var option_text = ocr.recognizeText(img);
+            // 如果是四人赛双人对战还会带有A.需要处理
+            if (option_text[1] == '.') {
+                option_text = option_text.slice(2);
             }
-        }
-
-        className('android.widget.RadioButton').depth(depth_option).waitFor();
-
-        if (result) {
-            try {
-                className('android.widget.RadioButton').depth(depth_option).findOnce(result[0].charCodeAt(3) - 65).click();
-            } catch (error) {
-                // 如果选项不存在，则点击第一个
-                className('android.widget.RadioButton').depth(depth_option).findOne().click();
-            }
-        } else {
-            // 如果没找到结果则选择第一个
-            className('android.widget.RadioButton').depth(depth_option).findOne().click();
+            options_text.push(option_text);
         }
     }
-}
 
+    // 如果question如下，则不能通过题目搜索，应该通过选项搜索
+    if (question == "选择正确的读音" || question == "选择词语的正确词形" || question == "下列词形正确的是") {
+        question = options_text[0];
+    }
+
+    var result;
+
+    // 发送http请求获取答案 网站搜题速度 r1 > r2
+    try {
+        // 此网站只支持十个字符的搜索
+        var r1 = http.get('http://www.syiban.com/search/index/init.html?modelid=1&q=' + encodeURI(question.slice(0, 10)));
+        result = r1.body.string().match(/答案：.*</);
+    } catch (error) {
+    }
+    // 如果第一个网站没获取到正确答案，则利用第二个网站
+    if (!(result && result[0].charCodeAt(3) > 64 && result[0].charCodeAt(3) < 69)) {
+        try {
+            // 此网站只支持六个字符的搜索
+            var r2 = http.get('https://www.souwen123.com/search/select.php?age=' + encodeURI(question.slice(0, 6)));
+            result = r2.body.string().match(/答案：.*</);
+        } catch (error) {
+        }
+    }
+
+    if (result && options_text) {
+        // 答案文本
+        var result = result[0].slice(5, result[0].indexOf('<'));
+        var option_i = options_text.indexOf(result);
+        if (option_i != -1) {
+            try {
+                my_click_non_clickable(options[option_i]);
+            } catch (error) {
+                // 如果选项不存在，则点击第一个
+                my_click_non_clickable(options[0]);
+            }
+        } else {
+            // 如果没找到结果则根据相似度选择最相似的那个
+            var max_similarity = 0;
+            var max_similarity_index = 1;
+            for (var i = 0; i < options_text.length; ++i) {
+                var similarity = getSimilarity(options_text[i], result);
+                if (similarity > max_similarity) {
+                    max_similarity = similarity;
+                    max_similarity_index = i;
+                }
+            }
+            my_click_non_clickable(options[max_similarity_index]);
+        }
+    } else {
+        // 没找到答案，点击第一个
+        className('android.widget.RadioButton').depth(depth_click_option).clickable(true).findOne().click();
+    }
+}
 /*
 ********************答题部分********************
 */
@@ -830,7 +872,7 @@ function do_periodic_answer(number) {
                     else answer = baidu_ocr_api(img);
                 } else {
                     try {
-                        answer = ocr.ocrImage(img).text;
+                        answer = ocr.recognizeText(img);
                     } catch (error) {
                         toast("请将hamibot软件升级至最新版本");
                         exit();
@@ -1045,9 +1087,7 @@ if (!finish_list[6]) {
             var question = className('android.view.View').depth(25).findOne().text();
             // 截取到下划线前
             question = question.slice(0, question.indexOf(' '));
-            // 截取前20个字符就行
-            question = question.slice(0, 20);
-            do_contest_answer(28, question);
+            do_contest_answer(26, 28, question);
             num++;
         }
         sleep(random_time(delay_time * 2));
@@ -1068,10 +1108,10 @@ if (!finish_list[6]) {
 ********************四人赛、双人对战********************
 */
 function do_contest() {
-    if (whether_improve_accuracy == 'no') {
-        var min_pos_width = device.width;
-        var min_pos_height = device.height;
-    }
+    // 识别题目并不需要整个题目都要ocr出来，可能只需要一行字，每次遍历找到最小行
+    var min_pos_width = device.width;
+    var min_pos_height = device.height;
+
     while (!text('开始').exists());
     while (!text('继续挑战').exists()) {
         className("android.view.View").depth(28).waitFor();
@@ -1085,21 +1125,16 @@ function do_contest() {
             });
         } while (!point);
 
-        if (whether_improve_accuracy == 'no') {
-            min_pos_width = Math.min(pos.width(), min_pos_width);
-            min_pos_height = Math.min(pos.height(), min_pos_height);
-            var img = images.clip(captureScreen(), pos.left, pos.top, min_pos_width, min_pos_height);
-        } else {
-            var img = images.inRange(captureScreen(), '#000000', '#444444');
-            img = images.clip(img, pos.left, pos.top, pos.width(), pos.height());
-        }
+        min_pos_width = Math.min(pos.width(), min_pos_width);
+        min_pos_height = Math.min(pos.height(), min_pos_height);
+        var img = images.clip(captureScreen(), pos.left, pos.top, min_pos_width, min_pos_height);
 
         if (whether_improve_accuracy == 'yes') {
             if (baidu_or_huawei == 'huawei') var question = huawei_ocr_api(img);
             else var question = baidu_ocr_api(img);
         } else {
             try {
-                var question = ocr.ocrImage(img).text;
+                var question = ocr.recognizeText(img);
             } catch (error) {
                 toast("请将hamibot软件升级至最新版本");
                 exit();
@@ -1108,8 +1143,9 @@ function do_contest() {
         }
 
         log(question);
-        if (question) do_contest_answer(32, question);
+        if (question) do_contest_answer(30, 32, question);
         else {
+            // 如果没找到问题，则选择第一个选项
             className('android.widget.RadioButton').depth(32).waitFor();
             className('android.widget.RadioButton').depth(32).findOne().click();
         }
@@ -1313,7 +1349,7 @@ if (!finish_list[10]) {
 
 if (!finish_list[11] && whether_complete_speech == "yes") {
 
-    var speechs = ["好好学习，天天向上", "大国领袖，高瞻远瞩", "请党放心，强国有我", "坚持信念，砥砺奋进", "团结一致，共建美好"];
+    var speechs = ["好好学习，天天向上", "大国领袖，高瞻远瞩", "请党放心，强国有我", "坚持信念，砥砺奋进", "团结一致，共建美好", "为人民谋幸福"];
 
     sleep(random_time(delay_time));
     if (!text('欢迎发表你的观点').exists()) {
