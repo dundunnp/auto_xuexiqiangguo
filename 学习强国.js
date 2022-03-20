@@ -62,8 +62,104 @@ if (whether_improve_accuracy == 'yes' && !password && !AK) {
 }
 
 /**
+ * 定义HashTable类，用于存储本地题库，查找效率更高
+ * 由于hamibot不支持存储自定义对象和new Map()，因此这里用列表存储自己实现
+ * 在存储时，不需要存储整个question，可以仅根据选项来对应question，这样可以省去ocr题目的花费
+ * 但如果遇到选项为vague_words数组中的模糊词，无法对应question，则需要存储整个问题
+*/
+
+var answer_question_map = [];
+
+// 模糊词，当选项为这些词时，无法根据选项对应题目
+var vague_words = '正确|错误 不会|会 不是|是'
+
+// hash函数
+function hash(string) {
+    var hash = 0;
+    for (var i = 0; i < string.length; i++) {
+        hash += string.charCodeAt(i);
+    }
+    return hash % 5653;
+}
+
+// 存入
+function map_set(key, value) {
+    var index = hash(key);
+    if (answer_question_map[index] === undefined) {
+        answer_question_map[index] = [
+            [key, value]
+        ];
+    } else {
+        answer_question_map[index].push([key, value]);
+    }
+};
+
+// 取出
+function map_get(key) {
+    var index = hash(key);
+    if (answer_question_map[index] != undefined) {
+        for (var i = 0; i < answer_question_map[index].length; i++) {
+            if (answer_question_map[index][i][0] == key) {
+                return answer_question_map[index][i][1];
+            }
+        }
+    } else {
+        // 如果没找到，只好遍历所有key，找到相似度最大
+        var max_similarity = 0;
+        var max_similarity_index = [0, 0];
+        for (var i = 0; i < answer_question_map.length; i++) {
+            if (answer_question_map[i] != undefined) {
+                for (var j = 0; j < answer_question_map[i].length; j++) {
+                    var similarity = getSimilarity(answer_question_map[i][j][0], key);
+                    if (similarity > max_similarity) {
+                        max_similarity = similarity;
+                        max_similarity_index = [i, j];
+                    }
+                    // 超过0.8就直接返回别遍历了
+                    if (similarity > 0.8) return answer_question_map[i][j][1];
+                }
+            }
+        }
+        return answer_question_map[max_similarity_index[0]][max_similarity_index[1]][1];
+    }
+};
+
+/**
+ * 通过Http下载题库到本地，并进行处理，如果本地已经存在则无需下载
+ */
+if (!storage.contains('answer_question_map')) {
+    // 使用牛七云云盘
+    var answer_question_bank = http.get('http://r90w4pku5.hn-bkt.clouddn.com/%E9%A2%98%E5%BA%93_%E6%8E%92%E5%BA%8F%E7%89%88.json')
+    // 如果资源过期换成别的云盘
+    if (!(answer_question_bank.statusCode >= 200 && answer_question_bank.statusCode < 300)) {
+        // 使用腾讯云
+        var answer_question_bank = http.get('https://xxqg-tiku-1305531293.cos.ap-nanjing.myqcloud.com/%E9%A2%98%E5%BA%93_%E6%8E%92%E5%BA%8F%E7%89%88.json')
+    }
+    answer_question_bank = answer_question_bank.body.string();
+    answer_question_bank = JSON.parse(answer_question_bank);
+
+    for (var question in answer_question_bank) {
+        var answer = answer_question_bank[question];
+        // 根据选项就可以对应出题目，因此不需要存储完整问题，只需要存储选项
+        if (vague_words.indexOf(answer) == -1) question = question.slice(question.indexOf('|') + 1);
+        // 如果答案是以上的一些模糊词（无法根据选项就推测出题目），那么就需要存储整个问题
+        else {
+            question = question.slice(0, question.indexOf('|'));
+            question = question.slice(0, question.indexOf(' '));
+            question = question.slice(0, 10);
+        }
+        map_set(question, answer);
+    }
+
+    storage.put('answer_question_map', answer_question_map);
+}
+
+var answer_question_map = storage.get('answer_question_map');
+
+
+/**
  * 模拟点击不可以点击元素
- * @param {UiObject} target 控件或者是控件文本
+ * @param {UiObject / string} target 控件或者是控件文本
  */
 function my_click_non_clickable(target) {
     if (typeof (target) == 'string') {
@@ -339,9 +435,9 @@ if (!finish_list[1] || !finish_list[2]) {
     // 点击第一个视频
     className('android.widget.FrameLayout').clickable(true).depth(24).findOne().click();
 
+    // 为了兼容强国版本为v2.32.0
     sleep(random_time(delay_time));
     if (!id('iv_back').exists()) {
-        // 最新版为v2.32.0
         className('android.widget.FrameLayout').clickable(true).depth(24).findOnce(7).click();
     }
 
@@ -361,7 +457,7 @@ if (!finish_list[1] || !finish_list[2]) {
                 sleep(random_time(delay_time));
                 continue;
             }
-            sleep(Number(current_video_time.slice(4)) * 1000);
+            sleep(Number(current_video_time.slice(4)) * 1000 + 500);
         } catch (error) {
             // 如果被"即将播放"将读取不到视频的时间长度，此时就sleep 3秒
             sleep(3000);
@@ -387,11 +483,10 @@ back_track_flag = 2;
 
 /**
  * 答题
- * @param {int} depth_option 选项控件的深度，用于获取选项文本
  * @param {int} depth_click_option 点击选项控件的深度，用于点击选项
- * @param {string} question 问题
+ * @param {Image / string} img_question或question 问题截取图片或问题（挑战答题可以直接获取问题文本）
  */
-function do_contest_answer(depth_click_option, question) {
+function do_contest_answer(depth_click_option, img_question) {
     // 等待选项加载
     className('android.widget.RadioButton').depth(depth_click_option).clickable(true).waitFor();
     // 选项文字列表
@@ -417,51 +512,44 @@ function do_contest_answer(depth_click_option, question) {
         });
     }
 
-    // 如果question如下，则不能通过题目搜索，应该通过选项搜索
-    if (question == "选择正确的读音" || question == "选择词语的正确词形" || question == "下列词形正确的是") {
-        question = options_text[0];
+    // 将选项排序，为了统一格式，但要保留原顺序，为了选择，注意这里不要直接赋值，而需要concat()方法浅拷贝
+    var original_options_text = options_text.concat();
+    var sorted_options_text = options_text.sort();
+    // 将题目改为指定格式
+    var question = sorted_options_text.join('|');
+
+    if (vague_words.indexOf(question) != -1) {
+        if (typeof (img_question) == 'string') {
+            question = img_question;
+        } else {
+            // 需要识别题目
+            if (whether_improve_accuracy == 'yes') {
+                if (baidu_or_huawei == 'huawei') var question = huawei_ocr_api(img_question);
+                else var question = baidu_ocr_api(img_question);
+            } else {
+                try {
+                    var question = ocr.recognizeText(img_question);
+                } catch (error) {
+                    toast("请将hamibot软件升级至最新版本");
+                    exit();
+                }
+                var question = ocr_processing(question, true);
+            }
+        }
+        question.slice(0, 10);
     }
-
-    var result;
-
-    // 发送http请求获取答案 网站搜题速度 r1 > r2
     try {
-        // 此网站只支持十个字符的搜索
-        var r1 = http.get('http://www.syiban.com/search/index/init.html?modelid=1&q=' + encodeURI(question.slice(0, 10)));
-        result = r1.body.string().match(/答案：[A-D]、([^<]*?)</)[1];
+        var answer = map_get(question);
     } catch (error) {
     }
-    // 如果第一个网站没获取到正确答案，则利用第二个网站
-    if (!(result && result[0].charCodeAt(3) > 64 && result[0].charCodeAt(3) < 69)) {
+    if (answer && options_text) {
+        // 注意这里一定要用original_options_text
+        var option_i = original_options_text.indexOf(answer);
         try {
-            // 此网站只支持六个字符的搜索
-            var r2 = http.get('https://www.souwen123.com/search/select.php?age=' + encodeURI(question.slice(0, 6)));
-            result = r2.body.string().match(/答案：[A-D]、([^<]*?)</)[1];
+            my_click_non_clickable(options[option_i]);
         } catch (error) {
-        }
-    }
-
-    if (result && options_text) {
-        var option_i = options_text.indexOf(result);
-        if (option_i != -1) {
-            try {
-                my_click_non_clickable(options[option_i]);
-            } catch (error) {
-                // 如果选项不存在，则点击第一个
-                my_click_non_clickable(options[0]);
-            }
-        } else {
-            // 如果没找到结果则根据相似度选择最相似的那个
-            var max_similarity = 0;
-            var max_similarity_index = 1;
-            for (var i = 0; i < options_text.length; ++i) {
-                var similarity = getSimilarity(options_text[i], result);
-                if (similarity > max_similarity) {
-                    max_similarity = similarity;
-                    max_similarity_index = i;
-                }
-            }
-            my_click_non_clickable(options[max_similarity_index]);
+            // 如果选项不存在，则点击第一个
+            my_click_non_clickable(options[0]);
         }
     } else {
         // 没找到答案，点击第一个
@@ -1133,26 +1221,8 @@ function do_contest() {
         min_pos_height = Math.min(pos.height(), min_pos_height);
         var img = images.clip(captureScreen(), pos.left, pos.top, min_pos_width, min_pos_height);
 
-        if (whether_improve_accuracy == 'yes') {
-            if (baidu_or_huawei == 'huawei') var question = huawei_ocr_api(img);
-            else var question = baidu_ocr_api(img);
-        } else {
-            try {
-                var question = ocr.recognizeText(img);
-            } catch (error) {
-                toast("请将hamibot软件升级至最新版本");
-                exit();
-            }
-            var question = ocr_processing(question, true);
-        }
+        do_contest_answer(32, img);
 
-        log(question);
-        if (question) do_contest_answer(32, question);
-        else {
-            // 如果没找到问题，则选择第一个选项
-            className('android.widget.RadioButton').depth(32).waitFor();
-            className('android.widget.RadioButton').depth(32).findOne().click();
-        }
         // 等待新题目加载
         while (!textMatches(/第\d题/).exists() && !text('继续挑战').exists() && !text('开始').exists());
     }
