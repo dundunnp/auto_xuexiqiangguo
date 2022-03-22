@@ -103,25 +103,8 @@ function map_get(key) {
                 return answer_question_map[index][i][1];
             }
         }
-    } else {
-        // 如果没找到，只好遍历所有key，找到相似度最大
-        var max_similarity = 0;
-        var max_similarity_index = [0, 0];
-        for (var i = 0; i < answer_question_map.length; i++) {
-            if (answer_question_map[i] != undefined) {
-                for (var j = 0; j < answer_question_map[i].length; j++) {
-                    var similarity = getSimilarity(answer_question_map[i][j][0], key);
-                    if (similarity > max_similarity) {
-                        max_similarity = similarity;
-                        max_similarity_index = [i, j];
-                    }
-                    // 超过0.8就直接返回别遍历了
-                    if (similarity > 0.8) return answer_question_map[i][j][1];
-                }
-            }
-        }
-        return answer_question_map[max_similarity_index[0]][max_similarity_index[1]][1];
     }
+    return null;
 };
 
 /**
@@ -538,10 +521,66 @@ function do_contest_answer(depth_click_option, img_question) {
         }
         question.slice(0, 10);
     }
+
     try {
         var answer = map_get(question);
     } catch (error) {
     }
+
+    // 如果本地题库没搜到，则搜网络题库
+    if (!answer) {
+        // 如果ocr了题目就用问题搜，否则用第一个选项搜
+        question = question.indexOf('|') != -1 ? question.slice(0, question.indexOf('|')) : question
+
+        var result;
+        // 发送http请求获取答案 网站搜题速度 r1 > r2
+        try {
+            // 此网站只支持十个字符的搜索
+            var r1 = http.get('http://www.syiban.com/search/index/init.html?modelid=1&q=' + encodeURI(question.slice(0, 10)));
+            result = r1.body.string().match(/答案：.*</);
+        } catch (error) {
+        }
+        // 如果第一个网站没获取到正确答案，则利用第二个网站
+        if (!(result && result[0].charCodeAt(3) > 64 && result[0].charCodeAt(3) < 69)) {
+            try {
+                // 此网站只支持六个字符的搜索
+                var r2 = http.get('https://www.souwen123.com/search/select.php?age=' + encodeURI(question.slice(0, 6)));
+                result = r2.body.string().match(/答案：.*</);
+            } catch (error) {
+            }
+        }
+
+        if (result && options_text) {
+            // 答案文本
+            var result = result[0].slice(5, result[0].indexOf('<'));
+            var option_i = original_options_text.indexOf(result);
+            if (option_i != -1) {
+                try {
+                    my_click_non_clickable(options[option_i]);
+                } catch (error) {
+                    // 如果选项不存在，则点击第一个
+                    my_click_non_clickable(options[0]);
+                }
+            } else {
+                // 如果没找到结果则根据相似度选择最相似的那个
+                var max_similarity = 0;
+                var max_similarity_index = 1;
+                for (var i = 0; i < options_text.length; ++i) {
+                    var similarity = getSimilarity(options_text[i], result);
+                    if (similarity > max_similarity) {
+                        max_similarity = similarity;
+                        max_similarity_index = i;
+                    }
+                }
+                my_click_non_clickable(options[max_similarity_index]);
+            }
+        } else {
+            // 没找到答案，点击第一个
+            className('android.widget.RadioButton').depth(32).clickable(true).findOne().click();
+        }
+    }
+
+    // 本地题库找到了答案
     if (answer && options_text) {
         // 注意这里一定要用original_options_text
         var option_i = original_options_text.indexOf(answer);
@@ -1242,7 +1281,7 @@ if (!finish_list[7] && four_players_scored < 3) {
         my_click_clickable('开始比赛');
         do_contest();
         if (i == 0) {
-            sleep(random_time(delay_time));
+            sleep(random_time(delay_time * 2));
             while (!click('继续挑战'));
             sleep(random_time(delay_time));
         }
