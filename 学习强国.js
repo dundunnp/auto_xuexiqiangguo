@@ -1282,7 +1282,7 @@ if (!finish_list[7] && four_players_scored < 3) {
         do_contest();
         if (i == 0) {
             sleep(random_time(delay_time * 2));
-            while (!click('继续挑战'));
+            my_click_clickable('继续挑战');
             sleep(random_time(delay_time));
         }
     }
