@@ -57,8 +57,8 @@
 <img src="https://s3.bmp.ovh/imgs/2022/01/2fc8345bdc719323.png" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
 </div>
 
-# v14.2 更新内容:
-1. 解决四人赛答完会卡住的bug
+# v14.3 更新内容:
+1. 优化答题速度
 
 # 希望得到你的协作
 本地ocr识别的错误率太高例如它将此题目识别为
