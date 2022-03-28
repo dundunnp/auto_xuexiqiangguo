@@ -57,21 +57,9 @@
 <img src="https://s3.bmp.ovh/imgs/2022/01/2fc8345bdc719323.png" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
 </div>
 
-# v14.3 更新内容:
+# v14.4 更新内容:
 1. 优化答题速度
-
-# 希望得到你的协作
-本地ocr识别的错误率太高例如它将此题目识别为
-<div align=center>
-<img src="https://s3.bmp.ovh/imgs/2021/12/3ab3854db323c785.jpg" width="300px" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
-</div>
-<div align=center>
-<img src="https://s3.bmp.ovh/imgs/2021/12/042b9208fb579a9b.jpg" width="300px" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
-</div>
-因此，需要人为的在识别的基础上进行修改，以下是我测试中遇到的一些错误，比如标点符号的错误，比如“管理”会识别成“营理”，但我一个人的力量有限，大家可以在答题错误的时候看一下日志识别错误的情况，并发出错误，非常感谢
-<div align=center>
-<img src="https://s3.bmp.ovh/imgs/2021/12/ecaa291952da6279.png" width="300px" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
-</div>
+2. 第三方ocr取消华为ocr，仅支持百度ocr
 
 <!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
 
@@ -103,8 +91,10 @@
 
 ## [Hamibot](https://hamibot.com/)
 如果知道这款软件的小伙伴可以直接跳到配置，这是它的[官网](https://hamibot.com/)https://hamibot.com，里面有详细的介绍， 目前这款软件只适用于安卓系统
+
 ## 安装脚本
 在手机上安装完成Hamibot之后，在[脚本市场](https://hamibot.com/marketplace)搜索["Auto学习强国"](https://hamibot.com/marketplace/aQlXd)并安装脚本
+
 ## 满足条件
 请确保手机满足以下条件
 1. 打开无障碍服务权限、程序保持后台运行
@@ -120,28 +110,6 @@
 2. 增强版四人赛双人对战模式
 
 **脚本默认不为增强版**，非增强版利用本地ocr识别题目，在识别速度、识别正确率上比第三方ocr差。此脚本选用华为API或者百度API实现OCR功能，如果你想使用增强版，选择其中一个配置即可
-
-### 百度or华为？
-**收费标准:**
-
-百度API的收费标准如下，可以看到每个月有一千次免费使用，是完全够用的
-
-<div align=center><img src="https://i.bmp.ovh/imgs/2022/01/ad3ffbce2ba13645.png" style="zoom:50%;" /></div>
-
-华为API调用不免费，具体费用请看官网
-
-**识别准确率和速度:**
-
-测试结果如下：
-<div align=center><img src="https://i.bmp.ovh/imgs/2022/01/6a4e05d024bc17f5.png" style="zoom:66%;" /></div>
-
-可以看到华为和百度在识别准确率上大差不差，但在速度上百度比华为平均快了一半
-
-**配置难度:**
-
-百度在配置信息方面只需填两个参数，比华为方便
-
-**因此强烈建议大家将华为ocr换为百度ocr**
 
 ### 百度API配置
 
@@ -183,62 +151,6 @@
 然后就能看到创建完的应用 API KEY 以及 Secret KEY 了。将其填入配置信息中，就完成了
 
 <div align=center><img src="https://bce.bdstatic.com/doc/ai-cloud-share/OCR/%E5%9B%BE%E7%89%877_fa8935a.png" style="zoom:50%;" /></div>
-
-### 华为API配置
-首先编辑脚本，将配置选项选择“是”
-<div align=center><img src="https://i.bmp.ovh/imgs/2022/01/143fefa456e002b1.png"/></div>
-
-登录[华为云官网](https://www.huaweicloud.com/)，点击注册（如果已经有账号可以直接登录）
-
-<div align=center><img src="https://usercontent.hamibot.com/avatars/ml/0/aQlXd/4.png" style="zoom: 33%;" /></div>
-
-注册成功后，登录
-
-<div align=center><img src="https://usercontent.hamibot.com/avatars/ml/0/aQlXd/5.png" style="zoom: 33%;" /></div>
-
-点击账户中心，并点击实名认证中的个人认证
-
-<div align=center><img src="https://usercontent.hamibot.com/avatars/ml/0/aQlXd/6.png" style="zoom: 33%;" /></div>
-
-完成认证后，大家可以在基本信息中改一个自己的账号名（我这里改为了dundunnp，注意只能改一次账号名，大家也可以选择不改），而后还需创建一个用户，点击统一身份认证
-
-<div align=center><img src="https://usercontent.hamibot.com/avatars/ml/0/aQlXd/7.png" style="zoom:33%;" /></div>
-
-虽然可以看到已经有一个企业管理员用户，**但华为账号不支持获取帐号Token，需要我们自己创建一个IAM用户**，授予该用户必要的权限，获取IAM用户Token，因此，点击右上角的创建用户
-
-<div align=center><img src="https://usercontent.hamibot.com/avatars/ml/0/aQlXd/8.png" style="zoom:33%;" /></div>
-
-填写用户名与密码，请记住，后面需要用到，点击下一步
-
-<div align=center><img src="https://usercontent.hamibot.com/avatars/ml/0/aQlXd/9.png" style="zoom:33%;" /></div>
-
-点击admin，使其用户加入用户组，点击创建用户
-
-搜索框中[搜索ocr](https://www.huaweicloud.com/s/JW9jciU)，在第一条中点击立即使用
-
-<div align=center><img src="https://usercontent.hamibot.com/avatars/ml/0/aQlXd/10.png" style="zoom:33%;" /></div>
-
-将页面滚动到最下方
-
-<div align=center><img src="https://usercontent.hamibot.com/avatars/ml/0/aQlXd/11.png" style="zoom:33%;" /></div>
-
-翻到第二页，找到网络图片识别，点击开通服务，并确认
-
-<div align=center><img src="https://usercontent.hamibot.com/avatars/ml/0/aQlXd/12.png" style="zoom:33%;" /></div>
-
-点击左侧的调用指南其下的API调用
-
-<div align=center><img src="https://usercontent.hamibot.com/avatars/ml/0/aQlXd/13.png" style="zoom:33%;" /></div>
-
-在这个界面中，下面的配置参数查询下面的构造请求模块中有，Endpoint和project_id两项，将这两项填入配置中
-
-<div align=center><img src="https://usercontent.hamibot.com/avatars/ml/0/aQlXd/14.png" style="zoom:33%;" /></div>
-
-再将第二个模块的domainname和projectname填入配置中，**注意，这里千万不要将这里显示的dundunnp填入username中，domainname是企业管理员的账号名也就是dundunnp，而username和password填入的是刚刚创建的用户的信息，也就是dundun和XXXXX(你们设置的密码)。**
-
-这里是我的配置文件的例子：
-
-<div align=center><img src="https://usercontent.hamibot.com/avatars/ml/0/aQlXd/15.png" style="zoom:50%;" /></div>
 
 恭喜你，到这里就算是完成了!
 
