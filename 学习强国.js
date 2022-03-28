@@ -49,7 +49,7 @@ threads.start(function () {
 requestScreenCapture(false);
 sleep(delay_time);
 
-if (whether_improve_accuracy == 'yes' && !password && !AK) {
+if (whether_improve_accuracy == 'yes' && !AK) {
     toast("如果你选择了增强版，请配置信息，具体看脚本说明");
     exit();
 }
@@ -214,7 +214,6 @@ function back_track() {
         back();
         sleep(random_time(delay_time));
     }
-    app.launchApp('学习强国');
     switch (back_track_flag) {
         case 0:
             // 去中心模块
@@ -475,8 +474,11 @@ function select_option(answer, depth_click_option, options_text) {
     var option_i = options_text.indexOf(answer);
     // 如果找到答案对应的选项
     if (option_i != -1) {
-        className('android.widget.RadioButton').depth(depth_click_option).clickable(true).findOnce(option_i).click();
-        return;
+        try {
+            className('android.widget.RadioButton').depth(depth_click_option).clickable(true).findOnce(option_i).click();
+            return;
+        } catch (error) {
+        }
     }
 
     // 如果运行到这，说明很有可能是选项ocr错误，导致答案无法匹配，因此用最大相似度匹配
@@ -492,10 +494,17 @@ function select_option(answer, depth_click_option, options_text) {
                 }
             }
         }
-        className('android.widget.RadioButton').depth(depth_click_option).clickable(true).findOnce(max_similarity_index).click();
+        try {
+            className('android.widget.RadioButton').depth(depth_click_option).clickable(true).findOnce(max_similarity_index).click();
+            return;
+        } catch (error) {
+        }
     } else {
-        // 没找到答案，点击第一个
-        className('android.widget.RadioButton').depth(depth_click_option).clickable(true).findOne().click();
+        try {
+            // 没找到答案，点击第一个
+            className('android.widget.RadioButton').depth(depth_click_option).clickable(true).findOne().click();
+        } catch (error) {
+        }
     }
 }
 
@@ -705,7 +714,7 @@ function get_baidu_token() {
 if (whether_improve_accuracy == 'yes') var token = get_baidu_token();
 
 /**
- * 百度ocr接口，传入图片返回文字
+ * 百度ocr接口，传入图片返回文字和选项文字
  * @param {image} img 传入图片
  * @returns {string} question 文字
  * @returns {list[string]} options_text 选项文字 
@@ -746,11 +755,11 @@ function baidu_ocr_api(img) {
                 if (words_list[0].words.indexOf('.') != -1 && i > 0 &&
                     Math.abs(words_list[i].location['left'] -
                         words_list[i - 1].location['left']) > 100) question_flag = true;
-                question += words_list[i].words;
+                if (!question_flag) question += words_list[i].words;
                 // 如果question已经大于10了也不需要读取了
                 if (question > 10) question_flag = true;
-                // 这里不能用else，会漏读一次
             }
+            // 这里不能用else，会漏读一次
             if (question_flag) {
                 // 其他的就是选项了
                 if (words_list[i].words[1] == '.') options_text.push(words_list[i].words.slice(2));
@@ -765,9 +774,52 @@ function baidu_ocr_api(img) {
     return [question, options_text];
 }
 
+/**
+ * 从ocr.recognize()中提取出题目和选项文字
+ * @param {object} object ocr.recongnize()返回的json对象
+ * @returns {string} question 文字
+ * @returns {list[string]} options_text 选项文字 
+ * */
+function extract_ocr_recognize(object) {
+    var options_text = [];
+    var question = "";
+    var words_list = object.results;
+    if (words_list) {
+        // question是否读取完成的标志位
+        var question_flag = false;
+        for (var i in words_list) {
+            if (!question_flag) {
+                // 如果是选项则后面不需要加到question中
+                if (words_list[i].text[0] == "A") question_flag = true;
+                // 将题目读取到下划线处，如果读到下划线则不需要加到question中
+                // 利用bounds之差判断是否之中有下划线
+                /**
+                 * bounds:
+                 * 识别到的文字块的区域位置信息，列表形式，
+                 * bounds.left表示定位位置的长方形左上顶点的水平坐标
+                 */
+                if (words_list[0].text.indexOf('.') != -1 && i > 0 &&
+                    Math.abs(words_list[i].bounds.left -
+                        words_list[i - 1].bounds.left) > 100) question_flag = true;
+                if (!question_flag) question += words_list[i].text;
+                // 如果question已经大于10了也不需要读取了
+                if (question > 10) question_flag = true;
+            }
+            // 这里不能用else，会漏读一次
+            if (question_flag) {
+                // 其他的就是选项了
+                if (words_list[i].text[1] == '.') options_text.push(words_list[i].text.slice(2));
+                // else则是选项没有读取完全，这是由于hamibot本地ocr比较鸡肋，无法直接ocr完的缘故
+                else options_text[options_text.length - 1] = options_text[options_text.length - 1] + words_list[i].text;
+            }
+        }
+    }
+    question = ocr_processing(question, true);
+    return [question, options_text];
+}
 
 /**
- * ocr处理
+ * 本地ocr标点错词处理
  * @param {string} text 需要处理的文本
  * @param {boolean} if_question 是否处理的是问题（四人赛双人对战）
  */
@@ -860,7 +912,7 @@ function do_periodic_answer(number) {
                 sleep(random_time(delay_time));
                 var img = images.inRange(captureScreen(), '#800000', '#FF0000');
                 if (if_restart_flag && whether_improve_accuracy == 'yes') {
-                    answer = baidu_ocr_api(img);
+                    answer = baidu_ocr_api(img)[0];
                 } else {
                     try {
                         answer = ocr.recognizeText(img);
@@ -1131,16 +1183,18 @@ function do_contest() {
         img = images.clip(img, pos.left, pos.top, pos.width(), device.height - pos.top);
 
         if (whether_improve_accuracy == 'yes') {
-            var question = baidu_ocr_api(img)[0];
-            var options_text = baidu_ocr_api(img)[1];
+            var result = baidu_ocr_api(img);
+            var question = result[0];
+            var options_text = result[1];
         } else {
             try {
-                var question = ocr.recognizeText(img);
+                var result = extract_ocr_recognize(ocr.recognize(img));
+                var question = result[0];
+                var options_text = result[1];
             } catch (error) {
                 toast("请将hamibot软件升级至最新版本");
                 exit();
             }
-            var question = ocr_processing(question, true);
         }
 
         log("题目: " + question);
