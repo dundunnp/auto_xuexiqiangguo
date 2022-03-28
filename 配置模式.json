@@ -60,15 +60,6 @@
     "help": "如果选择是，请按照提示填写如以下内容（具体如何填写请看说明），否则不需填写"
   },
   {
-    "label": "选择使用百度ocr还是华为ocr",
-    "type": "radio",
-    "name": "baidu_or_huawei",
-    "options": {
-      "baidu": "百度",
-      "huawei": "华为"
-    }
-  },
-  {
     "name": "AK",
     "type": "text",
     "label": "API KEY",
@@ -79,42 +70,6 @@
     "type": "text",
     "label": "Secret KEY",
     "help": "如果选择百度，请填写，否则空着"
-  },
-  {
-    "name": "endpoint",
-    "type": "text",
-    "label": "Endpoint",
-    "help": "如果选择华为，请填写，否则空着"
-  },
-  {
-    "name": "projectId",
-    "type": "text",
-    "label": "project_id",
-    "help": "如果选择华为，请填写，否则空着"
-  },
-  {
-    "name": "username",
-    "type": "text",
-    "label": "username",
-    "help": "如果选择华为，请填写，否则空着"
-  },
-  {
-    "name": "password",
-    "type": "text",
-    "label": "password",
-    "help": "如果选择华为，请填写，否则空着"
-  },
-  {
-    "name": "domainname",
-    "type": "text",
-    "label": "domainname",
-    "help": "如果选择华为，请填写，否则空着"
-  },
-  {
-    "name": "projectname",
-    "type": "text",
-    "label": "projectname",
-    "help": "如果选择华为，请填写，否则空着"
   },
   {
     "name": "pushplus_token",
