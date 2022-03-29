@@ -5,41 +5,37 @@
  * 默认为1s(支持小数点形式)，根据手机性能与网络情况自行而定
  * 时间越长出bug的可能越小，但同时耗费的时间越长
  *  */
-var { delay_time } = 1;
+var delay_time = 1;
 
 /**
  * 是否完成四人赛
  * 请填入"yes"或"no"(默认为"yes")
  *  */
-var { four_player_battle } = "yes";
+var four_player_battle = "yes";
 
 /**
  * 完成四人赛几次(只能选择1或2)
  * 默认为2
  *  */
-var { count } = 2;
+var count = 2;
 
 /**
  * 是否完成双人对战
  * 请填入"yes"或"no"(默认为"yes")
  *  */
-var { two_player_battle } = "yes";
+var two_player_battle = "yes";
 
 /**
  * 请在双引号里填写百度AK和SK，如何获取请看README
  *  */
-var { AK } = "";
-var { SK } = "";
+var AK = "";
+var SK = "";
 
 /* **********************请填写如上信息********************** */
 
 auto.waitFor()
 count = Number(count);
 delay_time = Number(delay_time) * 1000;
-
-// 调用百度api所需参数
-var { AK } = hamibot.env;
-var { SK } = hamibot.env;
 
 // 本地存储数据
 var storage = storages.create('data');
