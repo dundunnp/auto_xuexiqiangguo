@@ -3,10 +3,35 @@
 
 如果喜欢的话可以star一下噢，谢谢！
 
-# 如何运行脚本
+# 如何使用脚本
+脚本可以在Hamibot上使用，也可以在Auto.js上使用，但由于Auto.js使用的是免费版，**不支持OCR**，Auto.js只能使用百度OCR，因此如果完整运行学习强国.js脚本的话（四人赛双人对战两个平台是一样的）将可能**调用百度OCR大约35次**，请谨慎使用，**超出百度OCR免费次数所产生的费用概不负责**
+
+具体操作如下：
+
+## Auto.js
+先下载安装包[(安装包链接)](https://github.com/dundunnp/hamibot-auto_xuexiqiangguo/blob/version-14.4/%E5%AE%89%E8%A3%85%E5%8C%85/autojsv4.1.1alpha2_downcc.com.apk)，将Auto.js安装到手机上，打开Auto.js根据提示开启权限
+
+点击右下角的浮球，点击文件，取一个脚本名称并确定
+<div align=center>
+<img src="https://user-images.githubusercontent.com/68000706/160570166-9e696d71-1cd0-4dc5-a63e-4530497668dd.jpg" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
+</div>
+将Auto.js文件夹下的学习强国.js文件的代码复制到这里去
+<div align=center>
+<img src="https://user-images.githubusercontent.com/68000706/160570183-1e384421-6f4d-461d-b8c8-a0bc5a40da2c.jpg" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
+</div>
+将代码划到最上面，根据提示填写配置信息，并点击右上角的保存
+<div align=center>
+<img src="https://user-images.githubusercontent.com/68000706/160570186-026415c6-b770-475c-86a2-5d08aeacb324.jpg" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
+</div>
+点击右三角运行按钮，脚本就开始运行了
+<div align=center>
+<img src="https://user-images.githubusercontent.com/68000706/160570195-3960b0ec-947d-4571-83c7-8732ed80c0ce.jpg" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
+</div>
+
+
+## Hamibot
 先跟随者[Hamibot指导](https://hamibot.com/guide)安装Hamibot并配对好机器人后，进行如下步骤进行安装脚本：
 
-由于某些原因，脚本已经在市场下架，但...开源万岁！，我们还是可以通过源码在自己的脚本控制台上运行，操作如下：
 点击脚本下的脚本控制台
 <div align=center>
 <img src="https://s3.bmp.ovh/imgs/2022/01/68c3e356367ccb8b.png" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
@@ -23,15 +48,7 @@
 <div align=center>
 <img src="https://s3.bmp.ovh/imgs/2022/01/362ac49b7ec05b84.png" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
 </div>
-点击学习强国.js文件
-<div align=center>
-<img src="https://s3.bmp.ovh/imgs/2022/01/f3fa59880c88552d.png" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
-</div>
-点击复制图标
-<div align=center>
-<img src="https://s3.bmp.ovh/imgs/2022/01/6c9c9f70f4508006.png" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
-</div>
-将刚刚复制的源码粘贴到这里，注意要把那一行代码覆盖，同理将配置模式.json也复制粘贴到配置模式中
+将Hamibot文件夹下的学习强国.js代码复制粘贴到这里，注意要把那一行代码覆盖，同理将配置模式.json也复制粘贴到配置模式中
 <div align=center>
 <img src="https://s3.bmp.ovh/imgs/2022/01/9274fbc0cd701637.png" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
 </div>
@@ -60,18 +77,26 @@
 # v14.4 更新内容:
 1. 优化答题速度
 2. 第三方ocr取消华为ocr，仅支持百度ocr
+3. 增加Auto.js平台
 
 <!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
 
 <!-- code_chunk_output -->
 # 目录
 - [免责声明](#免责声明)
+- [如何使用脚本](#如何使用脚本)
+  - [Auto.js](#autojs)
+  - [Hamibot](#hamibot)
+- [v14.4 更新内容:](#v144-更新内容)
+- [目录](#目录)
 - [脚本声明](#脚本声明)
+- [额外衍生脚本](#额外衍生脚本)
 - [使用说明](#使用说明)
   - [Hamibot](#hamibothttpshamibotcom)
   - [安装脚本](#安装脚本)
   - [满足条件](#满足条件)
   - [编辑配置](#编辑配置)
+    - [百度API配置](#百度api配置)
 - [常见问题](#常见问题)
 - [待编写](#待编写)
 
