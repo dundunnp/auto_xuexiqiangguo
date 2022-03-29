@@ -13,7 +13,7 @@
 
 点击右下角的浮球，点击文件，取一个脚本名称并确定
 <div align=center>
-<img src="https://user-images.githubusercontent.com/68000706/160570166-9e696d71-1cd0-4dc5-a63e-4530497668dd.jpg" alt="msedge_WRzp0mov3N" style="zoom:10%;" />
+<img src="https://user-images.githubusercontent.com/68000706/160570166-9e696d71-1cd0-4dc5-a63e-4530497668dd.jpg" alt="msedge_WRzp0mov3N" width="100px" style="zoom:33%;" />
 </div>
 将Auto.js文件夹下的学习强国.js文件的代码复制到这里去
 <div align=center>
