@@ -5,37 +5,37 @@
  * 默认为1s(支持小数点形式)，根据手机性能与网络情况自行而定
  * 时间越长出bug的可能越小，但同时耗费的时间越长
  *  */
-var { delay_time } = 1;
+var delay_time = 1;
 
 /**
  * 是否完成四人赛
  * 请填入"yes"或"no"(默认为"yes")
  *  */
-var { four_player_battle } = "yes";
+var four_player_battle = "yes";
 
 /**
  * 完成四人赛几次(可以选择超过两次以上)
  * 默认为2次
  *  */
-var { four_player_count } = 2;
+var four_player_count = 2;
 
 /**
  * 是否完成双人对战
  * 请填入"yes"或"no"(默认为"yes")
  *  */
-var { two_player_battle } = "yes";
+var two_player_battle = "yes";
 
 /**
  * 完成双人对战几次(可以选择超过两次以上)
  * 默认为1次
  *  */
-var { two_player_count } = 1;
+var two_player_count = 1;
 
 /**
  * 每题之间的时间间隔(单位秒)
  * 默认为4s(支持小数点形式)
  *  */
-var { contest_delay_time } = 4;
+var contest_delay_time = 4;
 
 /* **********************请填写如上信息********************** */
 auto.waitFor()
