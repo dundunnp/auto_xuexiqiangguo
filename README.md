@@ -17,15 +17,15 @@
 </div>
 将Auto.js文件夹下的学习强国.js文件的代码复制到这里去
 <div align=center>
-<img src="https://user-images.githubusercontent.com/68000706/160570183-1e384421-6f4d-461d-b8c8-a0bc5a40da2c.jpg" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
+<img src="https://user-images.githubusercontent.com/68000706/160570183-1e384421-6f4d-461d-b8c8-a0bc5a40da2c.jpg" alt="msedge_WRzp0mov3N" width="300px" style="zoom:33%;" />
 </div>
 将代码划到最上面，根据提示填写配置信息，并点击右上角的保存
 <div align=center>
-<img src="https://user-images.githubusercontent.com/68000706/160570186-026415c6-b770-475c-86a2-5d08aeacb324.jpg" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
+<img src="https://user-images.githubusercontent.com/68000706/160570186-026415c6-b770-475c-86a2-5d08aeacb324.jpg" alt="msedge_WRzp0mov3N" width="300px" style="zoom:33%;" />
 </div>
 点击右三角运行按钮，脚本就开始运行了
 <div align=center>
-<img src="https://user-images.githubusercontent.com/68000706/160570195-3960b0ec-947d-4571-83c7-8732ed80c0ce.jpg" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
+<img src="https://user-images.githubusercontent.com/68000706/160570195-3960b0ec-947d-4571-83c7-8732ed80c0ce.jpg" alt="msedge_WRzp0mov3N" width="300px" style="zoom:33%;" />
 </div>
 
 
