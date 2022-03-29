@@ -518,7 +518,7 @@ if (four_player_battle == 'yes') {
     do_contest();
     if (i == 0 && count == 2) {
       sleep(random_time(delay_time * 2));
-      while (!click('继续挑战'));
+      my_click_clickable('继续挑战');
       sleep(random_time(delay_time));
     }
   }
