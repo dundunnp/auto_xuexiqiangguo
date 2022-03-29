@@ -5,45 +5,45 @@
  * 默认为1s(支持小数点形式)，根据手机性能与网络情况自行而定
  * 时间越长出bug的可能越小，但同时耗费的时间越长
  *  */
-var { delay_time } = 1;
+var delay_time = 1;
 
 /**
  * 之前的每周答题是否全部完成
  * 请填入"yes"或"no"(默认为"no")
  * 如果完成就不需要浪费时间向下搜索
  *  */
-var { all_weekly_answers_completed } = "no";
+var all_weekly_answers_completed = "no";
 
 /**
  * 之前的专项答题是否全部完成
  * 请填入"yes"或"no"(默认为"no")
  * 如果完成就不需要浪费时间向下搜索
  *  */
-var { all_special_answer_completed } = "no";
+var all_special_answer_completed = "no";
 
 /**
  * 是否完成订阅模块
  * 请填入"yes"或"no"(默认为"yes")
  *  */
-var { whether_complete_subscription } = "yes";
+var whether_complete_subscription = "yes";
 
 /**
  * 是否完成发表言论模块
  * 请填入"yes"或"no"(默认为"yes")
  *  */
-var { whether_complete_speech } = "yes";
+var whether_complete_speech = "yes";
 
 /**
  * 请在双引号里填写百度AK和SK，如何获取请看README
  *  */
-var { AK } = "";
-var { SK } = "";
+var AK = "";
+var SK = "";
 
 /**
  * 选填，是否要使用微信消息推送功能
  * 如是 请填写pushplus的token，如何获取请见说明
  *  */
-var { pushplus_token } = "";
+var pushplus_token = "";
 
 /* **********************请填写如上信息********************** */
 
