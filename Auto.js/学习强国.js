@@ -591,12 +591,15 @@ back_track_flag = 2;
 
 // 填空题
 function fill_in_blank(answer) {
-    // 需要点击一下第一个框才能paste
-    className('android.view.View').depth(25).findOne().click();
-    setClip(answer);
+    // 获取每个空
     var blanks = className('android.view.View').depth(25).find();
     for (var i = 0; i < blanks.length; i++) {
+        // 需要点击一下空才能paste
+        blanks[i].click();
+        setClip(answer[i]);
         blanks[i].paste();
+        // 需要缓冲
+        sleep(500);
     }
 }
 
