@@ -589,14 +589,15 @@ function do_contest_answer(depth_click_option, question, options_text) {
 
 back_track_flag = 2;
 
-// 填空题
+// 填空题（多空的处理）
+// 传入的参数answer应该是一个list，
+// 或者以"正确|错误"的方式存储，再用answer = answer.split("|");的方式转为list。
 function fill_in_blank(answer) {
-    // 需要点击一下第一个框才能paste
-    className('android.view.View').depth(25).findOne().click();
-    setClip(answer);
-    var blanks = className('android.view.View').depth(25).find();
-    for (var i = 0; i < blanks.length; i++) {
-        blanks[i].paste();
+    // 获取文本框控件集合
+    let space = className("android.widget.EditText").find();
+    for (let i = 0; i < space.length; i++) {
+        setText(i, answer[i]);
+        sleep(1000);
     }
 }
 
