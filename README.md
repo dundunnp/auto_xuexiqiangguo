@@ -78,7 +78,6 @@
 
 # v14.5 更新内容:
 1. 解决填空空分开情况的问题
-2. 
 
 <!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
 
