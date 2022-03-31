@@ -8,27 +8,6 @@
 
 具体操作如下：
 
-## Auto.js
-先下载安装包[(安装包链接)](https://github.com/dundunnp/hamibot-auto_xuexiqiangguo/blob/version-14.4/%E5%AE%89%E8%A3%85%E5%8C%85/autojsv4.1.1alpha2_downcc.com.apk)，将Auto.js安装到手机上，打开Auto.js根据提示开启权限
-
-点击右下角的浮球，点击文件，取一个脚本名称并确定
-<div align=center>
-<img src="https://user-images.githubusercontent.com/68000706/160570166-9e696d71-1cd0-4dc5-a63e-4530497668dd.jpg" alt="msedge_WRzp0mov3N" width="300px" style="zoom:33%;" />
-</div>
-将Auto.js文件夹下的学习强国.js文件的代码复制到这里去
-<div align=center>
-<img src="https://user-images.githubusercontent.com/68000706/160570183-1e384421-6f4d-461d-b8c8-a0bc5a40da2c.jpg" alt="msedge_WRzp0mov3N" width="300px" style="zoom:33%;" />
-</div>
-将代码划到最上面，根据提示填写配置信息，并点击右上角的保存
-<div align=center>
-<img src="https://user-images.githubusercontent.com/68000706/160570186-026415c6-b770-475c-86a2-5d08aeacb324.jpg" alt="msedge_WRzp0mov3N" width="300px" style="zoom:33%;" />
-</div>
-点击右三角运行按钮，脚本就开始运行了
-<div align=center>
-<img src="https://user-images.githubusercontent.com/68000706/160570195-3960b0ec-947d-4571-83c7-8732ed80c0ce.jpg" alt="msedge_WRzp0mov3N" width="300px" style="zoom:33%;" />
-</div>
-
-
 ## Hamibot
 先跟随者[Hamibot指导](https://hamibot.com/guide)安装Hamibot并配对好机器人后，进行如下步骤进行安装脚本：
 
@@ -64,10 +43,33 @@
 <div align=center>
 <img src="https://s3.bmp.ovh/imgs/2022/01/54884dc3a8fa9d01.png" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
 </div>
+
+## Auto.js
+先下载安装包[(安装包链接)](https://github.com/dundunnp/hamibot-auto_xuexiqiangguo/blob/version-14.4/%E5%AE%89%E8%A3%85%E5%8C%85/autojsv4.1.1alpha2_downcc.com.apk)，将Auto.js安装到手机上，打开Auto.js根据提示开启权限
+
+点击右下角的浮球，点击文件，取一个脚本名称并确定
+<div align=center>
+<img src="https://user-images.githubusercontent.com/68000706/160570166-9e696d71-1cd0-4dc5-a63e-4530497668dd.jpg" alt="msedge_WRzp0mov3N" width="300px" style="zoom:33%;" />
+</div>
+将Auto.js文件夹下的学习强国.js文件的代码复制到这里去
+<div align=center>
+<img src="https://user-images.githubusercontent.com/68000706/160570183-1e384421-6f4d-461d-b8c8-a0bc5a40da2c.jpg" alt="msedge_WRzp0mov3N" width="300px" style="zoom:33%;" />
+</div>
+将代码划到最上面，根据提示填写配置信息，并点击右上角的保存
+<div align=center>
+<img src="https://user-images.githubusercontent.com/68000706/160570186-026415c6-b770-475c-86a2-5d08aeacb324.jpg" alt="msedge_WRzp0mov3N" width="300px" style="zoom:33%;" />
+</div>
+点击右三角运行按钮，脚本就开始运行了
+<div align=center>
+<img src="https://user-images.githubusercontent.com/68000706/160570195-3960b0ec-947d-4571-83c7-8732ed80c0ce.jpg" alt="msedge_WRzp0mov3N" width="300px" style="zoom:33%;" />
+</div>
+
 如果想要使用其他版本的如v10.11，可以点击这里其他流程一样（不建议）
 <div align=center>
 <img src="https://s3.bmp.ovh/imgs/2022/01/12258501b035ee0e.png" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
 </div>
+
+其他脚本也类似上述操作，只是代码不同
 
 **如果喜欢的话可以star一下噢，谢谢！**
 <div align=center>
@@ -184,15 +186,14 @@
 Q1: 点击运行脚本没有反应，甚至连学习强国都没有打开
 
 A: 
-1. 请确保Hamibot已经打开**无障碍服务权限**
+1. 请确保Hamibot或Auto.js已经打开**无障碍服务权限**
 2. 由于hamibot软件原因或某种原因，脚本无法运行（我也出现过这种情况）你可以重新下载hamibot软件
 
 ***
 
 Q2: 在四人赛、双人对战正确率感人
 
-A: 我用自己手机测试答题正确率能在80%以上，大家出现错误率高的主要原因在于：题库的数目有限。
-解决方法：后续版本会利用更好的题库
+A: 我用自己手机测试答题正确率能在90%以上，大家出现错误率高的主要原因在于：是否正确配置百度OCR
 **另：错误是无法避免的，如果你有特殊的需求我一定要拿满分，非常抱歉这个脚本可能不能满足你**
 
 ***
