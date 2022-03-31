@@ -76,21 +76,14 @@
 <img src="https://s3.bmp.ovh/imgs/2022/01/2fc8345bdc719323.png" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
 </div>
 
-# v14.4 更新内容:
-1. 优化答题速度
-2. 第三方ocr取消华为ocr，仅支持百度ocr
-3. 增加Auto.js平台
+# v14.5 更新内容:
+1. 解决填空空分开情况的问题
+2. 
 
 <!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
 
 <!-- code_chunk_output -->
 # 目录
-- [免责声明](#免责声明)
-- [如何使用脚本](#如何使用脚本)
-  - [Auto.js](#autojs)
-  - [Hamibot](#hamibot)
-- [v14.4 更新内容:](#v144-更新内容)
-- [目录](#目录)
 - [脚本声明](#脚本声明)
 - [额外衍生脚本](#额外衍生脚本)
 - [使用说明](#使用说明)
@@ -212,5 +205,5 @@ Q5: 除上面的问题
 A: 请在[GitHub](https://github.com/dundunnp/hamibot-auto_xuexiqiangguo/issues)或议题上提出问题，问题尽量详细，包含图片（配置信息、学习强国主页等有助于了解问题的图片）或视频，这样对大家解决问题都快
 
 # 待编写
-1. 填空题如果文本框有分开的情况还未解决
-2. 其他第三方ocr接口的编写
+1. 其他第三方ocr接口的编写
+2. Auto.js OCR插件的编写
