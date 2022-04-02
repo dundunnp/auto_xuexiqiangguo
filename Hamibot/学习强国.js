@@ -255,21 +255,26 @@ var two_players_scored;
 function get_finish_list() {
     var finish_list = [];
     for (var i = 4; i < 17; i++) {
-        var model = className('android.view.View').depth(22).findOnce(i);
-        if (i == 4) {
-            completed_read_count = parseInt(model.child(2).text().match(/\d+/)) / 2;
-        } else if (i == 5) {
-            completed_watch_count = parseInt(model.child(2).text().match(/\d+/));
-        } else if (i == 8) {
-            weekly_answer_scored = parseInt(model.child(2).text().match(/\d+/));
-        } else if (i == 9) {
-            special_answer_scored = parseInt(model.child(2).text().match(/\d+/));
-        } else if (i == 11) {
-            four_players_scored = parseInt(model.child(2).text().match(/\d+/));
-        } else if (i == 12) {
-            two_players_scored = parseInt(model.child(2).text().match(/\d+/));
+        // 由于模拟器有model无法读取因此用try catch
+        try {
+            var model = className('android.view.View').depth(22).findOnce(i);
+            if (i == 4) {
+                completed_read_count = parseInt(model.child(2).text().match(/\d+/)) / 2;
+            } else if (i == 5) {
+                completed_watch_count = parseInt(model.child(2).text().match(/\d+/));
+            } else if (i == 8) {
+                weekly_answer_scored = parseInt(model.child(2).text().match(/\d+/));
+            } else if (i == 9) {
+                special_answer_scored = parseInt(model.child(2).text().match(/\d+/));
+            } else if (i == 11) {
+                four_players_scored = parseInt(model.child(2).text().match(/\d+/));
+            } else if (i == 12) {
+                two_players_scored = parseInt(model.child(2).text().match(/\d+/));
+            }
+            finish_list.push(model.child(3).text() == '已完成');
+        } catch (error) {
+            finish_list.push(false);
         }
-        finish_list.push(model.child(3).text() == '已完成');
     }
     return finish_list;
 }
@@ -388,8 +393,8 @@ if (!finish_list[2] && !finish_list[0]) {
     sleep(random_time(delay_time));
     my_click_clickable('听广播');
     sleep(random_time(delay_time));
-    id('v_playing').waitFor();
-    id('v_playing').findOne().click();
+    className('android.widget.ImageView').clickable(true).id('v_playing').waitFor();
+    className('android.widget.ImageView').clickable(true).id('v_playing').findOne().click();
     // 获取新的完成情况列表
     sleep(random_time(delay_time));
     var back_track_flag = 2;
