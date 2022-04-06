@@ -1,9 +1,41 @@
+<!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
+
+<!-- code_chunk_output -->
+# 目录
+- [目录](#目录)
+- [免责声明](#免责声明)
+- [v14.5 更新内容:](#v145-更新内容)
+- [脚本声明](#脚本声明)
+- [使用说明](#使用说明)
+  - [Hamibot](#hamibot)
+  - [Auto.js](#autojs)
+  - [满足条件](#满足条件)
+  - [编辑配置说明](#编辑配置说明)
+  - [百度API配置](#百度api配置)
+- [额外衍生脚本](#额外衍生脚本)
+- [常见问题](#常见问题)
+- [待编写](#待编写)
+
+<!-- /code_chunk_output -->
+
 # 免责声明
 **本脚本为免费使用，本脚本只供个人学习使用，不得盈利传播，不得用于违法用途，否则造成的一切后果自负！**
 
 如果喜欢的话可以star一下噢，谢谢！
 
-# 如何使用脚本
+# v14.5 更新内容:
+1. 解决填空空分开情况的问题
+2. 修复关闭广播时退出的bug
+3. 修复模拟器的某个bug
+
+# 脚本声明
+**本脚本适用于安卓、鸿蒙系统，不适用于IOS，请将强国软件换为2.33.0版本（[安装包](https://github.com/dundunnp/auto_xuexiqiangguo/tree/version-14.5/%E5%AE%89%E8%A3%85%E5%8C%85)），这之后的版本脚本运行可能报错**
+**如果因为bug或各种原因不得不终止脚本，请重新运行脚本，脚本会自动跳过已完成的部分**
+**如果遇到bug问题，请先查看[常见问题](#常见问题)，如果没有找到类似问题或还是不行请反馈bug给我**
+**因为本人是在校学生无法把全部精力放在这，因此如果有想合作的小伙伴请在Github上一起完成更新项目**
+
+# 使用说明
+
 脚本可以在Hamibot上使用，也可以在Auto.js上使用，但由于Auto.js使用的是免费版，**不支持OCR**，Auto.js只能使用百度OCR，因此如果完整运行学习强国.js脚本的话（四人赛双人对战两个平台是一样的）将可能**调用百度OCR大约35次**，请谨慎使用，**超出百度OCR免费次数所产生的费用概不负责**
 
 具体操作如下：
@@ -66,72 +98,34 @@
 
 如果想要使用其他版本的如v10.11，可以点击这里其他流程一样（不建议）
 <div align=center>
-<img src="https://s3.bmp.ovh/imgs/2022/01/12258501b035ee0e.png" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
+<img src="https://s3.bmp.ovh/imgs/2022/01/12258501b035ee0e.png" alt="msedge_WRzp0mov3N"  width="300px" style="zoom:33%;" />
 </div>
 
 其他脚本也类似上述操作，只是代码不同
 
 **如果喜欢的话可以star一下噢，谢谢！**
 <div align=center>
-<img src="https://s3.bmp.ovh/imgs/2022/01/2fc8345bdc719323.png" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
+<img src="https://s3.bmp.ovh/imgs/2022/01/2fc8345bdc719323.png" alt="msedge_WRzp0mov3N"  width="300px" style="zoom:33%;" />
 </div>
-
-# v14.5 更新内容:
-1. 解决填空空分开情况的问题
-2. 修复关闭广播时退出的bug
-3. 修复模拟器的某个bug
-<!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
-
-<!-- code_chunk_output -->
-# 目录
-- [脚本声明](#脚本声明)
-- [额外衍生脚本](#额外衍生脚本)
-- [使用说明](#使用说明)
-  - [Hamibot](#hamibothttpshamibotcom)
-  - [安装脚本](#安装脚本)
-  - [满足条件](#满足条件)
-  - [编辑配置](#编辑配置)
-    - [百度API配置](#百度api配置)
-- [常见问题](#常见问题)
-- [待编写](#待编写)
-
-<!-- /code_chunk_output -->
-
-# 脚本声明
-**本脚本适用于安卓、鸿蒙系统，不适用于IOS，尽量将强国软件升级至最新版本，如有其他版本出现报错，我也无法解决**
-**如果因为bug或各种原因不得不终止脚本，请重新运行脚本，脚本会自动跳过已完成的部分**
-**如果遇到bug问题，请先查看[常见问题](#常见问题)，如果没有找到类似问题或还是不行请反馈bug给我，对于其他问题，由于我还在上课实在无暇顾及，抱歉**
-**所有模块均可完成！！**因为本人是在校学生无法把全部精力放在这，因此如果有想合作的小伙伴请在Github上一起完成更新项目
-
-# 额外衍生脚本
-1. [单独四人赛双人对战脚本](https://github.com/dundunnp/hamibot-auto_xuexiqiangguo/tree/main/%E5%9B%9B%E4%BA%BA%E8%B5%9B%E5%8F%8C%E4%BA%BA%E5%AF%B9%E6%88%98)，相关配置说明见README.md
-2. [四人赛双人对战答错脚本](https://github.com/dundunnp/hamibot-auto_xuexiqiangguo/tree/main/%E5%9B%9B%E4%BA%BA%E8%B5%9B%E5%8F%8C%E4%BA%BA%E5%AF%B9%E6%88%98%E7%AD%94%E9%94%99%E7%89%88)，相关配置说明见README.md
-
-# 使用说明
-
-## [Hamibot](https://hamibot.com/)
-如果知道这款软件的小伙伴可以直接跳到配置，这是它的[官网](https://hamibot.com/)https://hamibot.com，里面有详细的介绍， 目前这款软件只适用于安卓系统
-
-## 安装脚本
-在手机上安装完成Hamibot之后，在[脚本市场](https://hamibot.com/marketplace)搜索["Auto学习强国"](https://hamibot.com/marketplace/aQlXd)并安装脚本
 
 ## 满足条件
 请确保手机满足以下条件
 1. 打开无障碍服务权限、程序保持后台运行
-2. 手机打开勿扰模式，防止突然的信息弹窗导致脚本的失败
+2. 手机尽量打开勿扰模式，防止突然的信息弹窗导致脚本的失败
 3. 请不要使用花里胡哨的字体和输入法键盘，尽量使用系统默认，防止干扰ocr
 
-## 编辑配置
+## 编辑配置说明
+
+**跳转页面加载的时间(以秒s为单位)**
+
 填写跳转页面加载的时间(以秒s为单位)，默认为1s(支持小数点形式)，根据手机性能与网络情况自行而定，时间越长出bug的可能越小，但同时耗费的时间越长。
 我的手机是华为mate20 pro用的是1s，大家可以参考一下，不建议小于1s，太快不符合正常人类点击频率，容易被系统侦测出（当然我也设置了随机时间性，你的任何等待时间都是你设定的基础值加一个随机时间）
 
-目前脚本支持两种模式：
-1. 普通版四人赛双人对战模式
-2. 增强版四人赛双人对战模式
+**是否提高四人赛双人对战正确率**
 
-**脚本默认不为增强版**，非增强版利用本地ocr识别题目，在识别速度、识别正确率上比第三方ocr差。此脚本选用华为API或者百度API实现OCR功能，如果你想使用增强版，选择其中一个配置即可
+脚本默认不为否，如果为否利用本地ocr识别题目，在识别速度、识别正确率上比第三方ocr差。此脚本选用百度API实现OCR功能，如果你想提高，需要按如下操作进行配置
 
-### 百度API配置
+## 百度API配置
 
 首先编辑脚本，将配置选项选择“是”
 <div align=center><img src="https://i.bmp.ovh/imgs/2022/01/143fefa456e002b1.png"/></div>
@@ -173,6 +167,10 @@
 <div align=center><img src="https://bce.bdstatic.com/doc/ai-cloud-share/OCR/%E5%9B%BE%E7%89%877_fa8935a.png" style="zoom:50%;" /></div>
 
 恭喜你，到这里就算是完成了!
+
+# 额外衍生脚本
+1. [单独四人赛双人对战脚本](https://github.com/dundunnp/auto_xuexiqiangguo/tree/version-14.5/%E5%9B%9B%E4%BA%BA%E8%B5%9B%E5%8F%8C%E4%BA%BA%E5%AF%B9%E6%88%98)，相关配置说明见README.md
+2. [四人赛双人对战答错脚本](https://github.com/dundunnp/auto_xuexiqiangguo/tree/version-14.5/%E5%9B%9B%E4%BA%BA%E8%B5%9B%E5%8F%8C%E4%BA%BA%E5%AF%B9%E6%88%98%E7%AD%94%E9%94%99%E7%89%88)，相关配置说明见README.md
 
 # 常见问题
 
