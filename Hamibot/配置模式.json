@@ -84,9 +84,9 @@
     "help": "选填，是否要使用server酱推送，如是请填写server酱的token。"
   },
   {
-    "name": "是否在脚本执行期间静音？",
+    "label": "是否在脚本执行期间静音？",
     "type": "radio",
-    "label": "whether_mute",
+    "name": "whether_mute",
     "options": {
       "yes": "是",
       "no": "否"
@@ -95,9 +95,9 @@
     "help": "选是则在脚本执行期间静音。需要授予hamibot或autojs修改系统设置的权限。"
   },
   {
-    "name": "是否启用冻结学习强国？",
+    "label": "是否启用冻结学习强国？",
     "type": "radio",
-    "label": "whether_froze_app",
+    "name": "whether_froze_app",
     "options": {
       "yes": "是",
       "no": "否"
