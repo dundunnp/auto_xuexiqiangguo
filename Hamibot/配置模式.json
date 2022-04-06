@@ -76,5 +76,33 @@
     "type": "text",
     "label": "pushplus_token",
     "help": "选填，是否要使用微信消息推送功能，如是请填写pushplus的token，如何获取请见说明"
+  },
+  {
+    "name": "sct_token",
+    "type": "text",
+    "label": "sct_token",
+    "help": "选填，是否要使用server酱推送，如是请填写server酱的token。"
+  },
+  {
+    "name": "是否在脚本执行期间静音？",
+    "type": "radio",
+    "label": "whether_mute",
+    "options": {
+      "yes": "是",
+      "no": "否"
+    },
+    "validation": "required",
+    "help": "选是则在脚本执行期间静音。需要授予hamibot或autojs修改系统设置的权限。"
+  },
+  {
+    "name": "是否启用冻结学习强国？",
+    "type": "radio",
+    "label": "whether_froze_app",
+    "options": {
+      "yes": "是",
+      "no": "否"
+    },
+    "validation": "required",
+    "help": "如果不知道什么是root，请选择否。如果选择是，学习强国会在脚本结束后自动被冻结(pm disable)，下次运行脚本时解冻。本操作需要root权限。"
   }
 ]
