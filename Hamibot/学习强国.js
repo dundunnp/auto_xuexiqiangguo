@@ -226,52 +226,55 @@ function push_weixin_message(message) {
  * back_track_flag = 2时，表示竞赛、答题部分和准备部分
  */
 function back_track() {
-  app.launchApp('学习强国');
-  sleep(random_time(delay_time * 3));
-  if (text('新用户注册').exists()) {
-    device.cancelKeepingAwake();
-    //震动一秒
-    device.vibrate(1000);
-    push_weixin_message('请先登录学习强国');
-    log('请先登录学习强国');
-    exit(0);
-  }
-  if (text('立即升级').exists()) {
-    log('点击:' + '取消');
-    text('取消').findOne().click();
-  }
-  var while_count = 0;
-  while (!id('comm_head_title').exists() && while_count < 5) {
-    while_count++;
-    back();
-    sleep(random_time(delay_time));
-  }
-  switch (back_track_flag) {
-    case 0:
-      // 去中心模块
-      log('等待:' + 'home_bottom_tab_icon_large');
-      id('home_bottom_tab_icon_large').waitFor();
+  do {
+    app.launchApp('学习强国');
+    sleep(random_time(delay_time * 3));
+    if (text('新用户注册').exists()) {
+      device.cancelKeepingAwake();
+      //震动一秒
+      device.vibrate(1000);
+      push_weixin_message('请先登录学习强国');
+      toast('请先登录学习强国');
+      exit(0);
+    }
+    if (text('立即升级').exists()) {
+      log('点击:' + '取消');
+      text('取消').findOne().click();
+    }
+    var while_count = 0;
+    while (!id('comm_head_title').exists() && while_count < 5) {
+      while_count++;
+      back();
       sleep(random_time(delay_time));
-      var home_bottom = id('home_bottom_tab_icon_large').findOne().bounds();
-      click(home_bottom.centerX(), home_bottom.centerY());
-      // 去province模块
-      log('等待:' + 'adnroid.view.ViewGroup');
-      className('adnroid.view.ViewGroup').depth(15).waitFor();
-      sleep(random_time(delay_time));
-      log('点击:' + 'android.view.ViewGroup');
-      className('android.view.ViewGroup').depth(15).findOnce(2).child(3).click();
-      break;
-    case 1:
-      break;
-    case 2:
-      my_click_clickable('我的');
-      sleep(random_time(delay_time));
-      my_click_clickable('学习积分');
-      sleep(random_time(delay_time));
-      log('等待:' + '登录');
-      text('登录').waitFor();
-      break;
-  }
+    }
+    switch (back_track_flag) {
+      case 0:
+        // 去中心模块
+        log('等待:' + 'home_bottom_tab_icon_large');
+        id('home_bottom_tab_icon_large').waitFor();
+        sleep(random_time(delay_time));
+        var home_bottom = id('home_bottom_tab_icon_large').findOne().bounds();
+        click(home_bottom.centerX(), home_bottom.centerY());
+        // 去province模块
+        log('等待:' + 'adnroid.view.ViewGroup');
+        className('adnroid.view.ViewGroup').depth(15).waitFor();
+        sleep(random_time(delay_time));
+        log('点击:' + 'android.view.ViewGroup');
+        className('android.view.ViewGroup').depth(15).findOnce(2).child(3).click();
+        break;
+      case 1:
+        break;
+      case 2:
+        my_click_clickable('我的');
+        sleep(random_time(delay_time));
+        my_click_clickable('学习积分');
+        sleep(random_time(delay_time));
+        log('等待:' + '登录');
+        text('登录').waitFor();
+        break;
+    }
+    // 当由于未知原因退出学习强国，则重新执行
+  } while (!className('FrameLayout').packageName('cn.xuexi.android').exists());
 }
 
 /**
