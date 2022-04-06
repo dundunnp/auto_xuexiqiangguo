@@ -3,7 +3,7 @@ auto.waitFor();
 // 将设备保持常亮
 device.keepScreenDim();
 
-//可选静音
+//可选静音,需要给hamibot添加修改系统设置权限
 var { whether_mute } = hamibot.env;
 if (whether_mute) {
   var vol = device.getMusicVolume();
