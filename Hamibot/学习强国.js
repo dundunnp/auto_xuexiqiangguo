@@ -228,7 +228,7 @@ function push_weixin_message(message) {
 function back_track() {
   do {
     app.launchApp('学习强国');
-    sleep(random_time(delay_time * 3));
+    sleep(random_time(delay_time * back_track_wait_time));
     if (text('新用户注册').exists()) {
       device.cancelKeepingAwake();
       //震动一秒
@@ -265,13 +265,20 @@ function back_track() {
       case 1:
         break;
       case 2:
-        my_click_clickable('我的');
-        sleep(random_time(delay_time));
-        my_click_clickable('学习积分');
-        sleep(random_time(delay_time));
-        log('等待:' + '登录');
-        text('登录').waitFor();
-        break;
+        // 当网络不稳定时容易碰见积分规则更新中的情况
+        while (true) {
+          my_click_clickable('我的');
+          sleep(random_time(delay_time));
+          my_click_clickable('学习积分');
+          sleep(random_time(delay_time));
+          log('等待:' + '积分规则');
+          text('积分规则').waitFor();
+          sleep(random_time(delay_time));
+          if (text('登录').exists()) break;
+          back();
+          sleep(random_time(delay_time));
+          back();
+        }
     }
     // 当由于未知原因退出学习强国，则重新执行
   } while (!className('FrameLayout').packageName('cn.xuexi.android').exists());
@@ -328,7 +335,11 @@ function get_finish_list() {
  */
 
 var back_track_flag = 2;
+// 首次运行可能弹升级，等久一点
+var back_track_wait_time = 4;
 back_track();
+// 等待时间可以少一点了
+back_track_wait_time = 1.5;
 var finish_list = get_finish_list();
 
 // 返回首页
@@ -507,7 +518,8 @@ if (!finish_list[1] || !finish_list[2]) {
       }
       sleep(Number(current_video_time.slice(4)) * 1000 + 500);
     } catch (error) {
-      // 如果被"即将播放"将读取不到视频的时间长度，此时就sleep 3秒            sleep(3000);
+      // 如果被"即将播放"将读取不到视频的时间长度，此时就sleep 3秒
+      sleep(3000);
     }
     completed_watch_count++;
   }
@@ -1355,7 +1367,7 @@ if (!finish_list[8] && two_players_scored < 1) {
 /*
  **********订阅*********
  */
-if (!finish_list[9] && whether_complete_subscription == 'yes') {
+while (!finish_list[9] && whether_complete_subscription == 'yes') {
   log('订阅');
   sleep(random_time(delay_time));
   if (!className('android.view.View').depth(21).text('学习积分').exists()) back_track();
@@ -1469,6 +1481,10 @@ if (!finish_list[9] && whether_complete_subscription == 'yes') {
     log('点击:' + 'android.widget.Button');
     className('android.widget.Button').clickable(true).depth(11).findOne().click();
   }
+  // 在订阅模块中若未拿满分，则重试
+  back_track_flag = 2;
+  back_track();
+  finish_list = get_finish_list();
 }
 
 /*
