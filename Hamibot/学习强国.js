@@ -27,17 +27,6 @@ if (app.versionName < "1.3.1") {
     exit();
 }
 
-//请求横屏截图权限
-cap_t = threads.start(function () {
-    try {
-        var beginBtn;
-        if ((beginBtn = classNameContains("Button").textContains("开始").findOne(delay_time)));
-        else beginBtn = classNameContains("Button").textContains("允许").findOne(delay_time);
-        beginBtn.click();
-    } catch (error) { }
-});
-requestScreenCapture(false);
-
 // setScreenMetrics(1080, 2340);
 
 // 获取基础数据
@@ -51,6 +40,17 @@ var { sct_token } = hamibot.env;
 var { pushplus_token } = hamibot.env;
 var whether_push_capture = false;
 //var { whether_push_capture } = hamibot.env;
+
+//请求横屏截图权限
+threads.start(function () {
+    try {
+        var beginBtn;
+        if ((beginBtn = classNameContains("Button").textContains("开始").findOne(delay_time)));
+        else beginBtn = classNameContains("Button").textContains("允许").findOne(delay_time);
+        beginBtn.click();
+    } catch (error) { }
+});
+requestScreenCapture(false);
 
 // 本地存储数据
 var storage = storages.create("data");
