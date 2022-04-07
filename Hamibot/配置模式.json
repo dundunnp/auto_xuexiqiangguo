@@ -72,18 +72,6 @@
     "help": "如果选择百度，请填写，否则空着"
   },
   {
-    "name": "pushplus_token",
-    "type": "text",
-    "label": "pushplus_token",
-    "help": "选填，是否要使用微信消息推送功能，如是请填写pushplus的token，如何获取请见说明"
-  },
-  {
-    "name": "sct_token",
-    "type": "text",
-    "label": "sct_token",
-    "help": "选填，是否要使用server酱推送，如是请填写server酱的token。"
-  },
-  {
     "label": "是否在脚本执行期间静音？",
     "type": "radio",
     "name": "whether_mute",
@@ -92,7 +80,7 @@
       "no": "否"
     },
     "validation": "required",
-    "help": "选是则在脚本执行期间静音。需要授予hamibot或autojs修改系统设置的权限。"
+    "help": "选是则在脚本执行期间静音，脚本运行完后会自动恢复。"
   },
   {
     "label": "是否启用冻结学习强国？",
@@ -104,5 +92,17 @@
     },
     "validation": "required",
     "help": "如果不知道什么是root，请选择否。如果选择是，学习强国会在脚本结束后自动被冻结(pm disable)，下次运行脚本时解冻。本操作需要root权限。"
+  },
+  {
+    "name": "pushplus_token",
+    "type": "text",
+    "label": "pushplus_token",
+    "help": "选填，是否要使用微信消息推送功能，如是请填写pushplus的token"
+  },
+  {
+    "name": "sct_token",
+    "type": "text",
+    "label": "sct_token",
+    "help": "选填，是否要使用server酱推送，如是请填写server酱的token。"
   }
 ]
