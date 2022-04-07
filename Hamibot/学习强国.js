@@ -5,14 +5,14 @@ device.keepScreenDim();
 
 //可选静音,需要给hamibot添加修改系统设置权限
 var { whether_mute } = hamibot.env;
-if (whether_mute) {
+if (whether_mute == "yes") {
     var vol = device.getMusicVolume();
     device.setMusicVolume(0);
 }
 
 //可选，是否要冻结学习强国，该操作需要root授权
 var { whether_froze_app } = hamibot.env;
-if (whether_froze_app) {
+if (whether_froze_app == "yes") {
     result = shell("pm enable cn.xuexi.android", true);
     if (result.code != 0) {
         toast("解冻失败，请查看配置模式中的'冻结学习强国'选项是否选择'否'");
@@ -1557,7 +1557,7 @@ if (sct_token) {
     // 推送消息
     push_weixin_message(account + ",您的今日得分" + score + "分。");
 
-    if (whether_push_capture) {
+    if (whether_push_capture == "yes") {
         // 将图片推送至图床
         push_weixin_message("![](" + images.toBase64(cap_img) + ")");
     }
@@ -1569,12 +1569,12 @@ toast("脚本运行完成");
 home();
 
 // 解除静音
-if (whether_mute) {
+if (whether_mute == "yes") {
     device.setMusicVolume(vol);
 }
 
 //解冻app
-if (whether_froze_app) {
+if (whether_froze_app == "yes") {
     result = shell("pm disable cn.xuexi.android", true);
     if (result.code != 0) {
         log("冻结失败");
