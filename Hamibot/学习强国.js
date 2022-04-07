@@ -34,7 +34,7 @@ cap_t = threads.start(function () {
         if ((beginBtn = classNameContains("Button").textContains("开始").findOne(delay_time)));
         else beginBtn = classNameContains("Button").textContains("允许").findOne(delay_time);
         beginBtn.click();
-    } catch (error) {}
+    } catch (error) { }
 });
 requestScreenCapture(false);
 
@@ -555,7 +555,7 @@ function select_option(answer, depth_click_option, options_text) {
             log("点击:" + "android.widget.RadioButton");
             className("android.widget.RadioButton").depth(depth_click_option).clickable(true).findOnce(option_i).click();
             return;
-        } catch (error) {}
+        } catch (error) { }
     }
 
     // 如果运行到这，说明很有可能是选项ocr错误，导致答案无法匹配，因此用最大相似度匹配
@@ -575,13 +575,13 @@ function select_option(answer, depth_click_option, options_text) {
             log("点击:" + "android.widget.RadioButton");
             className("android.widget.RadioButton").depth(depth_click_option).clickable(true).findOnce(max_similarity_index).click();
             return;
-        } catch (error) {}
+        } catch (error) { }
     } else {
         try {
             // 没找到答案，点击第一个
             log("点击:" + "android.widget.RadioButton");
             className("android.widget.RadioButton").depth(depth_click_option).clickable(true).findOne().click();
-        } catch (error) {}
+        } catch (error) { }
     }
 }
 
@@ -610,14 +610,14 @@ function do_contest_answer(depth_click_option, question, options_text) {
             // 此网站只支持十个字符的搜索
             var r1 = http.get("http://www.syiban.com/search/index/init.html?modelid=1&q=" + encodeURI(question.slice(0, 10)));
             result = r1.body.string().match(/答案：.*</);
-        } catch (error) {}
+        } catch (error) { }
         // 如果第一个网站没获取到正确答案，则利用第二个网站
         if (!(result && result[0].charCodeAt(3) > 64 && result[0].charCodeAt(3) < 69)) {
             try {
                 // 此网站只支持六个字符的搜索
                 var r2 = http.get("https://www.souwen123.com/search/select.php?age=" + encodeURI(question.slice(0, 6)));
                 result = r2.body.string().match(/答案：.*</);
-            } catch (error) {}
+            } catch (error) { }
         }
 
         if (result) {
@@ -666,7 +666,7 @@ function video_answer_question(video_question) {
     video_question = video_question.slice(0, Math.max(5, punctuation_index));
     try {
         var video_result = http.get("https://www.365shenghuo.com/?s=" + encodeURI(video_question));
-    } catch (error) {}
+    } catch (error) { }
     var video_answer = video_result.body.string().match(/答案：.+</);
     if (video_answer) video_answer = video_answer[0].slice(3, video_answer[0].indexOf("<"));
     return video_answer;
@@ -807,10 +807,9 @@ function baidu_ocr_api(img) {
         image: images.toBase64(img),
     });
     var res = res.body.json();
-    log(res);
     try {
         var words_list = res.words_result;
-    } catch (error) {}
+    } catch (error) { }
     if (words_list) {
         // question是否读取完成的标志位
         var question_flag = false;
