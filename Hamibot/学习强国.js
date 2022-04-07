@@ -512,7 +512,7 @@ if (!finish_list[1] || !finish_list[2]) {
             var current_video_time = className("android.widget.TextView").clickable(false).depth(16).findOne().text().match(/\/.*/).toString().slice(1);
             // 如果视频超过一分钟就跳过
             if (Number(current_video_time.slice(0, 3)) >= 1) {
-                swipe(device.width / 2, (device.height * 2) / 3, device.width / 2, (device.height * 2) / 15, random_time(delay_time / 2));
+                refresh(true)
                 sleep(random_time(delay_time));
                 continue;
             }
