@@ -3,20 +3,36 @@ auto.waitFor();
 // 将设备保持常亮
 device.keepScreenDim();
 
-//可选静音,需要给hamibot添加修改系统设置权限
+// 获取基础数据
+var { delay_time } = hamibot.env;
+var { whether_improve_accuracy } = hamibot.env;
+var { all_weekly_answers_completed } = hamibot.env;
+var { all_special_answer_completed } = hamibot.env;
+var { whether_complete_subscription } = hamibot.env;
+var { whether_complete_speech } = hamibot.env;
+var { sct_token } = hamibot.env;
+var { pushplus_token } = hamibot.env;
 var { whether_mute } = hamibot.env;
+var { whether_froze_app } = hamibot.env;
+var whether_push_capture = false;
+//var { whether_push_capture } = hamibot.env;
+// 调用百度api所需参数
+var { AK } = hamibot.env;
+var { SK } = hamibot.env;
+
+//可选静音,需要给hamibot添加修改系统设置权限
 if (whether_mute == "yes") {
     var vol = device.getMusicVolume();
     device.setMusicVolume(0);
 }
 
 //可选，是否要冻结学习强国，该操作需要root授权
-var { whether_froze_app } = hamibot.env;
 if (whether_froze_app == "yes") {
     result = shell("pm enable cn.xuexi.android", true);
-    if (result.code != 0) {
+    if (result.code != 0 || result) {
         toast("解冻失败，请查看配置模式中的'冻结学习强国'选项是否选择'否'");
-        push_weixin_message("解冻失败，请查看配置模式中的'冻结学习强国'选项是否选择'否'");
+        if (pushplus_token)
+            push_weixin_message("解冻失败，请查看配置模式中的'冻结学习强国'选项是否选择'否'");
         exit(0);
     }
 }
@@ -28,18 +44,6 @@ if (app.versionName < "1.3.1") {
 }
 
 // setScreenMetrics(1080, 2340);
-
-// 获取基础数据
-var { delay_time } = hamibot.env;
-var { whether_improve_accuracy } = hamibot.env;
-var { all_weekly_answers_completed } = hamibot.env;
-var { all_special_answer_completed } = hamibot.env;
-var { whether_complete_subscription } = hamibot.env;
-var { whether_complete_speech } = hamibot.env;
-var { sct_token } = hamibot.env;
-var { pushplus_token } = hamibot.env;
-var whether_push_capture = false;
-//var { whether_push_capture } = hamibot.env;
 
 //请求横屏截图权限
 threads.start(function () {
@@ -59,9 +63,6 @@ storage.remove("answer_question_map");
 
 delay_time = Number(delay_time) * 1000;
 
-// 调用百度api所需参数
-var { AK } = hamibot.env;
-var { SK } = hamibot.env;
 sleep(delay_time);
 
 if (whether_improve_accuracy == "yes" && !AK) {
