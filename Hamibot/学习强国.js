@@ -1405,6 +1405,11 @@ while (!finish_list[9] && whether_complete_subscription == "yes") {
                     });
                     if (subscribe_pos) {
                         sleep(random_time(delay_time * 2));
+                        // 解决极端情况下，当订阅按钮的顶端在屏幕最底端被检测到，然而由于虚拟按键或小白条等阻挡了点击按钮中心点而无法使得按钮被点击到，从而使得脚本无限循环的问题
+                        if (subscribe_pos.y > device.height) {
+                            swipe(device.width / 2, device.height - subscribe_button_pos.top, device.width / 2, device.height - subscribe_button_pos.top - subscribe_button_pos.height() * 0.75, random_time(0));
+                            sleep(random_time(delay_time));
+                        }
                         click(subscribe_pos.x + subscribe_button_pos.width() / 2, subscribe_pos.y + subscribe_button_pos.height() / 2);
                         num_subscribe++;
                         sleep(random_time(delay_time));
