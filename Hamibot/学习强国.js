@@ -256,8 +256,8 @@ function back_track() {
                 var home_bottom = id("home_bottom_tab_icon_large").findOne().bounds();
                 click(home_bottom.centerX(), home_bottom.centerY());
                 // 去province模块
-                log("等待:" + "adnroid.view.ViewGroup");
-                className("adnroid.view.ViewGroup").depth(15).waitFor();
+                log("等待:" + "android.view.ViewGroup");
+                className("android.view.ViewGroup").depth(15).waitFor();
                 sleep(random_time(delay_time));
                 log("点击:" + "android.view.ViewGroup");
                 className("android.view.ViewGroup").depth(15).findOnce(2).child(3).click();
