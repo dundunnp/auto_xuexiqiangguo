@@ -367,6 +367,7 @@ className("android.view.ViewGroup").depth(15).findOnce(2).child(3).click();
 if (!finish_list[12]) {
     // 去本地频道
     log("去本地频道");
+    // 该waitFor在@Lihewin的设备上表现不佳，其必要性有待评估
     log("等待:" + "android.widget.LinearLayout");
     className("android.widget.LinearLayout").clickable(true).depth(26).waitFor();
     sleep(random_time(delay_time));
