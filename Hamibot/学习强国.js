@@ -1547,7 +1547,7 @@ if (!finish_list[11] && whether_complete_speech == "yes") {
     my_click_clickable("确认");
 }
 
-if (sct_token) {
+if (sct_token || pushplus_token) {
     log("执行完毕，正在生成推送内容");
     back_track_flag = 2;
     back_track();
