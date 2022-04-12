@@ -581,7 +581,7 @@ function select_option(answer, depth_click_option, options_text) {
         try {
             // 没找到答案，点击第一个
             log("点击:" + "android.widget.RadioButton");
-            className("android.widget.RadioButton").depth(depth_click_option).clickable(true).findOne().click();
+            className("android.widget.RadioButton").depth(depth_click_option).clickable(true).findOne(delay_time * 3).click();
         } catch (error) { }
     }
 }
@@ -629,7 +629,9 @@ function do_contest_answer(depth_click_option, question, options_text) {
         } else {
             // 没找到答案，点击第一个
             log("点击:" + "android.widget.RadioButton");
-            className("android.widget.RadioButton").depth(depth_click_option).clickable(true).findOne().click();
+            try {
+                className("android.widget.RadioButton").depth(depth_click_option).clickable(true).findOne(delay_time * 3).click();
+            } catch (error) { }
         }
     } else {
         log("答案: " + answer);
@@ -1297,7 +1299,7 @@ function do_contest() {
             log("等待:" + "android.widget.RadioButton");
             className("android.widget.RadioButton").depth(32).waitFor();
             log("点击:" + "android.widget.RadioButton");
-            className("android.widget.RadioButton").depth(32).findOne().click();
+            className("android.widget.RadioButton").depth(32).findOne(delay_time * 3).click();
         }
 
         // 等待新题目加载
