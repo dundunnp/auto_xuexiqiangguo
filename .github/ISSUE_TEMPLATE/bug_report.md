@@ -1,29 +1,18 @@
 ---
-name: Bug report
-about: Create a report to help us improve
-title: ''
-labels: ''
-assignees: ''
 
----
+**软件版本信息**
+ - Hamibot版本: [e.g. 1.3.1]
+ - 学习强国版本: [e.g. 2.33.0]
 
-**Describe the bug**
+**描述BUG**
 A clear and concise description of what the bug is.
 
-**To Reproduce**
+**详细出BUG的步骤**
 Steps to reproduce the behavior:
 1. Go to '...'
 2. Click on '....'
 3. Scroll down to '....'
 4. See error
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
-
-**Screenshots**
+**截图和日志报错信息**
 If applicable, add screenshots to help explain your problem.
-
-**Software version information (please complete the following information):**
- - Device: [e.g. iPhone6]
- - Hamibot Version: [e.g. 1.3.1]
- - 学习强国 Version: [e.g. 2.33.0]
