@@ -128,13 +128,8 @@ function map_get(key) {
  */
 if (!storage.contains("answer_question_map1")) {
     toast("正在下载题库");
-    // 使用牛七云云盘
-    var answer_question_bank = http.get("http://r90w4pku5.hn-bkt.clouddn.com/%E9%A2%98%E5%BA%93_%E6%8E%92%E5%BA%8F%E7%89%88.json");
-    // 如果资源过期换成别的云盘
-    if (!(answer_question_bank.statusCode >= 200 && answer_question_bank.statusCode < 300)) {
-        // 使用腾讯云
-        var answer_question_bank = http.get("https://xxqg-tiku-1305531293.cos.ap-nanjing.myqcloud.com/%E9%A2%98%E5%BA%93_%E6%8E%92%E5%BA%8F%E7%89%88.json");
-    }
+    // 使用腾讯云云盘
+    var answer_question_bank = http.get("https://xxqg-tiku-1305531293.cos.ap-nanjing.myqcloud.com/%E9%A2%98%E5%BA%93_%E6%8E%92%E5%BA%8F%E7%89%88.json");
     answer_question_bank = answer_question_bank.body.string();
     answer_question_bank = JSON.parse(answer_question_bank);
 
