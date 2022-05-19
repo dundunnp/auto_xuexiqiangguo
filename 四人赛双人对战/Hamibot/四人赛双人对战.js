@@ -442,27 +442,48 @@ function ocr_processing(text, if_question) {
 /*
 ********************四人赛、双人对战********************
 */
-function do_contest() {
 
-  while (!text('开始').exists());
-  while (!text('继续挑战').exists()) {
+/**
+ * 处理访问异常
+ */
+function handling_access_exceptions() {
+  if (text("访问异常").exists()) {
+    // 滑动按钮位置
+    var pos = className('android.view.View').depth(10).clickable(true).findOnce(1).bounds();
+    // 滑动框右边界
+    var right_border = className('android.view.View').depth(9).clickable(false).findOnce(0).bounds().right;
+    // 位置取随机值
+    var randomX = random(pos.left, pos.right);
+    var randomY = random(pos.top, pos.bottom);
+    swipe(randomX, randomY, randomX + right_border, randomY, random(200, 400));
+  }
+}
+
+/**
+* 答题
+*/
+function do_contest() {
+  while (!text("开始").exists()) handling_access_exceptions();
+  while (!text("继续挑战").exists()) {
     // 等待下一题题目加载
+    handling_access_exceptions();
+    log("等待:" + "android.view.View");
     className("android.view.View").depth(28).waitFor();
     var pos = className("android.view.View").depth(28).findOne().bounds();
-    if (className("android.view.View").text("        ").exists())
-      pos = className("android.view.View").text("        ").findOne().bounds();
+    if (className("android.view.View").text("        ").exists()) pos = className("android.view.View").text("        ").findOne().bounds();
     do {
-      var point = findColor(captureScreen(), '#1B1F25', {
+      var point = findColor(captureScreen(), "#1B1F25", {
         region: [pos.left, pos.top, pos.width(), pos.height()],
         threshold: 10,
       });
     } while (!point);
     // 等待选项加载
-    className('android.widget.RadioButton').depth(32).clickable(true).waitFor();
-    var img = images.inRange(captureScreen(), '#000000', '#444444');
+    handling_access_exceptions();
+    log("等待:" + "android.widget.RadioButton");
+    className("android.widget.RadioButton").depth(32).clickable(true).waitFor();
+    var img = images.inRange(captureScreen(), "#000000", "#444444");
     img = images.clip(img, pos.left, pos.top, pos.width(), device.height - pos.top);
-
-    if (whether_improve_accuracy == 'yes') {
+    if (whether_improve_accuracy == "yes") {
       var result = baidu_ocr_api(img);
       var question = result[0];
       var options_text = result[1];
@@ -472,21 +493,25 @@ function do_contest() {
         var question = result[0];
         var options_text = result[1];
       } catch (error) {
-        toast("请将hamibot软件升级至最新版本");
+        log("请将hamibot软件升级至最新版本");
         exit();
       }
     }
-
+    img.recycle();
     log("题目: " + question);
     log("选项: " + options_text);
     if (question) do_contest_answer(32, question, options_text);
     else {
-      className('android.widget.RadioButton').depth(32).waitFor();
-      className('android.widget.RadioButton').depth(32).findOne().click();
+      handling_access_exceptions();
+      log("等待:" + "android.widget.RadioButton");
+      className("android.widget.RadioButton").depth(32).waitFor();
+      handling_access_exceptions();
+      log("点击:" + "android.widget.RadioButton");
+      className("android.widget.RadioButton").depth(32).findOne(delay_time * 3).click();
     }
-
+    handling_access_exceptions();
     // 等待新题目加载
-    while (!textMatches(/第\d题/).exists() && !text('继续挑战').exists() && !text('开始').exists());
+    while (!textMatches(/第\d题/).exists() && !text("继续挑战").exists() && !text("开始").exists());
   }
 }
 
@@ -505,20 +530,38 @@ if (!className('android.view.View').depth(21).text('学习积分').exists()) {
   my_click_clickable('学习积分');
 }
 
+/* 
+处理访问异常，滑动验证
+*/
+// 在子线程执行的定时器，如果不用子线程，则无法获取弹出页面的控件
+var thread_handling_access_exceptions = threads.start(function () {
+  // 每2秒就处理访问异常
+  var id_handling_access_exceptions = setInterval(handling_access_exceptions, 2000);
+});
+
 /*
 **********四人赛*********
 */
 if (four_player_battle == 'yes') {
+  log("四人赛");
   sleep(random_time(delay_time));
-  className('android.view.View').depth(21).text('学习积分').waitFor();
+
+  if (!className("android.view.View").depth(21).text("学习积分").exists()) back_track();
+  log("等待:" + "学习积分");
+  className("android.view.View").depth(21).text("学习积分").waitFor();
   entry_model(11);
-  for (var i = 0; i < count; i++) {
+
+  for (var i = 0; i < 2; i++) {
     sleep(random_time(delay_time));
-    my_click_clickable('开始比赛');
+    my_click_clickable("开始比赛");
+    handling_access_exceptions();
     do_contest();
-    if (i == 0 && count == 2) {
+    handling_access_exceptions();
+    if (i == 0) {
       sleep(random_time(delay_time * 2));
-      my_click_clickable('继续挑战');
+      handling_access_exceptions();
+      my_click_clickable("继续挑战");
+      handling_access_exceptions();
       sleep(random_time(delay_time));
     }
   }
@@ -532,25 +575,38 @@ if (four_player_battle == 'yes') {
 **********双人对战*********
 */
 if (two_player_battle == 'yes') {
+  log("双人对战");
   sleep(random_time(delay_time));
-  className('android.view.View').depth(21).text('学习积分').waitFor();
+
+  if (!className("android.view.View").depth(21).text("学习积分").exists()) back_track();
+  log("等待:" + "学习积分");
+  className("android.view.View").depth(21).text("学习积分").waitFor();
   entry_model(12);
 
   // 点击随机匹配
-  text('随机匹配').waitFor();
+  handling_access_exceptions();
+  log("等待:" + "随机匹配");
+  text("随机匹配").waitFor();
   sleep(random_time(delay_time * 2));
   try {
-    className('android.view.View').clickable(true).depth(24).findOnce(1).click();
+    log("点击:" + "android.view.View");
+    className("android.view.View").clickable(true).depth(24).findOnce(1).click();
   } catch (error) {
+    log("点击:" + "");
     className("android.view.View").text("").findOne().click();
   }
+  handling_access_exceptions();
   do_contest();
+  handling_access_exceptions();
   sleep(random_time(delay_time));
   back();
   sleep(random_time(delay_time));
   back();
-  my_click_clickable('退出');
+  my_click_clickable("退出");
 }
+
+// 取消访问异常处理循环
+clearInterval(id_handling_access_exceptions);
 
 //震动两秒
 device.vibrate(1000);
