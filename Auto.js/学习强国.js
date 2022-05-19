@@ -1125,7 +1125,7 @@ function handling_access_exceptions() {
 
 function do_contest() {
 
-    while (!text('开始').exists());
+    while (!text('开始').exists()) handling_access_exceptions();
     while (!text('继续挑战').exists()) {
         // 等待下一题题目加载
         className("android.view.View").depth(28).waitFor();
