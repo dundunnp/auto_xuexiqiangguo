@@ -136,8 +136,13 @@ function map_get(key) {
  * 通过Http下载题库到本地，并进行处理，如果本地已经存在则无需下载
  */
 if (!storage.contains('answer_question_map1')) {
-    // 使用牛腾讯云云盘
-    var answer_question_bank = http.get('https://xxqg-tiku-1305531293.cos.ap-nanjing.myqcloud.com/%E9%A2%98%E5%BA%93_%E6%8E%92%E5%BA%8F%E7%89%88.json')
+    // 使用牛七云云盘
+    var answer_question_bank = http.get('http://r90w4pku5.hn-bkt.clouddn.com/%E9%A2%98%E5%BA%93_%E6%8E%92%E5%BA%8F%E7%89%88.json')
+    // 如果资源过期换成别的云盘
+    if (!(answer_question_bank.statusCode >= 200 && answer_question_bank.statusCode < 300)) {
+        // 使用腾讯云
+        var answer_question_bank = http.get('https://xxqg-tiku-1305531293.cos.ap-nanjing.myqcloud.com/%E9%A2%98%E5%BA%93_%E6%8E%92%E5%BA%8F%E7%89%88.json')
+    }
     answer_question_bank = answer_question_bank.body.string();
     answer_question_bank = JSON.parse(answer_question_bank);
 
@@ -1101,6 +1106,23 @@ if (!finish_list[6]) {
 /*
 ********************四人赛、双人对战********************
 */
+
+/**
+ * 处理访问异常
+ */
+function handling_access_exceptions() {
+    if (text("访问异常").exists()) {
+        // 滑动按钮位置
+        var pos = className('android.view.View').depth(10).clickable(true).findOnce(1).bounds();
+        // 滑动框右边界
+        var right_border = className('android.view.View').depth(9).clickable(false).findOnce(0).bounds().right;
+        // 位置取随机值
+        var randomX = random(pos.left, pos.right);
+        var randomY = random(pos.top, pos.bottom);
+        swipe(randomX, randomY, randomX + right_border, randomY, random(200, 400));
+    }
+}
+
 function do_contest() {
 
     while (!text('开始').exists());
@@ -1138,22 +1160,38 @@ function do_contest() {
     }
 }
 
-/*
-**********四人赛*********
+/* 
+处理访问异常，滑动验证
 */
+// 在子线程执行的定时器，如果不用子线程，则无法获取弹出页面的控件
+var thread_handling_access_exceptions = threads.start(function () {
+    // 每2秒就处理访问异常
+    var id_handling_access_exceptions = setInterval(handling_access_exceptions, 2000);
+});
+
+/*
+ **********四人赛*********
+ */
 if (!finish_list[7] && four_players_scored < 3) {
+    log("四人赛");
     sleep(random_time(delay_time));
-    if (!className('android.view.View').depth(21).text('学习积分').exists()) back_track();
-    className('android.view.View').depth(21).text('学习积分').waitFor();
+
+    if (!className("android.view.View").depth(21).text("学习积分").exists()) back_track();
+    log("等待:" + "学习积分");
+    className("android.view.View").depth(21).text("学习积分").waitFor();
     entry_model(11);
 
     for (var i = 0; i < 2; i++) {
         sleep(random_time(delay_time));
-        my_click_clickable('开始比赛');
+        my_click_clickable("开始比赛");
+        handling_access_exceptions();
         do_contest();
+        handling_access_exceptions();
         if (i == 0) {
             sleep(random_time(delay_time * 2));
-            my_click_clickable('继续挑战');
+            handling_access_exceptions();
+            my_click_clickable("继续挑战");
+            handling_access_exceptions();
             sleep(random_time(delay_time));
         }
     }
@@ -1164,29 +1202,41 @@ if (!finish_list[7] && four_players_scored < 3) {
 }
 
 /*
-**********双人对战*********
-*/
+ **********双人对战*********
+ */
 if (!finish_list[8] && two_players_scored < 1) {
+    log("双人对战");
     sleep(random_time(delay_time));
-    if (!className('android.view.View').depth(21).text('学习积分').exists()) back_track();
-    className('android.view.View').depth(21).text('学习积分').waitFor();
+
+    if (!className("android.view.View").depth(21).text("学习积分").exists()) back_track();
+    log("等待:" + "学习积分");
+    className("android.view.View").depth(21).text("学习积分").waitFor();
     entry_model(12);
 
     // 点击随机匹配
-    text('随机匹配').waitFor();
+    handling_access_exceptions();
+    log("等待:" + "随机匹配");
+    text("随机匹配").waitFor();
     sleep(random_time(delay_time * 2));
     try {
-        className('android.view.View').clickable(true).depth(24).findOnce(1).click();
+        log("点击:" + "android.view.View");
+        className("android.view.View").clickable(true).depth(24).findOnce(1).click();
     } catch (error) {
+        log("点击:" + "");
         className("android.view.View").text("").findOne().click();
     }
+    handling_access_exceptions();
     do_contest();
+    handling_access_exceptions();
     sleep(random_time(delay_time));
     back();
     sleep(random_time(delay_time));
     back();
-    my_click_clickable('退出');
+    my_click_clickable("退出");
 }
+
+// 取消访问异常处理循环
+clearInterval(id_handling_access_exceptions);
 
 /*
 **********订阅*********
