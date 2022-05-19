@@ -128,8 +128,13 @@ function map_get(key) {
  */
 if (!storage.contains("answer_question_map1")) {
     toast("正在下载题库");
-    // 使用腾讯云云盘
-    var answer_question_bank = http.get("https://xxqg-tiku-1305531293.cos.ap-nanjing.myqcloud.com/%E9%A2%98%E5%BA%93_%E6%8E%92%E5%BA%8F%E7%89%88.json");
+    // 使用牛七云云盘
+    var answer_question_bank = http.get("http://r90w4pku5.hn-bkt.clouddn.com/%E9%A2%98%E5%BA%93_%E6%8E%92%E5%BA%8F%E7%89%88.json");
+    // 如果资源过期换成别的云盘
+    if (!(answer_question_bank.statusCode >= 200 && answer_question_bank.statusCode < 300)) {
+        // 使用腾讯云
+        var answer_question_bank = http.get("https://xxqg-tiku-1305531293.cos.ap-nanjing.myqcloud.com/%E9%A2%98%E5%BA%93_%E6%8E%92%E5%BA%8F%E7%89%88.json");
+    }
     answer_question_bank = answer_question_bank.body.string();
     answer_question_bank = JSON.parse(answer_question_bank);
 
@@ -1253,10 +1258,31 @@ if (!finish_list[6]) {
 /*
  ********************四人赛、双人对战********************
  */
+
+/**
+ * 处理访问异常
+ */
+function handling_access_exceptions() {
+    if (text("访问异常").exists()) {
+        // 滑动按钮位置
+        var pos = className('android.view.View').depth(10).clickable(true).findOnce(1).bounds();
+        // 滑动框右边界
+        var right_border = className('android.view.View').depth(9).clickable(false).findOnce(0).bounds().right;
+        // 位置取随机值
+        var randomX = random(pos.left, pos.right);
+        var randomY = random(pos.top, pos.bottom);
+        swipe(randomX, randomY, randomX + right_border, randomY, random(200, 400));
+    }
+}
+
+/**
+ * 答题
+ */
 function do_contest() {
-    while (!text("开始").exists());
+    while (!text("开始").exists()) handling_access_exceptions();;
     while (!text("继续挑战").exists()) {
         // 等待下一题题目加载
+        handling_access_exceptions();
         log("等待:" + "android.view.View");
         className("android.view.View").depth(28).waitFor();
         var pos = className("android.view.View").depth(28).findOne().bounds();
@@ -1268,6 +1294,7 @@ function do_contest() {
             });
         } while (!point);
         // 等待选项加载
+        handling_access_exceptions();
         log("等待:" + "android.widget.RadioButton");
         className("android.widget.RadioButton").depth(32).clickable(true).waitFor();
         var img = images.inRange(captureScreen(), "#000000", "#444444");
@@ -1296,11 +1323,20 @@ function do_contest() {
             log("点击:" + "android.widget.RadioButton");
             className("android.widget.RadioButton").depth(32).findOne(delay_time * 3).click();
         }
-
+        handling_access_exceptions();
         // 等待新题目加载
         while (!textMatches(/第\d题/).exists() && !text("继续挑战").exists() && !text("开始").exists());
     }
 }
+
+/* 
+处理访问异常，滑动验证
+*/
+// 在子线程执行的定时器，如果不用子线程，则无法获取弹出页面的控件
+var thread_handling_access_exceptions = threads.start(function () {
+    // 每2秒就处理访问异常
+    var id_handling_access_exceptions = setInterval(handling_access_exceptions, 2000);
+});
 
 /*
  **********四人赛*********
@@ -1317,10 +1353,14 @@ if (!finish_list[7] && four_players_scored < 3) {
     for (var i = 0; i < 2; i++) {
         sleep(random_time(delay_time));
         my_click_clickable("开始比赛");
+        handling_access_exceptions();
         do_contest();
+        handling_access_exceptions();
         if (i == 0) {
             sleep(random_time(delay_time * 2));
+            handling_access_exceptions();
             my_click_clickable("继续挑战");
+            handling_access_exceptions();
             sleep(random_time(delay_time));
         }
     }
@@ -1343,6 +1383,7 @@ if (!finish_list[8] && two_players_scored < 1) {
     entry_model(12);
 
     // 点击随机匹配
+    handling_access_exceptions();
     log("等待:" + "随机匹配");
     text("随机匹配").waitFor();
     sleep(random_time(delay_time * 2));
@@ -1353,13 +1394,18 @@ if (!finish_list[8] && two_players_scored < 1) {
         log("点击:" + "");
         className("android.view.View").text("").findOne().click();
     }
+    handling_access_exceptions();
     do_contest();
+    handling_access_exceptions();
     sleep(random_time(delay_time));
     back();
     sleep(random_time(delay_time));
     back();
     my_click_clickable("退出");
 }
+
+// 取消访问异常处理循环
+clearInterval(id_handling_access_exceptions);
 
 /*
  **********订阅*********
