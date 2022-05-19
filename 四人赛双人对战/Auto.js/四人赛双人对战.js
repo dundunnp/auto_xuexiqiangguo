@@ -385,7 +385,7 @@ function baidu_ocr_api(img) {
 */
 function do_contest() {
 
-  while (!text('开始').exists());
+  while (!text('开始').exists()) handling_access_exceptions();
   while (!text('继续挑战').exists()) {
     // 等待下一题题目加载
     className("android.view.View").depth(28).waitFor();
@@ -435,20 +435,38 @@ if (!className('android.view.View').depth(21).text('学习积分').exists()) {
   my_click_clickable('学习积分');
 }
 
+/* 
+处理访问异常，滑动验证
+*/
+// 在子线程执行的定时器，如果不用子线程，则无法获取弹出页面的控件
+var thread_handling_access_exceptions = threads.start(function () {
+  // 每2秒就处理访问异常
+  var id_handling_access_exceptions = setInterval(handling_access_exceptions, 2000);
+});
+
 /*
 **********四人赛*********
 */
 if (four_player_battle == 'yes') {
+  log("四人赛");
   sleep(random_time(delay_time));
-  className('android.view.View').depth(21).text('学习积分').waitFor();
+
+  if (!className("android.view.View").depth(21).text("学习积分").exists()) back_track();
+  log("等待:" + "学习积分");
+  className("android.view.View").depth(21).text("学习积分").waitFor();
   entry_model(11);
-  for (var i = 0; i < count; i++) {
+
+  for (var i = 0; i < 2; i++) {
     sleep(random_time(delay_time));
-    my_click_clickable('开始比赛');
+    my_click_clickable("开始比赛");
+    handling_access_exceptions();
     do_contest();
-    if (i == 0 && count == 2) {
+    handling_access_exceptions();
+    if (i == 0) {
       sleep(random_time(delay_time * 2));
-      my_click_clickable('继续挑战');
+      handling_access_exceptions();
+      my_click_clickable("继续挑战");
+      handling_access_exceptions();
       sleep(random_time(delay_time));
     }
   }
@@ -462,25 +480,38 @@ if (four_player_battle == 'yes') {
 **********双人对战*********
 */
 if (two_player_battle == 'yes') {
+  log("双人对战");
   sleep(random_time(delay_time));
-  className('android.view.View').depth(21).text('学习积分').waitFor();
+
+  if (!className("android.view.View").depth(21).text("学习积分").exists()) back_track();
+  log("等待:" + "学习积分");
+  className("android.view.View").depth(21).text("学习积分").waitFor();
   entry_model(12);
 
   // 点击随机匹配
-  text('随机匹配').waitFor();
+  handling_access_exceptions();
+  log("等待:" + "随机匹配");
+  text("随机匹配").waitFor();
   sleep(random_time(delay_time * 2));
   try {
-    className('android.view.View').clickable(true).depth(24).findOnce(1).click();
+    log("点击:" + "android.view.View");
+    className("android.view.View").clickable(true).depth(24).findOnce(1).click();
   } catch (error) {
+    log("点击:" + "");
     className("android.view.View").text("").findOne().click();
   }
+  handling_access_exceptions();
   do_contest();
+  handling_access_exceptions();
   sleep(random_time(delay_time));
   back();
   sleep(random_time(delay_time));
   back();
-  my_click_clickable('退出');
+  my_click_clickable("退出");
 }
+
+// 取消访问异常处理循环
+clearInterval(id_handling_access_exceptions);
 
 //震动两秒
 device.vibrate(1000);
