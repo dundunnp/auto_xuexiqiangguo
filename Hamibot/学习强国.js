@@ -1179,7 +1179,7 @@ if (!finish_list[5] && special_answer_scored < 8) {
         // 等待题目加载
         sleep(random_time(delay_time));
         // 已完成题数
-        var completed_num = parseInt(className("android.view.View").depth(24).findOnce(1).text());
+        var completed_num = parseInt(className("android.widget.TextView").depth(24).findOnce(1).text());
         is_answer_special_flag = true;
         do_periodic_answer(10 - completed_num + 1);
     } else {
