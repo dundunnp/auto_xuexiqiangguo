@@ -727,9 +727,9 @@ function multiple_choice(answer) {
 // 多选题是否全选
 function is_select_all_choice() {
     // options数组：下标为i基数时对应着ABCD，下标为偶数时对应着选项i-1(ABCD)的数值
-    var options = className("android.view.View").depth(26).find();
+    var options = className("android.widget.TextView").depth(26).find();
     // question是题目(专项答题是第4个，其他是第2个)
-    var question = className("android.view.View").depth(23).findOnce(1).text().length > 2 ? className("android.view.View").depth(23).findOnce(1).text() : className("android.view.View").depth(23).findOnce(3).text();
+    var question = className("android.widget.TextView").depth(23).findOnce(2).text().length > 2 ? className("android.widget.TextView").depth(23).findOnce(2).text() : className("android.widget.TextView").depth(23).findOnce(3).text();
     return options.length / 2 == (question.match(/\s+/g) || []).length;
 }
 
@@ -946,7 +946,7 @@ function do_periodic_answer(number) {
             // 判断是否是全选，这样就不用ocr
             if (textContains("多选题").exists() && is_select_all_choice()) {
                 // options数组：下标为i基数时对应着ABCD，下标为偶数时对应着选项i-1(ABCD)的数值
-                var options = className("android.view.View").depth(26).find();
+                var options = className("android.widget.TextView").depth(26).find();
                 for (var i = 1; i < options.length; i += 2) {
                     my_click_non_clickable(options[i].text());
                 }
