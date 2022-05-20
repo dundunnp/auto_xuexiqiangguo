@@ -346,7 +346,7 @@ var finish_list = get_finish_list();
 // 返回首页
 log("返回首页");
 log("点击:" + "android.view.View");
-className("android.view.View").clickable(true).depth(21).findOne().click();
+className("android.widget.TextView").clickable(true).depth(21).findOne().click();
 log("等待:" + "my_back");
 id("my_back").waitFor();
 sleep(random_time(delay_time / 2));
