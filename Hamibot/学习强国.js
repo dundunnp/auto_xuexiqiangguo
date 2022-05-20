@@ -1332,10 +1332,11 @@ function do_contest() {
 /* 
 处理访问异常，滑动验证
 */
+var id_handling_access_exceptions;
 // 在子线程执行的定时器，如果不用子线程，则无法获取弹出页面的控件
 var thread_handling_access_exceptions = threads.start(function () {
     // 每2秒就处理访问异常
-    var id_handling_access_exceptions = setInterval(handling_access_exceptions, 2000);
+    id_handling_access_exceptions = setInterval(handling_access_exceptions, 2000);
 });
 
 /*
