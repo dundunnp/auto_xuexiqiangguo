@@ -306,21 +306,21 @@ var two_players_scored;
 
 function get_finish_list() {
     var finish_list = [];
-    for (var i = 4; i < 17; i++) {
+    for (var i = 2; i < 15; i++) {
         // 由于模拟器有model无法读取因此用try catch
         try {
             var model = className("android.view.View").depth(22).findOnce(i);
-            if (i == 4) {
+            if (i == 2) {
                 completed_read_count = parseInt(model.child(2).text().match(/\d+/)) / 2;
-            } else if (i == 5) {
+            } else if (i == 3) {
                 completed_watch_count = parseInt(model.child(2).text().match(/\d+/));
-            } else if (i == 8) {
+            } else if (i == 6) {
                 weekly_answer_scored = parseInt(model.child(2).text().match(/\d+/));
-            } else if (i == 9) {
+            } else if (i == 7) {
                 special_answer_scored = parseInt(model.child(2).text().match(/\d+/));
-            } else if (i == 11) {
+            } else if (i == 9) {
                 four_players_scored = parseInt(model.child(2).text().match(/\d+/));
-            } else if (i == 12) {
+            } else if (i == 10) {
                 two_players_scored = parseInt(model.child(2).text().match(/\d+/));
             }
             finish_list.push(model.child(3).text() == "已完成");
