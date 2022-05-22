@@ -757,7 +757,7 @@ function restart() {
         case 0:
             log("等待:" + "登录");
             text("登录").waitFor();
-            entry_model(7);
+            entry_model(5);
             break;
         case 1:
             // 设置标志位
@@ -1065,7 +1065,7 @@ if (!finish_list[3]) {
     sleep(random_time(delay_time));
 
     if (!className("android.view.View").depth(21).text("学习积分").exists()) back_track();
-    entry_model(7);
+    entry_model(5);
     // 等待题目加载
     log("等待:" + "查看提示");
     text("查看提示").waitFor();
@@ -1092,7 +1092,7 @@ if (!finish_list[4] && weekly_answer_scored < 4) {
     sleep(random_time(delay_time));
 
     if (!className("android.view.View").depth(21).text("学习积分").exists()) back_track();
-    entry_model(8);
+    entry_model(6);
     // 等待列表加载
     log("等待:" + "月");
     textContains("月").waitFor();
@@ -1135,7 +1135,7 @@ if (!finish_list[5] && special_answer_scored < 8) {
     sleep(random_time(delay_time));
 
     if (!className("android.view.View").depth(21).text("学习积分").exists()) back_track();
-    entry_model(9);
+    entry_model(7);
     // 等待列表加载
     log("等待:" + "android.view.View");
     className("android.view.View").clickable(true).depth(23).waitFor();
@@ -1219,7 +1219,7 @@ if (!finish_list[6]) {
     sleep(random_time(delay_time));
 
     if (!className("android.view.View").depth(21).text("学习积分").exists()) back_track();
-    entry_model(10);
+    entry_model(8);
     // 加载页面
     log("等待:" + "android.view.View");
     className("android.view.View").clickable(true).depth(22).waitFor();
@@ -1349,7 +1349,7 @@ if (!finish_list[7] && four_players_scored < 3) {
     if (!className("android.view.View").depth(21).text("学习积分").exists()) back_track();
     log("等待:" + "学习积分");
     className("android.view.View").depth(21).text("学习积分").waitFor();
-    entry_model(11);
+    entry_model(9);
 
     for (var i = 0; i < 2; i++) {
         sleep(random_time(delay_time));
@@ -1381,7 +1381,7 @@ if (!finish_list[8] && two_players_scored < 1) {
     if (!className("android.view.View").depth(21).text("学习积分").exists()) back_track();
     log("等待:" + "学习积分");
     className("android.view.View").depth(21).text("学习积分").waitFor();
-    entry_model(12);
+    entry_model(10);
 
     // 点击随机匹配
     handling_access_exceptions();
@@ -1415,7 +1415,7 @@ while (!finish_list[9] && whether_complete_subscription == "yes") {
     log("订阅");
     sleep(random_time(delay_time));
     if (!className("android.view.View").depth(21).text("学习积分").exists()) back_track();
-    entry_model(13);
+    entry_model(11);
     // 等待加载
     sleep(random_time(delay_time * 3));
 
@@ -1539,7 +1539,7 @@ while (!finish_list[9] && whether_complete_subscription == "yes") {
 if (!finish_list[10]) {
     sleep(random_time(delay_time));
     if (!className("android.view.View").depth(21).text("学习积分").exists()) back_track();
-    entry_model(15);
+    entry_model(12);
     // 随意找一篇文章
     sleep(random_time(delay_time));
     my_click_clickable("推荐");
@@ -1566,7 +1566,7 @@ if (!finish_list[11] && whether_complete_speech == "yes") {
     sleep(random_time(delay_time));
     if (!text("欢迎发表你的观点").exists()) {
         if (!className("android.view.View").depth(21).text("学习积分").exists()) back_track();
-        entry_model(15);
+        entry_model(13);
         // 随意找一篇文章
         sleep(random_time(delay_time));
         my_click_clickable("推荐");
