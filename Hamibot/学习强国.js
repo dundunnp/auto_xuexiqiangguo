@@ -647,7 +647,7 @@ back_track_flag = 2;
 // 填空题
 function fill_in_blank(answer) {
     // 获取每个空
-    var blanks = className("android.view.View").depth(25).find();
+    var blanks = className("android.widget.TextView").depth(25).find();
     for (var i = 0; i < blanks.length; i++) {
         // 需要点击一下空才能paste
         blanks[i].click();
