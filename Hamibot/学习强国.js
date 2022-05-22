@@ -1246,9 +1246,11 @@ if (!finish_list[6]) {
                 break;
             }
             // 题目
-            log("等待:" + "android.view.View");
-            className("android.view.View").depth(25).waitFor();
-            var question = className("android.view.View").depth(25).findOne().text();
+            log("等待题目:" + "android.widget.TextView");
+            className("android.widget.TextView").depth(24).waitFor(); // 等待题目倒计时组件出现
+            // 题干现在是以 android.view.View 或 android.widget.TextView 随机出现
+            var question = className("android.widget.TextView").depth(25).findOnce() || className("android.view.View").depth(25).findOnce(); 
+            question = question.text();
             // 截取到下划线前
             question = question.slice(0, question.indexOf(" "));
             // 选项文字列表
