@@ -136,12 +136,12 @@ function map_get(key) {
  * 通过Http下载题库到本地，并进行处理，如果本地已经存在则无需下载
  */
 if (!storage.contains('answer_question_map1')) {
-    // 使用牛七云云盘
-    var answer_question_bank = http.get('http://r90w4pku5.hn-bkt.clouddn.com/%E9%A2%98%E5%BA%93_%E6%8E%92%E5%BA%8F%E7%89%88.json')
-    // 如果资源过期换成别的云盘
+    // 使用 Github 文件加速服务：https://git.yumenaka.net
+    var answer_question_bank = http.get("https://git.yumenaka.net/https://raw.githubusercontent.com/Mondayfirst/XXQG_TiKu/main/%E9%A2%98%E5%BA%93_%E6%8E%92%E5%BA%8F%E7%89%88.json");
+    // 如果资源过期或无法访问则换成别的云盘
     if (!(answer_question_bank.statusCode >= 200 && answer_question_bank.statusCode < 300)) {
         // 使用腾讯云
-        var answer_question_bank = http.get('https://xxqg-tiku-1305531293.cos.ap-nanjing.myqcloud.com/%E9%A2%98%E5%BA%93_%E6%8E%92%E5%BA%8F%E7%89%88.json')
+        var answer_question_bank = http.get("https://xxqg-tiku-1305531293.cos.ap-nanjing.myqcloud.com/%E9%A2%98%E5%BA%93_%E6%8E%92%E5%BA%8F%E7%89%88.json");
     }
     answer_question_bank = answer_question_bank.body.string();
     answer_question_bank = JSON.parse(answer_question_bank);
@@ -332,7 +332,7 @@ className('android.view.ViewGroup').depth(15).findOnce(2).child(3).click();
 if (!finish_list[12]) {
     className('android.widget.LinearLayout').clickable(true).depth(26).waitFor();
     sleep(random_time(delay_time));
-    className('android.widget.LinearLayout').clickable(true).depth(26).findOne().click();
+    className('android.widget.LinearLayout').clickable(true).depth(26).drawingOrder(1).findOne().click();
     sleep(random_time(delay_time));
     back();
 }
@@ -1237,7 +1237,7 @@ if (!finish_list[8] && two_players_scored < 1) {
 }
 
 // 取消访问异常处理循环
-clearInterval(id_handling_access_exceptions);
+if (id_handling_access_exceptions) clearInterval(id_handling_access_exceptions);
 
 /*
 **********订阅*********
