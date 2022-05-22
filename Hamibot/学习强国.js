@@ -1064,7 +1064,7 @@ if (!finish_list[3]) {
     log("每日答题");
     sleep(random_time(delay_time));
 
-    if (!className("android.view.View").depth(21).text("学习积分").exists()) back_track();
+    if (!className("android.widget.TextView").depth(21).text("学习积分").exists()) back_track();
     entry_model(7);
     // 等待题目加载
     log("等待:" + "查看提示");
@@ -1091,7 +1091,7 @@ if (!finish_list[4] && weekly_answer_scored < 4) {
     log("每周答题");
     sleep(random_time(delay_time));
 
-    if (!className("android.view.View").depth(21).text("学习积分").exists()) back_track();
+    if (!className("android.widget.TextView").depth(21).text("学习积分").exists()) back_track();
     entry_model(8);
     // 等待列表加载
     log("等待:" + "月");
@@ -1134,7 +1134,7 @@ if (!finish_list[5] && special_answer_scored < 8) {
     log("专项答题");
     sleep(random_time(delay_time));
 
-    if (!className("android.view.View").depth(21).text("学习积分").exists()) back_track();
+    if (!className("android.widget.TextView").depth(21).text("学习积分").exists()) back_track();
     entry_model(9);
     // 等待列表加载
     log("等待:" + "android.view.View");
@@ -1218,7 +1218,7 @@ if (!finish_list[6]) {
     log("挑战答题");
     sleep(random_time(delay_time));
 
-    if (!className("android.view.View").depth(21).text("学习积分").exists()) back_track();
+    if (!className("android.widget.TextView").depth(21).text("学习积分").exists()) back_track();
     entry_model(10);
     // 加载页面
     log("等待:" + "android.view.View");
@@ -1346,9 +1346,9 @@ if (!finish_list[7] && four_players_scored < 3) {
     log("四人赛");
     sleep(random_time(delay_time));
 
-    if (!className("android.view.View").depth(21).text("学习积分").exists()) back_track();
+    if (!className("android.widget.TextView").depth(21).text("学习积分").exists()) back_track();
     log("等待:" + "学习积分");
-    className("android.view.View").depth(21).text("学习积分").waitFor();
+    className("android.widget.TextView").depth(21).text("学习积分").waitFor();
     entry_model(11);
 
     for (var i = 0; i < 2; i++) {
@@ -1378,7 +1378,7 @@ if (!finish_list[8] && two_players_scored < 1) {
     log("双人对战");
     sleep(random_time(delay_time));
 
-    if (!className("android.view.View").depth(21).text("学习积分").exists()) back_track();
+    if (!className("android.widget.TextView").depth(21).text("学习积分").exists()) back_track();
     log("等待:" + "学习积分");
     className("android.view.View").depth(21).text("学习积分").waitFor();
     entry_model(12);
@@ -1414,7 +1414,7 @@ if (id_handling_access_exceptions) clearInterval(id_handling_access_exceptions);
 while (!finish_list[9] && whether_complete_subscription == "yes") {
     log("订阅");
     sleep(random_time(delay_time));
-    if (!className("android.view.View").depth(21).text("学习积分").exists()) back_track();
+    if (!className("android.widget.TextView").depth(21).text("学习积分").exists()) back_track();
     entry_model(13);
     // 等待加载
     sleep(random_time(delay_time * 3));
@@ -1565,7 +1565,7 @@ if (!finish_list[11] && whether_complete_speech == "yes") {
     log("发表观点");
     sleep(random_time(delay_time));
     if (!text("欢迎发表你的观点").exists()) {
-        if (!className("android.view.View").depth(21).text("学习积分").exists()) back_track();
+        if (!className("android.widget.TextView").depth(21).text("学习积分").exists()) back_track();
         entry_model(15);
         // 随意找一篇文章
         sleep(random_time(delay_time));
