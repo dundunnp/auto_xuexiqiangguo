@@ -372,7 +372,7 @@ if (!finish_list[12]) {
     className("android.widget.LinearLayout").clickable(true).depth(26).waitFor();
     sleep(random_time(delay_time));
     log("点击:" + "android.widget.LinearLayout");
-    className("android.widget.LinearLayout").clickable(true).depth(26).findOne().click();
+    className("android.widget.LinearLayout").clickable(true).depth(26).drawingOrder(1).findOne().click();
     sleep(random_time(delay_time));
     back();
 }
