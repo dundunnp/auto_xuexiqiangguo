@@ -700,7 +700,7 @@ function getSimilarity(str1, str2) {
 function multiple_choice(answer) {
     var whether_selected = false;
     // options数组：下标为i基数时对应着ABCD，下标为偶数时对应着选项i-1(ABCD)的数值
-    var options = className("android.view.View").depth(26).find();
+    var options = className("android.widget.TextView").depth(26).find();
     for (var i = 1; i < options.length; i += 2) {
         if (answer.indexOf(options[i].text()) != -1) {
             // 答案正确
