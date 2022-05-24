@@ -116,12 +116,12 @@ function map_get(key) {
  * 通过Http下载题库到本地，并进行处理，如果本地已经存在则无需下载
  */
 if (!storage.contains('answer_question_map1')) {
-  // 使用牛七云云盘
-  var answer_question_bank = http.get('http://r90w4pku5.hn-bkt.clouddn.com/%E9%A2%98%E5%BA%93_%E6%8E%92%E5%BA%8F%E7%89%88.json')
-  // 如果资源过期换成别的云盘
+  // 使用 Github 文件加速服务：https://git.yumenaka.net
+  var answer_question_bank = http.get("https://git.yumenaka.net/https://raw.githubusercontent.com/Mondayfirst/XXQG_TiKu/main/%E9%A2%98%E5%BA%93_%E6%8E%92%E5%BA%8F%E7%89%88.json");
+  // 如果资源过期或无法访问则换成别的云盘
   if (!(answer_question_bank.statusCode >= 200 && answer_question_bank.statusCode < 300)) {
     // 使用腾讯云
-    var answer_question_bank = http.get('https://xxqg-tiku-1305531293.cos.ap-nanjing.myqcloud.com/%E9%A2%98%E5%BA%93_%E6%8E%92%E5%BA%8F%E7%89%88.json')
+    answer_question_bank = http.get('https://xxqg-tiku-1305531293.cos.ap-nanjing.myqcloud.com/%E9%A2%98%E5%BA%93_%E6%8E%92%E5%BA%8F%E7%89%88.json')
   }
   answer_question_bank = answer_question_bank.body.string();
   answer_question_bank = JSON.parse(answer_question_bank);
@@ -317,7 +317,7 @@ function get_baidu_token() {
   return res.body.json()['access_token'];
 }
 
-var token = get_baidu_token();
+if (whether_improve_accuracy == 'yes') var token = get_baidu_token();
 
 /**
  * 百度ocr接口，传入图片返回文字和选项文字
@@ -380,43 +380,167 @@ function baidu_ocr_api(img) {
   return [question, options_text];
 }
 
+/**
+ * 从ocr.recognize()中提取出题目和选项文字
+ * @param {object} object ocr.recongnize()返回的json对象
+ * @returns {string} question 文字
+ * @returns {list[string]} options_text 选项文字 
+ * */
+function extract_ocr_recognize(object) {
+  var options_text = [];
+  var question = "";
+  var words_list = object.results;
+  if (words_list) {
+    // question是否读取完成的标志位
+    var question_flag = false;
+    for (var i in words_list) {
+      if (!question_flag) {
+        // 如果是选项则后面不需要加到question中
+        if (words_list[i].text[0] == "A") question_flag = true;
+        // 将题目读取到下划线处，如果读到下划线则不需要加到question中
+        // 利用bounds之差判断是否之中有下划线
+        /**
+         * bounds:
+         * 识别到的文字块的区域位置信息，列表形式，
+         * bounds.left表示定位位置的长方形左上顶点的水平坐标
+         */
+        if (words_list[0].text.indexOf('.') != -1 && i > 0 &&
+          Math.abs(words_list[i].bounds.left -
+            words_list[i - 1].bounds.left) > 100) question_flag = true;
+        if (!question_flag) question += words_list[i].text;
+        // 如果question已经大于10了也不需要读取了
+        if (question > 10) question_flag = true;
+      }
+      // 这里不能用else，会漏读一次
+      if (question_flag) {
+        // 其他的就是选项了
+        if (words_list[i].text[1] == '.') options_text.push(words_list[i].text.slice(2));
+        // else则是选项没有读取完全，这是由于hamibot本地ocr比较鸡肋，无法直接ocr完的缘故
+        else options_text[options_text.length - 1] = options_text[options_text.length - 1] + words_list[i].text;
+      }
+    }
+  }
+  question = ocr_processing(question, true);
+  return [question, options_text];
+}
+
+/**
+* 本地ocr标点错词处理
+* @param {string} text 需要处理的文本
+* @param {boolean} if_question 是否处理的是问题（四人赛双人对战）
+*/
+function ocr_processing(text, if_question) {
+  // 标点修改
+  text = text.replace(/,/g, "，");
+  text = text.replace(/〈〈/g, "《");
+  text = text.replace(/〉〉/g, "》");
+  text = text.replace(/\s*/g, "");
+  text = text.replace(/_/g, "一");
+  text = text.replace(/;/g, "；");
+  text = text.replace(/o/g, "");
+  text = text.replace(/。/g, "");
+  text = text.replace(/`/g, "、");
+  text = text.replace(/\?/g, "？");
+  text = text.replace(/:/g, "：");
+  text = text.replace(/!/g, "!");
+  text = text.replace(/\(/g, "（");
+  text = text.replace(/\)/g, "）");
+  // 文字修改
+  text = text.replace(/营理/g, "管理");
+  text = text.replace(/土也/g, "地");
+  text = text.replace(/未口/g, "和");
+  text = text.replace(/晋查/g, "普查");
+  text = text.replace(/扶悌/g, "扶梯");
+
+  if (if_question) {
+    text = text.slice(text.indexOf('.') + 1);
+    text = text.slice(0, 10);
+  }
+  return text;
+}
+
 /*
 ********************四人赛、双人对战********************
 */
-function do_contest() {
 
-  while (!text('开始').exists()) handling_access_exceptions();
-  while (!text('继续挑战').exists()) {
+/**
+ * 处理访问异常
+ */
+function handling_access_exceptions() {
+  if (text("访问异常").exists()) {
+    if (text("刷新").exists()) {
+      click('刷新', 1)
+      text("刷新").click();
+      className("android.view.View").text("刷新").findOne().click();
+    }
+    // 滑动按钮位置
+    var pos = className('android.view.View').depth(10).clickable(true).findOnce(1).bounds();
+    // 滑动框右边界
+    var right_border = className('android.view.View').depth(9).clickable(false).findOnce(0).bounds().right;
+    // 位置取随机值
+    var randomX = random(pos.left, pos.right);
+    var randomY = random(pos.top, pos.bottom);
+    swipe(randomX, randomY, randomX + right_border, randomY, random(200, 400));
+    longClick(randomX + right_border, randomY);
+  }
+}
+
+/* 
+处理访问异常，滑动验证
+*/
+var id_handling_access_exceptions;
+// 在子线程执行的定时器，如果不用子线程，则无法获取弹出页面的控件
+var thread_handling_access_exceptions = threads.start(function () {
+  // 每2秒就处理访问异常
+  id_handling_access_exceptions = setInterval(handling_access_exceptions, 2000);
+});
+
+/**
+* 答题
+*/
+function do_contest() {
+  while (!text("开始").exists()) handling_access_exceptions();
+  while (!text("继续挑战").exists()) {
     // 等待下一题题目加载
+    handling_access_exceptions();
     className("android.view.View").depth(28).waitFor();
     var pos = className("android.view.View").depth(28).findOne().bounds();
-    if (className("android.view.View").text("        ").exists())
-      pos = className("android.view.View").text("        ").findOne().bounds();
+    if (className("android.view.View").text("        ").exists()) pos = className("android.view.View").text("        ").findOne().bounds();
     do {
-      var point = findColor(captureScreen(), '#1B1F25', {
+      var point = findColor(captureScreen(), "#1B1F25", {
         region: [pos.left, pos.top, pos.width(), pos.height()],
         threshold: 10,
       });
     } while (!point);
     // 等待选项加载
-    className('android.widget.RadioButton').depth(32).clickable(true).waitFor();
-    var img = images.inRange(captureScreen(), '#000000', '#444444');
+    handling_access_exceptions();
+    className("android.widget.RadioButton").depth(32).clickable(true).waitFor();
+    var img = images.inRange(captureScreen(), "#000000", "#444444");
     img = images.clip(img, pos.left, pos.top, pos.width(), device.height - pos.top);
-
-    var result = baidu_ocr_api(img);
-    var question = result[0];
-    var options_text = result[1];
-
-    log("题目: " + question);
-    log("选项: " + options_text);
+    if (whether_improve_accuracy == "yes") {
+      var result = baidu_ocr_api(img);
+      var question = result[0];
+      var options_text = result[1];
+    } else {
+      try {
+        var result = extract_ocr_recognize(ocr.recognize(img));
+        var question = result[0];
+        var options_text = result[1];
+      } catch (error) {
+        exit();
+      }
+    }
+    img.recycle();
     if (question) do_contest_answer(32, question, options_text);
     else {
-      className('android.widget.RadioButton').depth(32).waitFor();
-      className('android.widget.RadioButton').depth(32).findOne().click();
+      handling_access_exceptions();
+      className("android.widget.RadioButton").depth(32).waitFor();
+      handling_access_exceptions();
+      className("android.widget.RadioButton").depth(32).findOne(delay_time * 3).click();
     }
-
+    handling_access_exceptions();
     // 等待新题目加载
-    while (!textMatches(/第\d题/).exists() && !text('继续挑战').exists() && !text('开始').exists());
+    while (!textMatches(/第\d题/).exists() && !text("继续挑战").exists() && !text("开始").exists());
   }
 }
 
@@ -435,31 +559,21 @@ if (!className('android.view.View').depth(21).text('学习积分').exists()) {
   my_click_clickable('学习积分');
 }
 
-/* 
-处理访问异常，滑动验证
-*/
-var id_handling_access_exceptions;
-// 在子线程执行的定时器，如果不用子线程，则无法获取弹出页面的控件
-var thread_handling_access_exceptions = threads.start(function () {
-  // 每2秒就处理访问异常
-  id_handling_access_exceptions = setInterval(handling_access_exceptions, 2000);
-});
-
 /*
 **********四人赛*********
 */
 if (four_player_battle == 'yes') {
-  log("四人赛");
   sleep(random_time(delay_time));
 
   if (!className("android.view.View").depth(21).text("学习积分").exists()) back_track();
-  log("等待:" + "学习积分");
   className("android.view.View").depth(21).text("学习积分").waitFor();
-  entry_model(11);
+  entry_model(10);
 
   for (var i = 0; i < 2; i++) {
     sleep(random_time(delay_time));
     my_click_clickable("开始比赛");
+    sleep(random_time(delay_time / 2));
+    if (text("访问异常").exists()) sleep(random_time(delay_time));
     handling_access_exceptions();
     do_contest();
     handling_access_exceptions();
@@ -471,7 +585,7 @@ if (four_player_battle == 'yes') {
       sleep(random_time(delay_time));
     }
   }
-  sleep(random_time(delay_time));
+  sleep(random_time(delay_time * 3));
   back();
   sleep(random_time(delay_time));
   back();
@@ -481,24 +595,19 @@ if (four_player_battle == 'yes') {
 **********双人对战*********
 */
 if (two_player_battle == 'yes') {
-  log("双人对战");
   sleep(random_time(delay_time));
 
   if (!className("android.view.View").depth(21).text("学习积分").exists()) back_track();
-  log("等待:" + "学习积分");
   className("android.view.View").depth(21).text("学习积分").waitFor();
-  entry_model(12);
+  entry_model(11);
 
   // 点击随机匹配
   handling_access_exceptions();
-  log("等待:" + "随机匹配");
   text("随机匹配").waitFor();
   sleep(random_time(delay_time * 2));
   try {
-    log("点击:" + "android.view.View");
     className("android.view.View").clickable(true).depth(24).findOnce(1).click();
   } catch (error) {
-    log("点击:" + "");
     className("android.view.View").text("").findOne().click();
   }
   handling_access_exceptions();
@@ -512,8 +621,8 @@ if (two_player_battle == 'yes') {
 }
 
 // 取消访问异常处理循环
-clearInterval(id_handling_access_exceptions);
+if (id_handling_access_exceptions) clearInterval(id_handling_access_exceptions);
 
-//震动两秒
-device.vibrate(1000);
+//震动半秒
+device.vibrate(500);
 toast('脚本运行完成');
