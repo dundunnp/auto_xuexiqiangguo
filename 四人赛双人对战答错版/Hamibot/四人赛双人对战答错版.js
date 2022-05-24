@@ -33,11 +33,44 @@ function my_click_clickable(target) {
     }
 }
 
+/**
+ * 处理访问异常
+ */
+function handling_access_exceptions() {
+    if (text("访问异常").exists()) {
+        if(text("刷新").exists()) {
+            click('刷新',1)
+            text("刷新").click();
+            className("android.view.View").text("刷新").findOne().click();
+        }
+        // 滑动按钮位置
+        var pos = className('android.view.View').depth(10).clickable(true).findOnce(1).bounds();
+        // 滑动框右边界
+        var right_border = className('android.view.View').depth(9).clickable(false).findOnce(0).bounds().right;
+        // 位置取随机值
+        var randomX = random(pos.left, pos.right);
+        var randomY = random(pos.top, pos.bottom);
+        swipe(randomX, randomY, randomX + right_border, randomY, random(200, 400));
+        longClick(randomX + right_border, randomY);
+    }
+}
+
+/* 
+处理访问异常，滑动验证
+*/
+var id_handling_access_exceptions;
+// 在子线程执行的定时器，如果不用子线程，则无法获取弹出页面的控件
+var thread_handling_access_exceptions = threads.start(function () {
+    // 每2秒就处理访问异常
+    id_handling_access_exceptions = setInterval(handling_access_exceptions, 2000);
+});
+
 function do_it() {
-    while (!text('开始').exists());
+    while (!text('开始').exists()) handling_access_exceptions();
     while (!text('继续挑战').exists()) {
+        handling_access_exceptions();
         sleep(random_time(contest_delay_time));
-        // 全选A
+        // 随机选择
         try {
             var options = className('android.widget.RadioButton').depth(32).find();
             var select = random(0, options.length - 1);
@@ -69,7 +102,7 @@ if (!className('android.view.View').depth(21).text('学习积分').exists()) {
 if (four_player_battle == 'yes') {
     sleep(random_time(delay_time));
     className('android.view.View').depth(21).text('学习积分').waitFor();
-    entry_model(11);
+    entry_model(10);
     for (var i = 0; i < four_player_count; i++) {
         sleep(random_time(delay_time));
         my_click_clickable('开始比赛');
@@ -80,7 +113,7 @@ if (four_player_battle == 'yes') {
             sleep(random_time(delay_time));
         }
     }
-    sleep(random_time(delay_time));
+    sleep(random_time(delay_time * 3));
     back();
     sleep(random_time(delay_time));
     back();
@@ -92,10 +125,11 @@ if (four_player_battle == 'yes') {
 if (two_player_battle == 'yes') {
     sleep(random_time(delay_time));
     className('android.view.View').depth(21).text('学习积分').waitFor();
-    entry_model(12);
+    entry_model(11);
 
     for (var i = 0; i < two_player_count; i++) {
         // 点击随机匹配
+        handling_access_exceptions();
         text('随机匹配').waitFor();
         sleep(random_time(delay_time * 2));
         try {
@@ -119,7 +153,9 @@ if (two_player_battle == 'yes') {
     my_click_clickable('退出');
 }
 
+// 取消访问异常处理循环
+if (id_handling_access_exceptions) clearInterval(id_handling_access_exceptions);
 
-//震动两秒
-device.vibrate(1000);
+//震动半秒
+device.vibrate(500);
 toast('脚本运行完成');
