@@ -3,9 +3,9 @@
 
 如果能帮到你的话可以帮忙去[GitHub](https://github.com/dundunnp/hamibot-auto_xuexiqiangguo) star一下噢，谢谢！
 
-# v7.1 更新内容:
-1. 优化答题速度与正确率
-2. 除去华为ocr
+# v7.2 更新内容:
+1. 增加处理访问异常功能
+2. 修复选项顺序的bug
 
 # 脚本声明
 此脚本仅运行完成四人赛、双人对战模块，通过优化题目之间的切换间隔，增加新的题库，双题库保证正确率，现脚本已经达到**80%正确率**，如想了解其他更多信息或者想完成所有模块请安装[主脚本](https://hamibot.com/marketplace/aQlXd)
