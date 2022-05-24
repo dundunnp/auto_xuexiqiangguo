@@ -290,13 +290,13 @@ function get_finish_list() {
                 completed_read_count = parseInt(model.child(2).text().match(/\d+/)) / 2;
             } else if (i == 5) {
                 completed_watch_count = parseInt(model.child(2).text().match(/\d+/));
-            } else if (i == 8) {
+            } else if (i == 16) {
                 weekly_answer_scored = parseInt(model.child(2).text().match(/\d+/));
-            } else if (i == 9) {
+            } else if (i == 8) {
                 special_answer_scored = parseInt(model.child(2).text().match(/\d+/));
-            } else if (i == 11) {
+            } else if (i == 10) {
                 four_players_scored = parseInt(model.child(2).text().match(/\d+/));
-            } else if (i == 12) {
+            } else if (i == 11) {
                 two_players_scored = parseInt(model.child(2).text().match(/\d+/));
             }
             finish_list.push(model.child(3).text() == '已完成');
@@ -329,7 +329,7 @@ className('android.view.ViewGroup').depth(15).findOnce(2).child(3).click();
 /*
 **********本地频道*********
 */
-if (!finish_list[12]) {
+if (!finish_list[10]) {
     className('android.widget.LinearLayout').clickable(true).depth(26).waitFor();
     sleep(random_time(delay_time));
     className('android.widget.LinearLayout').clickable(true).depth(26).drawingOrder(1).findOne().click();
@@ -421,13 +421,17 @@ if (!finish_list[2] && !finish_list[0]) {
     sleep(random_time(delay_time));
     my_click_clickable('听广播');
     sleep(random_time(delay_time));
-    className('android.widget.ImageView').clickable(true).id('v_playing').waitFor();
-    className('android.widget.ImageView').clickable(true).id('v_playing').findOne().click();
-    // 获取新的完成情况列表
+    if (!textStartsWith("最近收听").exists() && !textStartsWith("推荐收听").exists()) {
+        log("等待:" + "v_playing");
+        // 不应该直接通过id寻找控件，因为此页面过多控件，寻找耗时太大
+        // className("android.widget.ImageView").clickable(true).id("v_playing").waitFor();
+        // 换成通过text寻找控件
+        textStartsWith("正在收听").waitFor();
+        log("点击:" + "v_playing");
+        // className("android.widget.ImageView").clickable(true).id("v_playing").findOne().click();
+        textStartsWith("正在收听").findOne().parent().child(1).child(0).click();
+    }
     sleep(random_time(delay_time));
-    var back_track_flag = 2;
-    back_track();
-    var finish_list = get_finish_list();
 }
 
 back_track_flag = 1;
@@ -919,6 +923,9 @@ function handling_access_exceptions() {
         var randomY = random(pos.top, pos.bottom);
         swipe(randomX, randomY, randomX + right_border, randomY, random(200, 400));
     }
+    if (textContains("网络开小差").exists()) {
+        click('确定');
+    }
 }
 
 /* 
@@ -960,10 +967,10 @@ if (all_weekly_answers_completed == "no") {
     all_weekly_answers_completed = storage.get('all_weekly_answers_completed_storage');
 }
 
-if (!finish_list[4] && weekly_answer_scored < 4) {
+if (!finish_list[12] && weekly_answer_scored < 4 && all_weekly_answers_completed == "no") {
     sleep(random_time(delay_time));
     if (!className('android.view.View').depth(21).text('学习积分').exists()) back_track();
-    entry_model(8);
+    entry_model(16);
     // 等待列表加载
     textContains('月').waitFor();
     sleep(random_time(delay_time * 2));
@@ -997,10 +1004,10 @@ if (all_special_answer_completed == "no") {
     all_special_answer_completed = storage.get('all_special_answer_completed_storage');
 }
 
-if (!finish_list[5] && special_answer_scored < 8) {
+if (!finish_list[4] && special_answer_scored < 8) {
     sleep(random_time(delay_time));
     if (!className('android.view.View').depth(21).text('学习积分').exists()) back_track();
-    entry_model(9);
+    entry_model(8);
     // 等待列表加载
     className('android.view.View').clickable(true).depth(23).waitFor();
     // 打开第一个出现未完成作答的题目
@@ -1068,10 +1075,10 @@ if (!finish_list[5] && special_answer_scored < 8) {
 /*
 **********挑战答题*********
 */
-if (!finish_list[6]) {
+if (!finish_list[5]) {
     sleep(random_time(delay_time));
     if (!className('android.view.View').depth(21).text('学习积分').exists()) back_track();
-    entry_model(10);
+    entry_model(9);
     // 加载页面
     className('android.view.View').clickable(true).depth(22).waitFor();
     // flag为true时挑战成功拿到6分
@@ -1173,14 +1180,14 @@ function do_contest() {
 /*
  **********四人赛*********
  */
-if (!finish_list[7] && four_players_scored < 3) {
+if (!finish_list[6] && four_players_scored < 3) {
     log("四人赛");
     sleep(random_time(delay_time));
 
     if (!className("android.view.View").depth(21).text("学习积分").exists()) back_track();
     log("等待:" + "学习积分");
     className("android.view.View").depth(21).text("学习积分").waitFor();
-    entry_model(11);
+    entry_model(10);
 
     for (var i = 0; i < 2; i++) {
         sleep(random_time(delay_time));
@@ -1205,14 +1212,14 @@ if (!finish_list[7] && four_players_scored < 3) {
 /*
  **********双人对战*********
  */
-if (!finish_list[8] && two_players_scored < 1) {
+if (!finish_list[7] && two_players_scored < 1) {
     log("双人对战");
     sleep(random_time(delay_time));
 
     if (!className("android.view.View").depth(21).text("学习积分").exists()) back_track();
     log("等待:" + "学习积分");
     className("android.view.View").depth(21).text("学习积分").waitFor();
-    entry_model(12);
+    entry_model(11);
 
     // 点击随机匹配
     handling_access_exceptions();
@@ -1242,10 +1249,10 @@ if (id_handling_access_exceptions) clearInterval(id_handling_access_exceptions);
 /*
 **********订阅*********
 */
-if (!finish_list[9] && whether_complete_subscription == "yes") {
+if (!finish_list[8] && whether_complete_subscription == "yes") {
     sleep(random_time(delay_time));
     if (!className('android.view.View').depth(21).text('学习积分').exists()) back_track();
-    entry_model(13);
+    entry_model(12);
     // 等待加载
     sleep(random_time(delay_time * 3));
 
@@ -1357,39 +1364,17 @@ if (!finish_list[9] && whether_complete_subscription == "yes") {
 
 
 /*
-**********分享与发表观点*********
+**********发表观点*********
 */
 
-// 分享两次
-if (!finish_list[10]) {
-    sleep(random_time(delay_time));
-    if (!className('android.view.View').depth(21).text('学习积分').exists()) back_track();
-    entry_model(15);
-    // 随意找一篇文章
-    sleep(random_time(delay_time));
-    my_click_clickable('推荐');
-    sleep(random_time(delay_time * 2));
-    className('android.widget.FrameLayout').clickable(true).depth(22).findOnce(0).click();
-    sleep(random_time(delay_time * 2));
-    for (var i = 0; i < 2; i++) {
-        // 分享按键
-        className("ImageView").depth(10).clickable(true).findOnce(2).click();
-        sleep(random_time(delay_time / 2));
-        my_click_clickable('分享到学习强国');
-        sleep(random_time(delay_time));
-        back();
-        sleep(random_time(delay_time));
-    }
-}
-
-if (!finish_list[11] && whether_complete_speech == "yes") {
+if (!finish_list[9] && whether_complete_speech == "yes") {
 
     var speechs = ["好好学习，天天向上", "大国领袖，高瞻远瞩", "请党放心，强国有我", "坚持信念，砥砺奋进", "团结一致，共建美好", "为人民谋幸福"];
 
     sleep(random_time(delay_time));
     if (!text('欢迎发表你的观点').exists()) {
         if (!className('android.view.View').depth(21).text('学习积分').exists()) back_track();
-        entry_model(15);
+        entry_model(13);
         // 随意找一篇文章
         sleep(random_time(delay_time));
         my_click_clickable('推荐');
