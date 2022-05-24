@@ -96,12 +96,12 @@ function map_get(key) {
  * 通过Http下载题库到本地，并进行处理，如果本地已经存在则无需下载
  */
 if (!storage.contains('answer_question_map1')) {
-  // 使用牛七云云盘
-  var answer_question_bank = http.get('http://r90w4pku5.hn-bkt.clouddn.com/%E9%A2%98%E5%BA%93_%E6%8E%92%E5%BA%8F%E7%89%88.json')
-  // 如果资源过期换成别的云盘
+  // 使用 Github 文件加速服务：https://git.yumenaka.net
+  var answer_question_bank = http.get("https://git.yumenaka.net/https://raw.githubusercontent.com/Mondayfirst/XXQG_TiKu/main/%E9%A2%98%E5%BA%93_%E6%8E%92%E5%BA%8F%E7%89%88.json");
+  // 如果资源过期或无法访问则换成别的云盘
   if (!(answer_question_bank.statusCode >= 200 && answer_question_bank.statusCode < 300)) {
     // 使用腾讯云
-    var answer_question_bank = http.get('https://xxqg-tiku-1305531293.cos.ap-nanjing.myqcloud.com/%E9%A2%98%E5%BA%93_%E6%8E%92%E5%BA%8F%E7%89%88.json')
+    answer_question_bank = http.get('https://xxqg-tiku-1305531293.cos.ap-nanjing.myqcloud.com/%E9%A2%98%E5%BA%93_%E6%8E%92%E5%BA%8F%E7%89%88.json')
   }
   answer_question_bank = answer_question_bank.body.string();
   answer_question_bank = JSON.parse(answer_question_bank);
@@ -448,6 +448,11 @@ function ocr_processing(text, if_question) {
  */
 function handling_access_exceptions() {
   if (text("访问异常").exists()) {
+    if (text("刷新").exists()) {
+      click('刷新', 1)
+      text("刷新").click();
+      className("android.view.View").text("刷新").findOne().click();
+    }
     // 滑动按钮位置
     var pos = className('android.view.View').depth(10).clickable(true).findOnce(1).bounds();
     // 滑动框右边界
@@ -456,8 +461,19 @@ function handling_access_exceptions() {
     var randomX = random(pos.left, pos.right);
     var randomY = random(pos.top, pos.bottom);
     swipe(randomX, randomY, randomX + right_border, randomY, random(200, 400));
+    longClick(randomX + right_border, randomY);
   }
 }
+
+/* 
+处理访问异常，滑动验证
+*/
+var id_handling_access_exceptions;
+// 在子线程执行的定时器，如果不用子线程，则无法获取弹出页面的控件
+var thread_handling_access_exceptions = threads.start(function () {
+  // 每2秒就处理访问异常
+  id_handling_access_exceptions = setInterval(handling_access_exceptions, 2000);
+});
 
 /**
 * 答题
@@ -467,7 +483,6 @@ function do_contest() {
   while (!text("继续挑战").exists()) {
     // 等待下一题题目加载
     handling_access_exceptions();
-    log("等待:" + "android.view.View");
     className("android.view.View").depth(28).waitFor();
     var pos = className("android.view.View").depth(28).findOne().bounds();
     if (className("android.view.View").text("        ").exists()) pos = className("android.view.View").text("        ").findOne().bounds();
@@ -479,7 +494,6 @@ function do_contest() {
     } while (!point);
     // 等待选项加载
     handling_access_exceptions();
-    log("等待:" + "android.widget.RadioButton");
     className("android.widget.RadioButton").depth(32).clickable(true).waitFor();
     var img = images.inRange(captureScreen(), "#000000", "#444444");
     img = images.clip(img, pos.left, pos.top, pos.width(), device.height - pos.top);
@@ -493,20 +507,15 @@ function do_contest() {
         var question = result[0];
         var options_text = result[1];
       } catch (error) {
-        log("请将hamibot软件升级至最新版本");
         exit();
       }
     }
     img.recycle();
-    log("题目: " + question);
-    log("选项: " + options_text);
     if (question) do_contest_answer(32, question, options_text);
     else {
       handling_access_exceptions();
-      log("等待:" + "android.widget.RadioButton");
       className("android.widget.RadioButton").depth(32).waitFor();
       handling_access_exceptions();
-      log("点击:" + "android.widget.RadioButton");
       className("android.widget.RadioButton").depth(32).findOne(delay_time * 3).click();
     }
     handling_access_exceptions();
@@ -530,31 +539,21 @@ if (!className('android.view.View').depth(21).text('学习积分').exists()) {
   my_click_clickable('学习积分');
 }
 
-/* 
-处理访问异常，滑动验证
-*/
-var id_handling_access_exceptions;
-// 在子线程执行的定时器，如果不用子线程，则无法获取弹出页面的控件
-var thread_handling_access_exceptions = threads.start(function () {
-  // 每2秒就处理访问异常
-  id_handling_access_exceptions = setInterval(handling_access_exceptions, 2000);
-});
-
 /*
 **********四人赛*********
 */
 if (four_player_battle == 'yes') {
-  log("四人赛");
   sleep(random_time(delay_time));
 
   if (!className("android.view.View").depth(21).text("学习积分").exists()) back_track();
-  log("等待:" + "学习积分");
   className("android.view.View").depth(21).text("学习积分").waitFor();
-  entry_model(11);
+  entry_model(10);
 
   for (var i = 0; i < 2; i++) {
     sleep(random_time(delay_time));
     my_click_clickable("开始比赛");
+    sleep(random_time(delay_time / 2));
+    if (text("访问异常").exists()) sleep(random_time(delay_time));
     handling_access_exceptions();
     do_contest();
     handling_access_exceptions();
@@ -566,7 +565,7 @@ if (four_player_battle == 'yes') {
       sleep(random_time(delay_time));
     }
   }
-  sleep(random_time(delay_time));
+  sleep(random_time(delay_time * 3));
   back();
   sleep(random_time(delay_time));
   back();
@@ -576,24 +575,19 @@ if (four_player_battle == 'yes') {
 **********双人对战*********
 */
 if (two_player_battle == 'yes') {
-  log("双人对战");
   sleep(random_time(delay_time));
 
   if (!className("android.view.View").depth(21).text("学习积分").exists()) back_track();
-  log("等待:" + "学习积分");
   className("android.view.View").depth(21).text("学习积分").waitFor();
-  entry_model(12);
+  entry_model(11);
 
   // 点击随机匹配
   handling_access_exceptions();
-  log("等待:" + "随机匹配");
   text("随机匹配").waitFor();
   sleep(random_time(delay_time * 2));
   try {
-    log("点击:" + "android.view.View");
     className("android.view.View").clickable(true).depth(24).findOnce(1).click();
   } catch (error) {
-    log("点击:" + "");
     className("android.view.View").text("").findOne().click();
   }
   handling_access_exceptions();
@@ -607,8 +601,8 @@ if (two_player_battle == 'yes') {
 }
 
 // 取消访问异常处理循环
-clearInterval(id_handling_access_exceptions);
+if (id_handling_access_exceptions) clearInterval(id_handling_access_exceptions);
 
-//震动两秒
-device.vibrate(1000);
+//震动半秒
+device.vibrate(500);
 toast('脚本运行完成');
