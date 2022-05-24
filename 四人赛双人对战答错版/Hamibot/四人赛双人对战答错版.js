@@ -38,20 +38,22 @@ function my_click_clickable(target) {
  */
 function handling_access_exceptions() {
     if (text("访问异常").exists()) {
-        if(text("刷新").exists()) {
-            click('刷新',1)
-            text("刷新").click();
-            className("android.view.View").text("刷新").findOne().click();
-        }
         // 滑动按钮位置
+        className('android.view.View').depth(10).clickable(true).waitFor();
         var pos = className('android.view.View').depth(10).clickable(true).findOnce(1).bounds();
         // 滑动框右边界
+        className('android.view.View').depth(9).clickable(false).waitFor();
         var right_border = className('android.view.View').depth(9).clickable(false).findOnce(0).bounds().right;
         // 位置取随机值
         var randomX = random(pos.left, pos.right);
         var randomY = random(pos.top, pos.bottom);
         swipe(randomX, randomY, randomX + right_border, randomY, random(200, 400));
-        longClick(randomX + right_border, randomY);
+        if (textContains("刷新").exists()) {
+            click('刷新');
+        }
+    }
+    if (textContains("网络开小差").exists()) {
+        click('确定');
     }
 }
 
