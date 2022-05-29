@@ -87,7 +87,7 @@ if (!AK || !SK) {
 var answer_question_map = [];
 
 // 当题目为这些词时，题目较多会造成hash表上的一个index过多，此时存储其选项
-var special_problem = '选择正确的读音 选择词语的正确词形 下列词形正确的是 根据《中华人民共和国'
+var special_problem = '选择正确的读音 选择词语的正确词形 下列词形正确的是 根据《中华人民共和国';
 
 /**
  * hash函数
@@ -444,6 +444,9 @@ if (!finish_list[1] || !finish_list[2]) {
     my_click_clickable('百灵');
     sleep(random_time(delay_time / 2));
     my_click_clickable('竖');
+    // 刷新视频列表
+    sleep(random_time(delay_time / 2));
+    my_click_clickable("竖")
     // 等待视频加载
     sleep(random_time(delay_time * 3));
     // 点击第一个视频
@@ -922,6 +925,10 @@ function handling_access_exceptions() {
         var randomX = random(pos.left, pos.right);
         var randomY = random(pos.top, pos.bottom);
         swipe(randomX, randomY, randomX + right_border, randomY, random(200, 400));
+        longClick(randomX + right_border, randomY);
+        if (textContains("刷新").exists()) {
+            click('刷新');
+        }
     }
     if (textContains("网络开小差").exists()) {
         click('确定');
@@ -1398,7 +1405,7 @@ if (pushplus_token) {
     back_track();
     // 获取今日得分
     var score = textStartsWith('今日已累积').findOne().text();
-    score = score.match(/\d+/)
+    score = score.match(/\d+/);
     sleep(random_time(delay_time));
     back();
     // 获取账号名
