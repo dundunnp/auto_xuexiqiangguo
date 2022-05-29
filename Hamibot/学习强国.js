@@ -487,6 +487,9 @@ if (!finish_list[1] || !finish_list[2]) {
     my_click_clickable("百灵");
     sleep(random_time(delay_time / 2));
     my_click_clickable("竖");
+    // 刷新视频列表
+    sleep(random_time(delay_time / 2));
+    my_click_clickable("竖")
     // 等待视频加载
     sleep(random_time(delay_time * 3));
     // 点击第一个视频
@@ -1044,6 +1047,7 @@ function handling_access_exceptions() {
         var randomX = random(pos.left, pos.right);
         var randomY = random(pos.top, pos.bottom);
         swipe(randomX, randomY, randomX + right_border, randomY, random(200, 400));
+        longClick(randomX + right_border, randomY);
         if (textContains("刷新").exists()) {
             click('刷新');
         }
