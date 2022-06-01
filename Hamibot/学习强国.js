@@ -1191,16 +1191,22 @@ if (!finish_list[4] && special_answer_scored < 8) {
         log("点击:" + "开始答题");
         text("开始答题").findOne().click();
         is_answer_special_flag = true;
-        do_periodic_answer(10);
+        // 总题数
+        var num_string = className("android.view.View").depth(24).findOnce(1).text();
+        var total_question_num = parseInt(num_string.slice(num_string.indexOf('/') + 1));
+        do_periodic_answer(total_question_num);
     } else if (text("继续答题").exists()) {
         log("点击:" + "继续答题");
         text("继续答题").findOnce(special_i).click();
         // 等待题目加载
         sleep(random_time(delay_time));
-        // 已完成题数
-        var completed_num = parseInt(className("android.view.View").depth(24).findOnce(1).text());
         is_answer_special_flag = true;
-        do_periodic_answer(10 - completed_num + 1);
+        var num_string = className("android.view.View").depth(24).findOnce(1).text();
+        // 已完成题数
+        var completed_question_num = parseInt(num_string);
+        // 总题数
+        var total_question_num = parseInt(num_string.slice(num_string.indexOf('/') + 1));
+        do_periodic_answer(total_question_num - completed_question_num + 1);
     } else {
         sleep(random_time(delay_time));
         log("等待:" + "android.view.View");
