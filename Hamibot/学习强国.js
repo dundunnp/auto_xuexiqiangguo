@@ -1007,9 +1007,13 @@ function do_periodic_answer(number) {
                 }
             }
             sleep(random_time(delay_time * 2));
-            // 对于专项答题没有确定
+            
             if (text("下一题").exists()) {
+                // 对于专项答题没有确定
                 click("下一题");
+            } else if (text("完成").exists()) {
+                // 如果专项答题完成点击完成
+                click("完成");
             } else {
                 // 不是专项答题时
                 click("确定");
