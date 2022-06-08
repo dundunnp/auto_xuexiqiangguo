@@ -932,6 +932,7 @@ function handling_access_exceptions() {
             var randomY = random(pos.top, pos.bottom);
             swipe(randomX, randomY, randomX + right_border, randomY, random(200, 400));
             press(randomX + right_border, randomY, 1000);
+            sleep(500);
             // 需要开启新线程获取控件
             threads.start(function () {
                 if (text("刷新").exists()) {
@@ -954,7 +955,7 @@ var id_handling_access_exceptions;
 // 在子线程执行的定时器，如果不用子线程，则无法获取弹出页面的控件
 var thread_handling_access_exceptions = threads.start(function () {
     // 每2秒就处理访问异常
-    id_handling_access_exceptions = setInterval(handling_access_exceptions, 3000);
+    id_handling_access_exceptions = setInterval(handling_access_exceptions, 4000);
 });
 
 /*
@@ -1063,6 +1064,7 @@ if (!finish_list[4] && special_answer_scored < 8) {
         is_answer_special_flag = true;
         // 总题数
         className("android.view.View").depth(24).waitFor();
+        sleep(random_time(delay_time));
         var num_string = className("android.view.View").depth(24).findOnce(1).text();
         var total_question_num = parseInt(num_string.slice(num_string.indexOf('/') + 1));
         do_periodic_answer(total_question_num);
@@ -1072,6 +1074,7 @@ if (!finish_list[4] && special_answer_scored < 8) {
         sleep(random_time(delay_time));
         is_answer_special_flag = true;
         className("android.view.View").depth(24).waitFor();
+        sleep(random_time(delay_time));
         var num_string = className("android.view.View").depth(24).findOnce(1).text();
         // 已完成题数
         var completed_question_num = parseInt(num_string);
@@ -1085,10 +1088,6 @@ if (!finish_list[4] && special_answer_scored < 8) {
     }
 
     if (is_answer_special_flag) {
-        // 点击完成
-        sleep(random_time(delay_time));
-        text('完成').waitFor();
-        text('完成').click();
         // 点击退出
         sleep(random_time(delay_time));
         className('android.view.View').clickable(true).depth(20).waitFor();
