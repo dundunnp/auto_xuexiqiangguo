@@ -208,6 +208,7 @@ Q5: 除上面的问题
 
 A: 请在[GitHub](https://github.com/dundunnp/hamibot-auto_xuexiqiangguo/issues)或议题上提出问题，问题尽量详细，包含图片（配置信息、学习强国主页等有助于了解问题的图片）或视频，这样对大家解决问题都快
 
-# 待编写
-1. 其他第三方ocr接口的编写
-2. Auto.js OCR插件的编写
+# To Do
+1. ui界面的编写
+2. 优化答题的编写
+3. 优化专项答题查询速度的编写
