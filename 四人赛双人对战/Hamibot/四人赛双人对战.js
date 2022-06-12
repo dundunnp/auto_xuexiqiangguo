@@ -20,7 +20,7 @@ var { SK } = hamibot.env;
 
 // 本地存储数据
 var storage = storages.create('data');
-// 更新题库为answer_question_map3
+// 更新题库为answer_question_map
 storage.remove('answer_question_map1');
 storage.remove('answer_question_map2');
 storage.remove('answer_question_map3');
@@ -99,6 +99,31 @@ function map_get(key) {
 };
 
 /**
+ * 定时更新题库，通过在线访问辅助文件判断题库是否有更新
+ */
+if (!storage.contains('answer_question_bank_update_storage')) {
+    storage.put('answer_question_bank_update_storage', 0);
+    storage.remove('answer_question_map');
+}
+
+var date = new Date();
+// 每周六定时检测更新题库，周日为0
+if (date.getDay() == 6) {
+    var answer_question_bank_update = storage.get("answer_question_bank_update_storage");
+    if (answer_question_bank_update) {
+        var answer_question_bank_checked = http.get("https://git.yumenaka.net/https://raw.githubusercontent.com/McMug2020/XXQG_TiKu/main/0.json");
+        if ((answer_question_bank_checked.statusCode >= 200 && answer_question_bank_checked.statusCode < 300)) storage.remove('answer_question_map');
+    } else {
+        var answer_question_bank_checked = http.get("https://git.yumenaka.net/https://raw.githubusercontent.com/McMug2020/XXQG_TiKu/main/1.json");
+        if ((answer_question_bank_checked.statusCode >= 200 && answer_question_bank_checked.statusCode < 300)) storage.remove('answer_question_map');
+    }
+}
+
+// 或设定每月某日定时检测更新
+//if (date.getDate() == 28)｛
+//｝
+
+/**
  * 通过Http下载题库到本地，并进行处理，如果本地已经存在则无需下载
  */
 if (!storage.contains('answer_question_map')) {
@@ -128,6 +153,10 @@ if (!storage.contains('answer_question_map')) {
     }
     sleep(random_time(delay_time * 5));
     storage.put('answer_question_map', answer_question_map);
+
+    // 通过异或运算切换更新题库的开关，并记录
+    var k = storage.get("answer_question_bank_update_storage") ^ 1;
+    storage.put('answer_question_bank_update_storage', k);
 }
 
 var answer_question_map = storage.get('answer_question_map');
@@ -461,6 +490,7 @@ function handling_access_exceptions() {
         var randomY = random(pos.top, pos.bottom);
         swipe(randomX, randomY, randomX + right_border, randomY, random(200, 400));
         press(randomX + right_border, randomY, 650);
+        sleep(100);
         if (textContains("刷新").exists()) {
             click('刷新');
         }
@@ -476,8 +506,8 @@ function handling_access_exceptions() {
 var id_handling_access_exceptions;
 // 在子线程执行的定时器，如果不用子线程，则无法获取弹出页面的控件
 var thread_handling_access_exceptions = threads.start(function () {
-    // 每2.5秒就处理访问异常
-    id_handling_access_exceptions = setInterval(handling_access_exceptions, 2500);
+    // 每2.6秒就处理访问异常
+    id_handling_access_exceptions = setInterval(handling_access_exceptions, 2600);
 });
 
 /**
