@@ -136,7 +136,7 @@ function map_get(key) {
  * 通过Http下载题库到本地，并进行处理，如果本地已经存在则无需下载
  */
 if (!storage.contains('answer_question_map1')) {
-    // 使用 Github 文件加速服务：https://git.yumenaka.net
+    // 使用 Github 文件加速服务：https://git.metauniverse-cn.com
     var answer_question_bank = http.get("https://git.metauniverse-cn.com/https://raw.githubusercontent.com/Mondayfirst/XXQG_TiKu/main/%E9%A2%98%E5%BA%93_%E6%8E%92%E5%BA%8F%E7%89%88.json");
     // 如果资源过期或无法访问则换成别的云盘
     if (!(answer_question_bank.statusCode >= 200 && answer_question_bank.statusCode < 300)) {
