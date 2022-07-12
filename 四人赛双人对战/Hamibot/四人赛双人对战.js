@@ -53,7 +53,9 @@ if (whether_improve_accuracy == 'yes' && !AK) {
 var answer_question_map = [];
 
 // 当题目为这些词时，题目较多会造成hash表上的一个index过多，此时存储其选项
-var special_problem = '选择正确的读音 选择词语的正确词形 下列词形正确的是 根据《中华人民共和国';
+var special_problem = '选择正确的读音 选择词语的正确词形 下列词形正确的是 下列不属于二十四史的';
+// 当题目为这些词时，在线搜索书名号后的内容
+var special_problem2 = '根据《中国共 根据《中华人 下列选项中， 《中华人民共';
 
 /**
  * hash函数
@@ -129,7 +131,7 @@ if (date.getDay() == 6) {
 if (!storage.contains('answer_question_map')) {
     toast("正在下载题库");
     // 使用 Github 文件加速服务：https://gh-proxy.com/
-    var answer_question_bank = http.get("https://gh-proxy.com/https://raw.githubusercontent.com/McMug2020/XXQG_TiKu/main/%E9%A2%98%E5%BA%93_McMug2020.json");
+    var answer_question_bank = http.get("https://gh-proxy.com/https://raw.githubusercontent.com/McMug2020/XXQG_TiKu/main/%E9%A2%98%E5%BA%93_McMug2022.json");
     sleep(random_time(delay_time * 5));
     // 如果资源过期或无法访问则换成别的地址
     if (!(answer_question_bank.statusCode >= 200 && answer_question_bank.statusCode < 300)) {
@@ -140,14 +142,14 @@ if (!storage.contains('answer_question_map')) {
     }
     answer_question_bank = answer_question_bank.body.string();
     answer_question_bank = JSON.parse(answer_question_bank);
-
+    toast("格式化题库");
     for (var question in answer_question_bank) {
         var answer = answer_question_bank[question];
         if (special_problem.indexOf(question.slice(0, 7)) != -1) question = question.slice(question.indexOf('|') + 1);
         else {
             question = question.slice(0, question.indexOf('|'));
             question = question.slice(0, question.indexOf(' '));
-            question = question.slice(0, 10);
+            question = question.slice(0, 25);
         }
         map_set(question, answer);
     }
@@ -251,7 +253,7 @@ function select_option(answer, depth_click_option, options_text) {
  * @param {list[string]} options_text 每个选项文本
  */
 function do_contest_answer(depth_click_option, question, options_text) {
-    question = question.slice(0, 10);
+    question = question.slice(0, 25);
     // 如果是特殊问题需要用选项搜索答案，而不是问题
     if (special_problem.indexOf(question.slice(0, 7)) != -1) {
         var original_options_text = options_text.concat();
@@ -264,6 +266,7 @@ function do_contest_answer(depth_click_option, question, options_text) {
     // 如果本地题库没搜到，则搜网络题库
     if (answer == null) {
         var result;
+        if (special_problem2.indexOf(question.slice(0, 6)) != -1 && question.slice(18, 25) != -1) question = question.slice(18, 25);
         // 发送http请求获取答案 网站搜题速度 r1 > r2
         try {
             // 此网站只支持十个字符的搜索
@@ -328,12 +331,15 @@ function getSimilarity(str1, str2) {
  * 获取用户token
  */
 function get_baidu_token() {
-    var res = http.post("https://aip.baidubce.com/oauth/2.0/token", {
-        grant_type: "client_credentials",
-        client_id: AK,
-        client_secret: SK,
-    });
-    return res.body.json()["access_token"];
+    var res = http.post(
+        'https://aip.baidubce.com/oauth/2.0/token',
+        {
+            grant_type: 'client_credentials',
+            client_id: AK,
+            client_secret: SK,
+        }
+    );
+    return res.body.json()['access_token'];
 }
 
 if (whether_improve_accuracy == "yes") var token = get_baidu_token();
@@ -347,17 +353,21 @@ if (whether_improve_accuracy == "yes") var token = get_baidu_token();
 function baidu_ocr_api(img) {
     var options_text = [];
     var question = "";
-    var res = http.post("https://aip.baidubce.com/rest/2.0/ocr/v1/general", {
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-        },
-        access_token: token,
-        image: images.toBase64(img),
-    });
+    var res = http.post(
+        'https://aip.baidubce.com/rest/2.0/ocr/v1/general',
+        {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            access_token: token,
+            image: images.toBase64(img),
+        }
+    );
     var res = res.body.json();
     try {
         var words_list = res.words_result;
-    } catch (error) { }
+    } catch (error) {
+    }
     if (words_list) {
         // question是否读取完成的标志位
         var question_flag = false;
@@ -389,7 +399,7 @@ function baidu_ocr_api(img) {
     question = question.replace(/\s*/g, "");
     question = question.replace(/,/g, "，");
     question = question.slice(question.indexOf(".") + 1);
-    question = question.slice(0, 10);
+    question = question.slice(0, 25);
     return [question, options_text];
 }
 
@@ -448,7 +458,6 @@ function ocr_processing(text, if_question) {
     text = text.replace(/\s*/g, "");
     text = text.replace(/_/g, "一");
     text = text.replace(/;/g, "；");
-    text = text.replace(/o/g, "");
     text = text.replace(/。/g, "");
     text = text.replace(/`/g, "、");
     text = text.replace(/\?/g, "？");
@@ -456,16 +465,31 @@ function ocr_processing(text, if_question) {
     text = text.replace(/!/g, "!");
     text = text.replace(/\(/g, "（");
     text = text.replace(/\)/g, "）");
-    // 文字修改
-    text = text.replace(/营理/g, "管理");
-    text = text.replace(/土也/g, "地");
-    text = text.replace(/未口/g, "和");
-    text = text.replace(/晋查/g, "普查");
-    text = text.replace(/扶悌/g, "扶梯");
+    // 拼音修改
+    text = text.replace(/ā/g, "a");
+    text = text.replace(/á/g, "a");
+    text = text.replace(/ǎ/g, "a");
+    text = text.replace(/à/g, "a");
+    text = text.replace(/ō/g, "o");
+    text = text.replace(/ó/g, "o");
+    text = text.replace(/ǒ/g, "o");
+    text = text.replace(/ò/g, "o");
+    text = text.replace(/ē/g, "e");
+    text = text.replace(/é/g, "e");
+    text = text.replace(/ě/g, "e");
+    text = text.replace(/è/g, "e");
+    text = text.replace(/ī/g, "i");
+    text = text.replace(/í/g, "i");
+    text = text.replace(/ǐ/g, "i");
+    text = text.replace(/ì/g, "i");
+    text = text.replace(/ū/g, "u");
+    text = text.replace(/ú/g, "u");
+    text = text.replace(/ǔ/g, "u");
+    text = text.replace(/ù/g, "u");
 
     if (if_question) {
         text = text.slice(text.indexOf(".") + 1);
-        text = text.slice(0, 10);
+        text = text.slice(0, 25);
     }
     return text;
 }
@@ -490,7 +514,7 @@ function handling_access_exceptions() {
         var randomY = random(pos.top, pos.bottom);
         swipe(randomX, randomY, randomX + right_border, randomY, random(200, 400));
         press(randomX + right_border, randomY, 650);
-        sleep(100);
+        sleep(350);
         if (textContains("刷新").exists()) {
             click('刷新');
         }
@@ -507,7 +531,7 @@ var id_handling_access_exceptions;
 // 在子线程执行的定时器，如果不用子线程，则无法获取弹出页面的控件
 var thread_handling_access_exceptions = threads.start(function () {
     // 每2.6秒就处理访问异常
-    id_handling_access_exceptions = setInterval(handling_access_exceptions, 2600);
+    id_handling_access_exceptions = setInterval(handling_access_exceptions, 2850);
 });
 
 /**
@@ -599,7 +623,7 @@ if (four_player_battle == 'yes') {
             sleep(random_time(delay_time));
         }
     }
-    sleep(random_time(delay_time * 3));
+    sleep(random_time(delay_time * 2));
     back();
     sleep(random_time(delay_time));
     back();
