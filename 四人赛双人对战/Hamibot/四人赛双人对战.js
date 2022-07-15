@@ -55,7 +55,7 @@ var answer_question_map = [];
 // 当题目为这些词时，题目较多会造成hash表上的一个index过多，此时存储其选项
 var special_problem = '选择正确的读音 选择词语的正确词形 下列词形正确的是 下列不属于二十四史的';
 // 当题目为这些词时，在线搜索书名号后的内容
-var special_problem2 = '根据《中国共 根据《中华人 下列选项中， 《中华人民共';
+var special_problem2 = '根据《中国共 根据《中华人 《中华人民共 根据《化妆品';
 
 /**
  * hash函数
@@ -113,10 +113,10 @@ var date = new Date();
 if (date.getDay() == 6) {
     var answer_question_bank_update = storage.get("answer_question_bank_update_storage");
     if (answer_question_bank_update) {
-        var answer_question_bank_checked = http.get("https://gh-proxy.com/https://raw.githubusercontent.com/McMug2020/XXQG_TiKu/main/0.json");
+        var answer_question_bank_checked = http.get("https://git.yumenaka.net/https://raw.githubusercontent.com/McMug2020/XXQG_TiKu/main/0.json");
         if ((answer_question_bank_checked.statusCode >= 200 && answer_question_bank_checked.statusCode < 300)) storage.remove('answer_question_map');
     } else {
-        var answer_question_bank_checked = http.get("https://gh-proxy.com/https://raw.githubusercontent.com/McMug2020/XXQG_TiKu/main/1.json");
+        var answer_question_bank_checked = http.get("https://git.yumenaka.net/https://raw.githubusercontent.com/McMug2020/XXQG_TiKu/main/1.json");
         if ((answer_question_bank_checked.statusCode >= 200 && answer_question_bank_checked.statusCode < 300)) storage.remove('answer_question_map');
     }
 }
@@ -131,7 +131,7 @@ if (date.getDay() == 6) {
 if (!storage.contains('answer_question_map')) {
     toast("正在下载题库");
     // 使用 Github 文件加速服务：https://gh-proxy.com/
-    var answer_question_bank = http.get("https://gh-proxy.com/https://raw.githubusercontent.com/McMug2020/XXQG_TiKu/main/%E9%A2%98%E5%BA%93_McMug2022.json");
+    var answer_question_bank = http.get("https://git.yumenaka.net/https://raw.githubusercontent.com/McMug2020/XXQG_TiKu/main/%E9%A2%98%E5%BA%93_McMug2022.json");
     sleep(random_time(delay_time * 5));
     // 如果资源过期或无法访问则换成别的地址
     if (!(answer_question_bank.statusCode >= 200 && answer_question_bank.statusCode < 300)) {
