@@ -56,6 +56,7 @@ var answer_question_map = [];
 var special_problem = '选择正确的读音 选择词语的正确词形 下列词形正确的是 下列不属于二十四史的';
 // 当题目为这些词时，在线搜索书名号后的内容
 var special_problem2 = '根据《中国共 根据《中华人 《中华人民共 根据《化妆品';
+var special_problem3 = '下列选项中，';
 
 /**
  * hash函数
@@ -267,6 +268,7 @@ function do_contest_answer(depth_click_option, question, options_text) {
     if (answer == null) {
         var result;
         if (special_problem2.indexOf(question.slice(0, 6)) != -1 && question.slice(18, 25) != -1) question = question.slice(18, 25);
+        if (special_problem3.indexOf(question.slice(0, 6)) != -1 && question.slice(6, 12) != -1) question = question.slice(6, 12);
         // 发送http请求获取答案 网站搜题速度 r1 > r2
         try {
             // 此网站只支持十个字符的搜索
