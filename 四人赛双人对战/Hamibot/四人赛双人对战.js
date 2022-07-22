@@ -20,7 +20,7 @@ var { SK } = hamibot.env;
 
 // 本地存储数据
 var storage = storages.create('data');
-// 更新题库为answer_question_map3
+// 更新题库为answer_question_map
 storage.remove('answer_question_map1');
 storage.remove('answer_question_map2');
 storage.remove('answer_question_map3');
@@ -53,7 +53,10 @@ if (whether_improve_accuracy == 'yes' && !AK) {
 var answer_question_map = [];
 
 // 当题目为这些词时，题目较多会造成hash表上的一个index过多，此时存储其选项
-var special_problem = '选择正确的读音 选择词语的正确词形 下列词形正确的是 根据《中华人民共和国';
+var special_problem = '选择正确的读音 选择词语的正确词形 下列词形正确的是 下列不属于二十四史的';
+// 当题目为这些词时，在线搜索书名号和逗号后的内容
+var special_problem2 = '根据《中国共 根据《中华人 《中华人民共 根据《化妆品';
+var special_problem3 = '下列选项中，';
 
 /**
  * hash函数
@@ -99,11 +102,36 @@ function map_get(key) {
 };
 
 /**
+ * 定时更新题库，通过在线访问辅助文件判断题库是否有更新
+ */
+if (!storage.contains('answer_question_bank_update_storage')) {
+    storage.put('answer_question_bank_update_storage', 0);
+    storage.remove('answer_question_map');
+}
+
+var date = new Date();
+// 每周六定时检测更新题库，周日为0
+if (date.getDay() == 6) {
+    var answer_question_bank_update = storage.get("answer_question_bank_update_storage");
+    if (answer_question_bank_update) {
+        var answer_question_bank_checked = http.get("https://git.yumenaka.net/https://raw.githubusercontent.com/McMug2020/XXQG_TiKu/main/0.json");
+        if ((answer_question_bank_checked.statusCode >= 200 && answer_question_bank_checked.statusCode < 300)) storage.remove('answer_question_map');
+    } else {
+        var answer_question_bank_checked = http.get("https://git.yumenaka.net/https://raw.githubusercontent.com/McMug2020/XXQG_TiKu/main/1.json");
+        if ((answer_question_bank_checked.statusCode >= 200 && answer_question_bank_checked.statusCode < 300)) storage.remove('answer_question_map');
+    }
+}
+
+// 或设定每月某日定时检测更新
+//if (date.getDate() == 28)｛
+//｝
+
+/**
  * 通过Http下载题库到本地，并进行处理，如果本地已经存在则无需下载
  */
 if (!storage.contains('answer_question_map')) {
     toast("正在下载题库");
-    // 使用 Github 文件加速服务：https://git.yumenaka.net
+    // 使用 Github 文件加速服务：https://gh-proxy.com/
     var answer_question_bank = http.get("https://git.yumenaka.net/https://raw.githubusercontent.com/McMug2020/XXQG_TiKu/main/%E9%A2%98%E5%BA%93_McMug2020.json");
     sleep(random_time(delay_time * 5));
     // 如果资源过期或无法访问则换成别的地址
@@ -115,19 +143,23 @@ if (!storage.contains('answer_question_map')) {
     }
     answer_question_bank = answer_question_bank.body.string();
     answer_question_bank = JSON.parse(answer_question_bank);
-
+    toast("格式化题库");
     for (var question in answer_question_bank) {
         var answer = answer_question_bank[question];
         if (special_problem.indexOf(question.slice(0, 7)) != -1) question = question.slice(question.indexOf('|') + 1);
         else {
             question = question.slice(0, question.indexOf('|'));
             question = question.slice(0, question.indexOf(' '));
-            question = question.slice(0, 10);
+            question = question.slice(0, 25);
         }
         map_set(question, answer);
     }
     sleep(random_time(delay_time * 5));
     storage.put('answer_question_map', answer_question_map);
+
+    // 通过异或运算切换更新题库的开关，并记录
+    var k = storage.get("answer_question_bank_update_storage") ^ 1;
+    storage.put('answer_question_bank_update_storage', k);
 }
 
 var answer_question_map = storage.get('answer_question_map');
@@ -222,7 +254,7 @@ function select_option(answer, depth_click_option, options_text) {
  * @param {list[string]} options_text 每个选项文本
  */
 function do_contest_answer(depth_click_option, question, options_text) {
-    question = question.slice(0, 10);
+    question = question.slice(0, 25);
     // 如果是特殊问题需要用选项搜索答案，而不是问题
     if (special_problem.indexOf(question.slice(0, 7)) != -1) {
         var original_options_text = options_text.concat();
@@ -235,6 +267,8 @@ function do_contest_answer(depth_click_option, question, options_text) {
     // 如果本地题库没搜到，则搜网络题库
     if (answer == null) {
         var result;
+        if (special_problem2.indexOf(question.slice(0, 6)) != -1 && question.slice(18, 25) != -1) question = question.slice(18, 25);
+        if (special_problem3.indexOf(question.slice(0, 6)) != -1 && question.slice(6, 12) != -1) question = question.slice(6, 12);
         // 发送http请求获取答案 网站搜题速度 r1 > r2
         try {
             // 此网站只支持十个字符的搜索
@@ -299,12 +333,15 @@ function getSimilarity(str1, str2) {
  * 获取用户token
  */
 function get_baidu_token() {
-    var res = http.post("https://aip.baidubce.com/oauth/2.0/token", {
-        grant_type: "client_credentials",
-        client_id: AK,
-        client_secret: SK,
-    });
-    return res.body.json()["access_token"];
+    var res = http.post(
+        'https://aip.baidubce.com/oauth/2.0/token',
+        {
+            grant_type: 'client_credentials',
+            client_id: AK,
+            client_secret: SK,
+        }
+    );
+    return res.body.json()['access_token'];
 }
 
 if (whether_improve_accuracy == "yes") var token = get_baidu_token();
@@ -318,17 +355,21 @@ if (whether_improve_accuracy == "yes") var token = get_baidu_token();
 function baidu_ocr_api(img) {
     var options_text = [];
     var question = "";
-    var res = http.post("https://aip.baidubce.com/rest/2.0/ocr/v1/general", {
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-        },
-        access_token: token,
-        image: images.toBase64(img),
-    });
+    var res = http.post(
+        'https://aip.baidubce.com/rest/2.0/ocr/v1/general',
+        {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            access_token: token,
+            image: images.toBase64(img),
+        }
+    );
     var res = res.body.json();
     try {
         var words_list = res.words_result;
-    } catch (error) { }
+    } catch (error) {
+    }
     if (words_list) {
         // question是否读取完成的标志位
         var question_flag = false;
@@ -346,8 +387,8 @@ function baidu_ocr_api(img) {
                  */
                 if (words_list[0].words.indexOf(".") != -1 && i > 0 && Math.abs(words_list[i].location["left"] - words_list[i - 1].location["left"]) > 100) question_flag = true;
                 if (!question_flag) question += words_list[i].words;
-                // 如果question已经大于10了也不需要读取了
-                if (question > 10) question_flag = true;
+                // 如果question已经大于25了也不需要读取了
+                if (question > 25) question_flag = true;
             }
             // 这里不能用else，会漏读一次
             if (question_flag) {
@@ -360,7 +401,7 @@ function baidu_ocr_api(img) {
     question = question.replace(/\s*/g, "");
     question = question.replace(/,/g, "，");
     question = question.slice(question.indexOf(".") + 1);
-    question = question.slice(0, 10);
+    question = question.slice(0, 25);
     return [question, options_text];
 }
 
@@ -390,8 +431,8 @@ function extract_ocr_recognize(object) {
                  */
                 if (words_list[0].text.indexOf(".") != -1 && i > 0 && Math.abs(words_list[i].bounds.left - words_list[i - 1].bounds.left) > 100) question_flag = true;
                 if (!question_flag) question += words_list[i].text;
-                // 如果question已经大于10了也不需要读取了
-                if (question > 10) question_flag = true;
+                // 如果question已经大于25了也不需要读取了
+                if (question > 25) question_flag = true;
             }
             // 这里不能用else，会漏读一次
             if (question_flag) {
@@ -414,12 +455,9 @@ function extract_ocr_recognize(object) {
 function ocr_processing(text, if_question) {
     // 标点修改
     text = text.replace(/,/g, "，");
-    text = text.replace(/〈〈/g, "《");
-    text = text.replace(/〉〉/g, "》");
     text = text.replace(/\s*/g, "");
     text = text.replace(/_/g, "一");
     text = text.replace(/;/g, "；");
-    text = text.replace(/o/g, "");
     text = text.replace(/。/g, "");
     text = text.replace(/`/g, "、");
     text = text.replace(/\?/g, "？");
@@ -427,16 +465,32 @@ function ocr_processing(text, if_question) {
     text = text.replace(/!/g, "!");
     text = text.replace(/\(/g, "（");
     text = text.replace(/\)/g, "）");
-    // 文字修改
-    text = text.replace(/营理/g, "管理");
-    text = text.replace(/土也/g, "地");
-    text = text.replace(/未口/g, "和");
-    text = text.replace(/晋查/g, "普查");
-    text = text.replace(/扶悌/g, "扶梯");
+
+    // 拼音修改
+    text = text.replace(/ā/g, "a");
+    text = text.replace(/á/g, "a");
+    text = text.replace(/ǎ/g, "a");
+    text = text.replace(/à/g, "a");
+    text = text.replace(/ō/g, "o");
+    text = text.replace(/ó/g, "o");
+    text = text.replace(/ǒ/g, "o");
+    text = text.replace(/ò/g, "o");
+    text = text.replace(/ē/g, "e");
+    text = text.replace(/é/g, "e");
+    text = text.replace(/ě/g, "e");
+    text = text.replace(/è/g, "e");
+    text = text.replace(/ī/g, "i");
+    text = text.replace(/í/g, "i");
+    text = text.replace(/ǐ/g, "i");
+    text = text.replace(/ì/g, "i");
+    text = text.replace(/ū/g, "u");
+    text = text.replace(/ú/g, "u");
+    text = text.replace(/ǔ/g, "u");
+    text = text.replace(/ù/g, "u");
 
     if (if_question) {
         text = text.slice(text.indexOf(".") + 1);
-        text = text.slice(0, 10);
+        text = text.slice(0, 25);
     }
     return text;
 }
@@ -449,45 +503,50 @@ function ocr_processing(text, if_question) {
  * 处理访问异常
  */
 function handling_access_exceptions() {
-    if (text("访问异常").exists()) {
-        // 滑动按钮位置
-        className('android.view.View').depth(10).clickable(true).waitFor();
-        var pos = className('android.view.View').depth(10).clickable(true).findOnce(1).bounds();
-        // 滑动框右边界
-        className('android.view.View').depth(9).clickable(false).waitFor();
-        var right_border = className('android.view.View').depth(9).clickable(false).findOnce(0).bounds().right;
-        // 位置取随机值
-        var randomX = random(pos.left, pos.right);
-        var randomY = random(pos.top, pos.bottom);
-        swipe(randomX, randomY, randomX + right_border, randomY, random(200, 400));
-        press(randomX + right_border, randomY, 650);
-        if (textContains("刷新").exists()) {
-            click('刷新');
+    var thread_handling_access_exceptions = threads.start(function() {
+    //在新线程执行的代码
+        while (true) {
+            textContains("访问异常").waitFor();
+            var delay = 1 * 1000;
+            var bound = idContains("nc_1_n1t").findOne().bounds();
+            var slider_bound = text("向右滑动验证").findOne().bounds();
+            var x_start = bound.centerX();
+            var dx = x_start - slider_bound.left;
+            var x_end = slider_bound.right - dx;
+            var x_mid = (x_end - x_start) * random(5, 8) / 10 + x_start;
+            var back_x = (x_end - x_start) * random(2, 3) / 10;
+            var y_start = random(bound.top, bound.bottom);
+            var y_end = random(bound.top, bound.bottom);
+            x_start = random(x_start - 7, x_start);
+            x_end = random(x_end, x_end + 10);
+            gesture(random(delay, delay + 50), [x_start, y_start], [x_mid, y_end], [x_mid-back_x, y_start], [x_end, y_end]);
+            sleep(500);
+            if (textContains("刷新").exists()) {
+                click("刷新");
+                continue;
+            }
+            if (textContains("网络开小差").exists()) {
+                click("确定");
+                continue;
+            }
+            sleep(1000);
         }
-    }
-    if (textContains("网络开小差").exists()) {
-        click('确定');
-    }
+    });
+    return thread_handling_access_exceptions;
 }
 
 /* 
 处理访问异常，滑动验证
 */
-var id_handling_access_exceptions;
-// 在子线程执行的定时器，如果不用子线程，则无法获取弹出页面的控件
-var thread_handling_access_exceptions = threads.start(function () {
-    // 每2.5秒就处理访问异常
-    id_handling_access_exceptions = setInterval(handling_access_exceptions, 2500);
-});
+var thread_handling_access_exceptions = handling_access_exceptions();
 
 /**
  * 答题
  */
 function do_contest() {
-    while (!text("开始").exists()) handling_access_exceptions();
+    while (!text("开始").exists());
     while (!text("继续挑战").exists()) {
         // 等待下一题题目加载
-        handling_access_exceptions();
         className("android.view.View").depth(28).waitFor();
         var pos = className("android.view.View").depth(28).findOne().bounds();
         if (className("android.view.View").text("        ").exists()) pos = className("android.view.View").text("        ").findOne().bounds();
@@ -498,7 +557,6 @@ function do_contest() {
             });
         } while (!point);
         // 等待选项加载
-        handling_access_exceptions();
         className("android.widget.RadioButton").depth(32).clickable(true).waitFor();
         var img = images.inRange(captureScreen(), "#000000", "#444444");
         img = images.clip(img, pos.left, pos.top, pos.width(), device.height - pos.top);
@@ -512,7 +570,6 @@ function do_contest() {
                 var question = result[0];
                 var options_text = result[1];
             } catch (error) {
-                exit();
             }
         }
         img.recycle();
@@ -523,7 +580,6 @@ function do_contest() {
             className("android.widget.RadioButton").depth(32).waitFor();
             className("android.widget.RadioButton").depth(32).findOne(delay_time * 3).click();
         }
-        handling_access_exceptions();
         // 等待新题目加载
         while (!textMatches(/第\d题/).exists() && !text("继续挑战").exists() && !text("开始").exists());
     }
@@ -558,18 +614,14 @@ if (four_player_battle == 'yes') {
     for (var i = 0; i < 2; i++) {
         sleep(random_time(delay_time));
         my_click_clickable("开始比赛");
-        handling_access_exceptions();
         do_contest();
-        handling_access_exceptions();
         if (i == 0) {
             sleep(random_time(delay_time * 2));
-            handling_access_exceptions();
             my_click_clickable("继续挑战");
-            handling_access_exceptions();
             sleep(random_time(delay_time));
         }
     }
-    sleep(random_time(delay_time * 3));
+    sleep(random_time(delay_time * 2));
     back();
     sleep(random_time(delay_time));
     back();
@@ -587,7 +639,6 @@ if (two_player_battle == 'yes') {
     entry_model(11);
 
     // 点击随机匹配
-    handling_access_exceptions();
     text("随机匹配").waitFor();
     sleep(random_time(delay_time * 2));
     try {
@@ -595,18 +646,13 @@ if (two_player_battle == 'yes') {
     } catch (error) {
         className("android.view.View").text("").findOne().click();
     }
-    handling_access_exceptions();
     do_contest();
-    handling_access_exceptions();
     sleep(random_time(delay_time));
     back();
     sleep(random_time(delay_time));
     back();
     my_click_clickable("退出");
 }
-
-// 取消访问异常处理循环
-if (id_handling_access_exceptions) clearInterval(id_handling_access_exceptions);
 
 // 震动半秒
 device.vibrate(500);
