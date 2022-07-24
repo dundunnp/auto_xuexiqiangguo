@@ -462,7 +462,7 @@ function ocr_processing(text, if_question) {
     text = text.replace(/`/g, "、");
     text = text.replace(/\?/g, "？");
     text = text.replace(/:/g, "：");
-    text = text.replace(/!/g, "!");
+    text = text.replace(/!/g, "！");
     text = text.replace(/\(/g, "（");
     text = text.replace(/\)/g, "）");
 
@@ -513,13 +513,12 @@ function handling_access_exceptions() {
             var x_start = bound.centerX();
             var dx = x_start - slider_bound.left;
             var x_end = slider_bound.right - dx;
-            var x_mid = (x_end - x_start) * random(5, 8) / 10 + x_start;
-            var back_x = (x_end - x_start) * random(2, 3) / 10;
+            var x_mid = (x_end - x_start) * random(5, 9) / 10 + x_start;
             var y_start = random(bound.top, bound.bottom);
             var y_end = random(bound.top, bound.bottom);
             x_start = random(x_start - 7, x_start);
             x_end = random(x_end, x_end + 10);
-            gesture(random(delay, delay + 50), [x_start, y_start], [x_mid, y_end], [x_mid-back_x, y_start], [x_end, y_end]);
+            gesture(random(delay, delay + 50), [x_start, y_start], [x_mid, y_end], [x_end, y_end]);
             sleep(500);
             if (textContains("刷新").exists()) {
                 click("刷新");
