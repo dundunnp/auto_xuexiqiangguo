@@ -41,33 +41,20 @@
 ## Hamibot
 先跟随者[Hamibot指导](https://hamibot.com/guide)安装Hamibot并配对好机器人后，进行如下步骤进行安装脚本：
 
-[![导入脚本到 Hamibot](https://hamibot.com/badge_import.png)](https://hamibot.com/dashboard/scripts/import?url=https%3A%2F%2Fgithub.com%2Fdundunnp%2Fauto_xuexiqiangguo%2Ftree%2Fversion-15.51%2FHamibot ) 
+点击图标导入脚本
 
-点击脚本下的脚本控制台
+[![导入脚本到 Hamibot](https://hamibot.com/badge_import.png)](https://hamibot.com/dashboard/scripts/import?url=https%3A%2F%2Fgithub.com%2Fdundunnp%2Fauto_xuexiqiangguo%2Ftree%2Fversion-15.51%2FHamibot) 
+
+点击导入
 <div align=center>
-<img src="https://s3.bmp.ovh/imgs/2022/01/68c3e356367ccb8b.png" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
+<img src="https://i.bmp.ovh/imgs/2022/07/28/a67622eba07c5a33.png" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
 </div>
-点击创建脚本
-<div align=center>
-<img src="https://s3.bmp.ovh/imgs/2022/01/405e9a45a9212735.png" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
-</div>
-随意取一个名字，然后点击创建
-<div align=center>
-<img src="https://s3.bmp.ovh/imgs/2022/01/c4b51f9c4a38d0f4.png" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
-</div>
-点击源码
-<div align=center>
-<img src="https://s3.bmp.ovh/imgs/2022/01/362ac49b7ec05b84.png" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
-</div>
-将Hamibot文件夹下的学习强国.js代码复制粘贴到这里，注意要把那一行代码覆盖，同理将配置模式.json也复制粘贴到配置模式中
-<div align=center>
-<img src="https://s3.bmp.ovh/imgs/2022/01/9274fbc0cd701637.png" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
-</div>
-粘贴完成后点击保存，并返回
-<div align=center>
-<img src="https://s3.bmp.ovh/imgs/2022/01/48004642fbdf0fbc.png" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
-</div>
+
 点击配置，将信息填入后保存
+<div align=center>
+<img src="https://i.bmp.ovh/imgs/2022/07/28/b258833fb7a8229c.png" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
+</div>
+
 <div align=center>
 <img src="https://s3.bmp.ovh/imgs/2022/01/2ce43a5d3b4e052a.png" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
 </div>
