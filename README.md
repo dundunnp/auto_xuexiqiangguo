@@ -41,6 +41,8 @@
 ## Hamibot
 先跟随者[Hamibot指导](https://hamibot.com/guide)安装Hamibot并配对好机器人后，进行如下步骤进行安装脚本：
 
+[![导入脚本到 Hamibot](https://hamibot.com/badge_import.png)](https://hamibot.com/dashboard/scripts/import?url=https%3A%2F%2Fgithub.com%2Fdundunnp%2Fauto_xuexiqiangguo%2Ftree%2Fversion-15.51%2FHamibot ) 
+
 点击脚本下的脚本控制台
 <div align=center>
 <img src="https://s3.bmp.ovh/imgs/2022/01/68c3e356367ccb8b.png" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
