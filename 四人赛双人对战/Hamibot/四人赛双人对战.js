@@ -448,46 +448,57 @@ function ocr_processing(text, if_question) {
 /**
  * 处理访问异常
  */
-function handling_access_exceptions() {
-    if (text("访问异常").exists()) {
-        // 滑动按钮位置
-        className('android.view.View').depth(10).clickable(true).waitFor();
-        var pos = className('android.view.View').depth(10).clickable(true).findOnce(1).bounds();
-        // 滑动框右边界
-        className('android.view.View').depth(9).clickable(false).waitFor();
-        var right_border = className('android.view.View').depth(9).clickable(false).findOnce(0).bounds().right;
-        // 位置取随机值
-        var randomX = random(pos.left, pos.right);
-        var randomY = random(pos.top, pos.bottom);
-        swipe(randomX, randomY, randomX + right_border, randomY, random(200, 400));
-        press(randomX + right_border, randomY, 650);
-        if (textContains("刷新").exists()) {
-            click('刷新');
-        }
-    }
-    if (textContains("网络开小差").exists()) {
-        click('确定');
-    }
+ function handling_access_exceptions() {
+  // 在子线程执行的定时器，如果不用子线程，则无法获取弹出页面的控件
+  var thread_handling_access_exceptions = threads.start(function () {
+      while (true) {
+          textContains("访问异常").waitFor();
+          // 滑动按钮">>"位置
+          idContains("nc_1_n1t").waitFor();
+          var bound = idContains("nc_1_n1t").findOne().bounds();
+          // 滑动边框位置
+          text("向右滑动验证").waitFor();
+          var slider_bound = text("向右滑动验证").findOne().bounds();
+          // 通过更复杂的手势验证（先右后左再右）
+          var x_start = bound.centerX();
+          var dx = x_start - slider_bound.left;
+          var x_end = slider_bound.right - dx;
+          var x_mid = (x_end - x_start) * random(5, 8) / 10 + x_start;
+          var back_x = (x_end - x_start) * random(2, 3) / 10;
+          var y_start = random(bound.top, bound.bottom);
+          var y_end = random(bound.top, bound.bottom);
+          x_start = random(x_start - 7, x_start);
+          x_end = random(x_end, x_end + 10);
+          gesture(random_time(delay_time), [x_start, y_start], [x_mid, y_end], [x_mid - back_x, y_start], [x_end, y_end]);
+          sleep(random_time(delay_time));
+          if (textContains("刷新").exists()) {
+              click("刷新");
+              continue;
+          }
+          if (textContains("网络开小差").exists()) {
+              click("确定");
+              continue;
+          }
+          // 执行脚本只需通过一次验证即可，防止占用资源
+          break;
+      }
+  });
+  return thread_handling_access_exceptions;
 }
 
 /* 
 处理访问异常，滑动验证
 */
-var id_handling_access_exceptions;
-// 在子线程执行的定时器，如果不用子线程，则无法获取弹出页面的控件
-var thread_handling_access_exceptions = threads.start(function () {
-    // 每2.5秒就处理访问异常
-    id_handling_access_exceptions = setInterval(handling_access_exceptions, 2500);
-});
+var thread_handling_access_exceptions = handling_access_exceptions();
 
 /**
  * 答题
  */
 function do_contest() {
-    while (!text("开始").exists()) handling_access_exceptions();
+    while (!text("开始").exists());
     while (!text("继续挑战").exists()) {
         // 等待下一题题目加载
-        handling_access_exceptions();
+        
         className("android.view.View").depth(28).waitFor();
         var pos = className("android.view.View").depth(28).findOne().bounds();
         if (className("android.view.View").text("        ").exists()) pos = className("android.view.View").text("        ").findOne().bounds();
@@ -498,7 +509,7 @@ function do_contest() {
             });
         } while (!point);
         // 等待选项加载
-        handling_access_exceptions();
+        
         className("android.widget.RadioButton").depth(32).clickable(true).waitFor();
         var img = images.inRange(captureScreen(), "#000000", "#444444");
         img = images.clip(img, pos.left, pos.top, pos.width(), device.height - pos.top);
@@ -523,7 +534,7 @@ function do_contest() {
             className("android.widget.RadioButton").depth(32).waitFor();
             className("android.widget.RadioButton").depth(32).findOne(delay_time * 3).click();
         }
-        handling_access_exceptions();
+        
         // 等待新题目加载
         while (!textMatches(/第\d题/).exists() && !text("继续挑战").exists() && !text("开始").exists());
     }
@@ -558,14 +569,14 @@ if (four_player_battle == 'yes') {
     for (var i = 0; i < 2; i++) {
         sleep(random_time(delay_time));
         my_click_clickable("开始比赛");
-        handling_access_exceptions();
+        
         do_contest();
-        handling_access_exceptions();
+        
         if (i == 0) {
             sleep(random_time(delay_time * 2));
-            handling_access_exceptions();
+            
             my_click_clickable("继续挑战");
-            handling_access_exceptions();
+            
             sleep(random_time(delay_time));
         }
     }
@@ -587,7 +598,7 @@ if (two_player_battle == 'yes') {
     entry_model(11);
 
     // 点击随机匹配
-    handling_access_exceptions();
+    
     text("随机匹配").waitFor();
     sleep(random_time(delay_time * 2));
     try {
@@ -595,18 +606,15 @@ if (two_player_battle == 'yes') {
     } catch (error) {
         className("android.view.View").text("").findOne().click();
     }
-    handling_access_exceptions();
+    
     do_contest();
-    handling_access_exceptions();
+    
     sleep(random_time(delay_time));
     back();
     sleep(random_time(delay_time));
     back();
     my_click_clickable("退出");
 }
-
-// 取消访问异常处理循环
-if (id_handling_access_exceptions) clearInterval(id_handling_access_exceptions);
 
 // 震动半秒
 device.vibrate(500);
