@@ -72,38 +72,51 @@ function my_click_clickable(target) {
  * 处理访问异常
  */
 function handling_access_exceptions() {
-    if (text("访问异常").exists()) {
-        if(text("刷新").exists()) {
-            click('刷新',1)
-            text("刷新").click();
-            className("android.view.View").text("刷新").findOne().click();
+    // 在子线程执行的定时器，如果不用子线程，则无法获取弹出页面的控件
+    var thread_handling_access_exceptions = threads.start(function () {
+        while (true) {
+            textContains("访问异常").waitFor();
+            // 滑动按钮">>"位置
+            idContains("nc_1_n1t").waitFor();
+            var bound = idContains("nc_1_n1t").findOne().bounds();
+            // 滑动边框位置
+            text("向右滑动验证").waitFor();
+            var slider_bound = text("向右滑动验证").findOne().bounds();
+            // 通过更复杂的手势验证（先右后左再右）
+            var x_start = bound.centerX();
+            var dx = x_start - slider_bound.left;
+            var x_end = slider_bound.right - dx;
+            var x_mid = (x_end - x_start) * random(5, 8) / 10 + x_start;
+            var back_x = (x_end - x_start) * random(2, 3) / 10;
+            var y_start = random(bound.top, bound.bottom);
+            var y_end = random(bound.top, bound.bottom);
+            x_start = random(x_start - 7, x_start);
+            x_end = random(x_end, x_end + 10);
+            gesture(random_time(delay_time), [x_start, y_start], [x_mid, y_end], [x_mid - back_x, y_start], [x_end, y_end]);
+            sleep(random_time(delay_time));
+            if (textContains("刷新").exists()) {
+                click("刷新");
+                continue;
+            }
+            if (textContains("网络开小差").exists()) {
+                click("确定");
+                continue;
+            }
+            // 执行脚本只需通过一次验证即可，防止占用资源
+            break;
         }
-        // 滑动按钮位置
-        var pos = className('android.view.View').depth(10).clickable(true).findOnce(1).bounds();
-        // 滑动框右边界
-        var right_border = className('android.view.View').depth(9).clickable(false).findOnce(0).bounds().right;
-        // 位置取随机值
-        var randomX = random(pos.left, pos.right);
-        var randomY = random(pos.top, pos.bottom);
-        swipe(randomX, randomY, randomX + right_border, randomY, random(200, 400));
-        longClick(randomX + right_border, randomY);
-    }
+    });
+    return thread_handling_access_exceptions;
 }
 
 /* 
 处理访问异常，滑动验证
 */
-var id_handling_access_exceptions;
-// 在子线程执行的定时器，如果不用子线程，则无法获取弹出页面的控件
-var thread_handling_access_exceptions = threads.start(function () {
-    // 每2秒就处理访问异常
-    id_handling_access_exceptions = setInterval(handling_access_exceptions, 2000);
-});
+var thread_handling_access_exceptions = handling_access_exceptions();
 
 function do_it() {
-    while (!text('开始').exists()) handling_access_exceptions();
+    while (!text('开始').exists());
     while (!text('继续挑战').exists()) {
-        handling_access_exceptions();
         sleep(random_time(contest_delay_time));
         // 随机选择
         try {
@@ -164,7 +177,6 @@ if (two_player_battle == 'yes') {
 
     for (var i = 0; i < two_player_count; i++) {
         // 点击随机匹配
-        handling_access_exceptions();
         text('随机匹配').waitFor();
         sleep(random_time(delay_time * 2));
         try {
@@ -188,9 +200,7 @@ if (two_player_battle == 'yes') {
     my_click_clickable('退出');
 }
 
-// 取消访问异常处理循环
-if (id_handling_access_exceptions) clearInterval(id_handling_access_exceptions);
-
-//震动半秒
+// 震动半秒
 device.vibrate(500);
 toast('脚本运行完成');
+exit();
