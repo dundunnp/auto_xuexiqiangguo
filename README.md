@@ -46,24 +46,28 @@
 
 2. 点击图标导入脚本
 
-[![导入脚本到 Hamibot](https://hamibot.com/badge_import.png)](https://hamibot.com/dashboard/scripts/import?url=https%3A%2F%2Fgithub.com%2Fdundunnp%2Fauto_xuexiqiangguo%2Ftree%2Fversion-15.51%2FHamibot) 
+<div align=center>
+<a href="https://hamibot.com/dashboard/scripts/import?url=https%3A%2F%2Fgithub.com%2Fdundunnp%2Fauto_xuexiqiangguo%2Ftree%2Fversion-15.52%2FHamibot" title="导入脚本到 Hamibot">
+<img src="https://hamibot.com/badge_import.png"/>
+</a>
+</div>
 
 3. 点击导入
 <div align=center>
-<img src="https://i.bmp.ovh/imgs/2022/07/28/a67622eba07c5a33.png" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
+<img src="https://i.bmp.ovh/imgs/2022/07/28/a67622eba07c5a33.png" alt="msedge_WRzp0mov3N" width="600px" style="zoom:33%;" />
 </div>
 
 4. 点击配置，将信息填入后保存
 <div align=center>
-<img src="https://i.bmp.ovh/imgs/2022/07/28/b258833fb7a8229c.png" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
+<img src="https://i.bmp.ovh/imgs/2022/07/28/b258833fb7a8229c.png" alt="msedge_WRzp0mov3N" width="600px" style="zoom:33%;" />
 </div>
 
 <div align=center>
-<img src="https://s3.bmp.ovh/imgs/2022/01/2ce43a5d3b4e052a.png" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
+<img src="https://s3.bmp.ovh/imgs/2022/01/2ce43a5d3b4e052a.png" alt="msedge_WRzp0mov3N" width="600px" style="zoom:33%;" />
 </div>
 5. 就可以点运行了
 <div align=center>
-<img src="https://s3.bmp.ovh/imgs/2022/01/54884dc3a8fa9d01.png" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
+<img src="https://s3.bmp.ovh/imgs/2022/01/54884dc3a8fa9d01.png" alt="msedge_WRzp0mov3N" width="600px" style="zoom:33%;" />
 </div>
 
 ## Auto.js
