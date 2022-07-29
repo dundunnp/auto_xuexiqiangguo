@@ -4,7 +4,7 @@
 # 目录
 - [目录](#目录)
 - [免责声明](#免责声明)
-- [v15.51 更新内容:](#v1551-更新内容)
+- [v15.52 更新内容:](#v1551-更新内容)
 - [脚本声明](#脚本声明)
 - [使用说明](#使用说明)
   - [Hamibot](#hamibot)
@@ -23,8 +23,11 @@
 
 如果喜欢的话可以star一下噢，谢谢！
 
-# v15.51 更新内容:
-1. 修复专项答题完后卡住的bug
+# v15.52 更新内容:
+1. 修复无法验证访问异常的bug
+2. 修复挑战赛无法复活的bug
+**（以上修复代码由[McMug2020](https://github.com/McMug2020)提供，十分的感谢）**
+3. 增加专项答题快速搜索
 
 # 脚本声明
 **本脚本适用于安卓、鸿蒙系统，不适用于IOS，请将强国软件换为2.33.0版本（[安装包](https://github.com/dundunnp/auto_xuexiqiangguo/tree/version-14.5/%E5%AE%89%E8%A3%85%E5%8C%85)），这之后的版本脚本运行可能报错**
@@ -39,18 +42,18 @@
 具体操作如下：
 
 ## Hamibot
-先跟随者[Hamibot指导](https://hamibot.com/guide)安装Hamibot并配对好机器人后，进行如下步骤进行安装脚本：
+1. 先跟随着[Hamibot指导](https://hamibot.com/guide)安装Hamibot并配对好机器人：
 
-点击图标导入脚本
+2. 点击图标导入脚本
 
 [![导入脚本到 Hamibot](https://hamibot.com/badge_import.png)](https://hamibot.com/dashboard/scripts/import?url=https%3A%2F%2Fgithub.com%2Fdundunnp%2Fauto_xuexiqiangguo%2Ftree%2Fversion-15.51%2FHamibot) 
 
-点击导入
+3. 点击导入
 <div align=center>
 <img src="https://i.bmp.ovh/imgs/2022/07/28/a67622eba07c5a33.png" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
 </div>
 
-点击配置，将信息填入后保存
+4. 点击配置，将信息填入后保存
 <div align=center>
 <img src="https://i.bmp.ovh/imgs/2022/07/28/b258833fb7a8229c.png" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
 </div>
@@ -58,7 +61,7 @@
 <div align=center>
 <img src="https://s3.bmp.ovh/imgs/2022/01/2ce43a5d3b4e052a.png" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
 </div>
-就可以点运行了
+5. 就可以点运行了
 <div align=center>
 <img src="https://s3.bmp.ovh/imgs/2022/01/54884dc3a8fa9d01.png" alt="msedge_WRzp0mov3N" style="zoom:33%;" />
 </div>
@@ -200,4 +203,3 @@ A: 请在[GitHub](https://github.com/dundunnp/hamibot-auto_xuexiqiangguo/issues)
 # To Do
 1. ui界面的编写
 2. 优化答题的编写
-3. 优化专项答题查询速度的编写
