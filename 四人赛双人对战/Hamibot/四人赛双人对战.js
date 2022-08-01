@@ -60,14 +60,14 @@ var special_problem3 = "下列选项中，";
 
 /**
  * hash函数
- * 8599质数，算出的最优值，具体可以看评估代码
+ * 6199质数，重新算出的最优值，具体可以看评估代码
  */
 function hash(string) {
     var hash = 0;
     for (var i = 0; i < string.length; i++) {
         hash += string.charCodeAt(i);
     }
-    return hash % 8599;
+    return hash % 6199;
 }
 
 // 存入
