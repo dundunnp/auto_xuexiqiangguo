@@ -1,92 +1,111 @@
-auto.waitFor();
-//console.show();
-// 将设备保持常亮
-device.keepScreenDim();
+/**
+ * 检查和设置运行环境
+ * @param whether_mute {String} 是否在运行过程中静音 "yes":开启; "no"(默认):不开启
+ * @param whether_froze_app {String} 是否要冻结学习强国(需要root授权) "yes":开启; "no"(默认):不开启
+ * @param open_console {Boolean} 是否开启控制台悬浮窗 true:开启; false(默认):不开启
+ * @param whether_improve_accuracy {String} 是否提高ocr精度 "yes":开启; "no"(默认):不开启
+ * @param AK {String} 百度API KEY
+ * @param SK {String} 百度Secret KEY
+ * @return {int} 静音前的音量
+ */
+function check_set_env(whether_mute, whether_froze_app,
+    open_console, whether_improve_accuracy, AK, SK) {
+    // 检查无障碍服务是否已经启用
+    auto.waitFor();
 
-// 获取基础数据
-var { delay_time } = hamibot.env;
-var { whether_improve_accuracy } = hamibot.env;
-var { all_weekly_answers_completed } = hamibot.env;
-var { all_special_answer_completed } = hamibot.env;
-var { whether_complete_subscription } = hamibot.env;
-var { whether_complete_speech } = hamibot.env;
-var { sct_token } = hamibot.env;
-var { pushplus_token } = hamibot.env;
-var { whether_mute } = hamibot.env;
-var { whether_froze_app } = hamibot.env;
-var whether_push_capture = false;
-//var { whether_push_capture } = hamibot.env;
-// 调用百度api所需参数
-var { AK } = hamibot.env;
-var { SK } = hamibot.env;
-
-//可选静音,需要给hamibot添加修改系统设置权限
-if (whether_mute == "yes") {
-    var vol = device.getMusicVolume();
-    device.setMusicVolume(0);
-}
-
-//可选，是否要冻结学习强国，该操作需要root授权
-if (whether_froze_app == "yes") {
-    result = shell("pm enable cn.xuexi.android", true);
-    if (result.code != 0 || result) {
-        toast("解冻失败，请查看配置模式中的'冻结学习强国'选项是否选择'否'");
-        if (pushplus_token)
-            push_weixin_message("解冻失败，请查看配置模式中的'冻结学习强国'选项是否选择'否'");
-        exit(0);
+    // 检查在选择提高精确度的情况下，AK和SK是否填写
+    if (whether_improve_accuracy == "yes" && (!AK || !SK)) {
+        toast("如果你选择了增强版，请配置信息，具体看脚本说明");
+        exit();
     }
-}
 
-// 检查Hamibot版本是否支持ocr
-if (app.versionName < "1.3.1") {
-    toast("请到官网将Hamibot更新至v1.3.1版本或更高版本");
-    exit();
-}
+    // 检查Hamibot版本是否支持ocr
+    if (app.versionName < "1.3.1") {
+        toast("请将Hamibot更新至v1.3.1版本或更高版本");
+        exit();
+    }
 
-// setScreenMetrics(1080, 2340);
+    // 将设备保持常亮
+    device.keepScreenDim();
 
-//请求横屏截图权限
-threads.start(function () {
-    try {
-        var beginBtn;
-        if ((beginBtn = classNameContains("Button").textContains("开始").findOne(delay_time)));
-        else beginBtn = classNameContains("Button").textContains("允许").findOne(delay_time);
-        beginBtn.click();
-    } catch (error) { }
-});
-requestScreenCapture(false);
+    //请求横屏截图权限
+    threads.start(function () {
+        try {
+            var beginBtn;
+            if ((beginBtn = classNameContains("Button").textContains("开始").findOne(delay_time)));
+            else beginBtn = classNameContains("Button").textContains("允许").findOne(delay_time);
+            beginBtn.click();
+        } catch (error) { }
+    });
+    requestScreenCapture(false);
 
-// 本地存储数据
-var storage = storages.create("data");
-// 更新题库为answer_question_map1
-storage.remove("answer_question_map");
+    // 是否开启控制台悬浮窗
+    if (open_console == "yes") console.show();
 
-delay_time = Number(delay_time) * 1000;
+    // 可选，是否静音,需要给hamibot添加修改系统设置权限
+    if (whether_mute == "yes") {
+        // 保留静音前音量大小
+        var vol = device.getMusicVolume();
+        device.setMusicVolume(0);
+    }
 
-sleep(delay_time);
+    // 可选，是否要冻结学习强国，该操作需要root授权
+    if (whether_froze_app == "yes") {
+        result = shell("pm enable cn.xuexi.android", true);
+        if (result.code != 0 || result) {
+            toast("解冻失败，请查看配置模式中的'冻结学习强国'选项是否选择'否'");
+            if (pushplus_token)
+                push_weixin_message("解冻失败，请查看配置模式中的'冻结学习强国'选项是否选择'否'");
+            exit(0);
+        }
+    }
 
-if (whether_improve_accuracy == "yes" && !AK) {
-    toast("如果你选择了增强版，请配置信息，具体看脚本说明");
-    exit();
+    return vol;
 }
 
 /**
- * 定义HashTable类，用于存储本地题库，查找效率更高
+ * 获取配置参数及本地存储数据
+ */
+// 基础数据
+var { delay_time } = hamibot.env;
+delay_time = Number(delay_time) * 1000;
+var { whether_improve_accuracy } = hamibot.env;
+var { all_weekly_answers_completed, all_special_answer_completed } = hamibot.env;
+var { whether_complete_subscription } = hamibot.env;
+var { whether_complete_speech } = hamibot.env;
+var { sct_token, pushplus_token } = hamibot.env;
+var { whether_mute } = hamibot.env;
+var { whether_froze_app } = hamibot.env;
+
+// 调用百度api所需参数
+var { AK, SK } = hamibot.env;
+
+// 本地存储数据
+var storage = storages.create("data");
+
+// 更新题库为answer_question_map1
+storage.remove("answer_question_map");
+
+var vol = check_set_env(whether_mute, whether_froze_app,
+    "no", whether_improve_accuracy, AK, SK);
+
+/**
+ * 定义HashTable类(貌似hamibot有问题，无法定义class， 因此写为函数)，用于存储本地题库，查找效率更高
  * 由于hamibot不支持存储自定义对象和new Map()，因此这里用列表存储自己实现
  * 在存储时，不需要存储整个question，可以仅根据选项来对应question，这样可以省去ocr题目的花费
  * 但如果遇到选项为special_problem数组中的模糊词，无法对应question，则需要存储整个问题
  */
-
 var answer_question_map = [];
 
 // 当题目为这些词时，题目较多会造成hash表上的一个index过多，此时存储其选项
 var special_problem = "选择正确的读音 选择词语的正确词形 下列词形正确的是 根据《中华人民共和国";
 
 /**
- * hash函数
- * 6469通过从3967到5591中的质数，算出的最优值，具体可以看评估代码
+ * hash函数，6469通过从3967到5591中的质数，算出的最优值，具体可以看评估代码
+ * @param string {String} 需要计算hash值的String
+ * @return {int} string的hash值
  */
-function hash(string) {
+function get_hash(string) {
     var hash = 0;
     for (var i = 0; i < string.length; i++) {
         hash += string.charCodeAt(i);
@@ -94,9 +113,14 @@ function hash(string) {
     return hash % 6469;
 }
 
-// 存入
+/**
+ * 将题目和答案存入answer_question_map
+ * @param key {String} 键：表示题目的问题
+ * @param value {String} 值：表示题目的答案
+ * @return void
+ */
 function map_set(key, value) {
-    var index = hash(key);
+    var index = get_hash(key);
     if (answer_question_map[index] === undefined) {
         answer_question_map[index] = [[key, value]];
     } else {
@@ -110,9 +134,13 @@ function map_set(key, value) {
     }
 }
 
-// 取出
+/**
+ * 根据题目在answer_question_map中搜索答案
+ * @param key {String} 键：表示题目的问题
+ * @return {String} 题目的答案，如果没有搜索到则返回null
+ */
 function map_get(key) {
-    var index = hash(key);
+    var index = get_hash(key);
     if (answer_question_map[index] != undefined) {
         for (var i = 0; i < answer_question_map[index].length; i++) {
             if (answer_question_map[index][i][0] == key) {
@@ -124,9 +152,10 @@ function map_get(key) {
 }
 
 /**
- * 通过Http下载题库到本地，并进行处理，如果本地已经存在则无需下载
+ * 通过Http更新\下载题库到本地，并进行处理，如果本地已经存在则无需下载
+ * @return {List} 题库
  */
-if (!storage.contains("answer_question_map1")) {
+function map_update() {
     toast("正在下载题库");
     // 使用 Github 文件加速服务：https://gh-proxy.com
     var answer_question_bank = http.get("https://gh-proxy.com/https://raw.githubusercontent.com/Mondayfirst/XXQG_TiKu/main/%E9%A2%98%E5%BA%93_%E6%8E%92%E5%BA%8F%E7%89%88.json");
@@ -148,11 +177,15 @@ if (!storage.contains("answer_question_map1")) {
         }
         map_set(question, answer);
     }
-
+    // 将题库存储到本地
     storage.put("answer_question_map1", answer_question_map);
 }
 
-var answer_question_map = storage.get("answer_question_map1");
+if (!storage.contains("answer_question_map1")) {
+    map_update();
+} else {
+    answer_question_map = storage.get("answer_question_map1");
+}
 
 /**
  * 模拟点击不可以点击元素
@@ -170,7 +203,10 @@ function my_click_non_clickable(target) {
     click(randomX, randomY);
 }
 
-// 模拟点击可点击元素
+/**
+ * 模拟点击可点击元素
+ * @param {string} target 控件文本
+ */
 function my_click_clickable(target) {
     text(target).waitFor();
     // 防止点到页面中其他有包含“我的”的控件，比如搜索栏
@@ -182,7 +218,11 @@ function my_click_clickable(target) {
     }
 }
 
-// 模拟随机时间
+/**
+ * 模拟点击可点击元素
+ * @param {int} time 时间
+ * @return {int} 随机后的时间值
+ */
 function random_time(time) {
     return time + random(100, 1000);
 }
@@ -192,8 +232,14 @@ function random_time(time) {
  * @param {boolean} orientation 方向标识 true表示从下至上 false表示从上至下
  */
 function refresh(orientation) {
-    if (orientation) swipe(device.width / 2, (device.height * 13) / 15, device.width / 2, (device.height * 2) / 15, random_time(delay_time / 2));
-    else swipe(device.width / 2, (device.height * 6) / 15, device.width / 2, (device.height * 12) / 15, random_time(delay_time / 2));
+    if (orientation)
+        swipe(device.width / 2, (device.height * 13) / 15,
+            device.width / 2, (device.height * 2) / 15,
+            random_time(delay_time / 2));
+    else
+        swipe(device.width / 2, (device.height * 6) / 15,
+            device.width / 2, (device.height * 12) / 15,
+            random_time(delay_time / 2));
     sleep(random_time(delay_time));
 }
 
@@ -1025,12 +1071,13 @@ function do_periodic_answer(number) {
                         if (text("下一题").exists()) click("下一题");
                         else click("完成");
                     } else {
+                        // 每日答题重答
                         restart();
                         break;
                     }
                 }
             }
-            sleep(random_time(delay_time * 2)); // 每题之间的过渡时间
+            sleep(random_time(delay_time)); // 每题之间的过渡时间
         }
         if (num == number) flag = true;
     }
@@ -1063,11 +1110,23 @@ function handling_access_exceptions() {
             gesture(random_time(delay_time), [x_start, y_start], [x_mid, y_end], [x_mid - back_x, y_start], [x_end, y_end]);
             sleep(random_time(delay_time));
             if (textContains("刷新").exists()) {
+                // 重答
                 click("刷新");
+                text("登录").waitFor();
+                entry_model(7);
+                log("等待:" + "查看提示");
+                text("查看提示").waitFor();
+                do_periodic_answer(5);
                 continue;
             }
             if (textContains("网络开小差").exists()) {
+                // 重答
                 click("确定");
+                text("登录").waitFor();
+                entry_model(7);
+                log("等待:" + "查看提示");
+                text("查看提示").waitFor();
+                do_periodic_answer(5);
                 continue;
             }
             // 执行脚本只需通过一次验证即可，防止占用资源
@@ -1300,9 +1359,8 @@ if (!finish_list[5]) {
                 num -= 2;
                 click("立即复活");
                 sleep(random_time(delay_time / 2));
-                back();
                 // 等待题目加载
-                sleep(random_time(delay_time * 3));
+                sleep(random_time(delay_time * 2));
             }
             // 第二次重新开局
             if (text("再来一局").exists()) {
@@ -1627,11 +1685,6 @@ if (sct_token || pushplus_token) {
 
     // 推送消息
     push_weixin_message(account + ",您的今日得分" + score + "分。");
-
-    if (whether_push_capture == "yes") {
-        // 将图片推送至图床
-        push_weixin_message("![](" + images.toBase64(cap_img) + ")");
-    }
 }
 
 // 解除静音
@@ -1653,32 +1706,3 @@ if (whether_froze_app == "yes") {
         exit(0);
     }
 }
-
-// 免root结束后台，考虑到运动需要后台，暂不开放设置
-/*
-function kill_app(packageName) {
-    var name = getPackageName(packageName);
-    if (!name) {
-        if (getAppName(packageName)) {
-            name = packageName;
-        } else {
-            return false;
-        }
-    }
-    app.openAppSetting(name);
-    text(app.getAppName(name)).waitFor();
-    let is_sure = textMatches(/(.*停.*|.*结.*|.*行.*)/).findOne();
-    if (is_sure.enabled()) {
-        textMatches(/(.*停.*|.*结.*|.*行.*)/).findOne().click();
-        textMatches(/(.*确.*|.*定.*)/).findOne().click();
-        log(app.getAppName(name) + "应用已被关闭");
-        sleep(1000);
-        back();
-    } else {
-        log(app.getAppName(name) + "应用不能被正常关闭或不在后台运行");
-        back();
-    }
-}
-
-kill_app('学习强国')
-*/
