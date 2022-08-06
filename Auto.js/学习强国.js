@@ -45,7 +45,27 @@ var SK = "";
  *  */
 var pushplus_token = "";
 
+/**
+ * 选填，设置锁屏数字密码
+ *  */
+var lock_number = "";
+
 /* **********************请填写如上信息********************** */
+
+/*判断屏幕锁定，解锁屏幕（数字密码）*/
+if (!device.isScreenOn() && lock_number) {//息屏状态将屏幕唤醒
+    device.wakeUp();
+    // 等待屏幕亮起
+    sleep(1000);
+    //向上滑动、展示输入密码页
+    swipe(500, 30, 500, 1000, 300);
+    sleep(400);
+    //输入锁屏密码
+    for (var l in lock_number) {
+        desc(lock_number[l]).findOne().click();
+        sleep(300);
+    }
+}
 
 auto.waitFor()
 
