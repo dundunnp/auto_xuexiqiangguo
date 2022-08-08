@@ -47,34 +47,3 @@ while (!device.isScreenOn()) {
 }
 
 home();
-
-
-
-
-//-----------------------------------配置文件-----------------------------------
-[
-    {
-      "name": "password",
-      "type": "text",
-      "label": "开屏密码",
-      "help": "开屏密码只能是数字形式，比如:123456，如果无密码不需要填写"
-    },
-    {
-      "name": "select",
-      "type": "select",
-      "label": "亮屏后是上滑开锁还是下滑",
-      "options": {
-        "a": "上滑",
-        "b": "下滑"
-      },
-      "validation": "required",
-      "help": "如果不需要滑动就选择默认上滑"
-    },
-    {
-      "name": "slide_time",
-      "type": "number",
-      "label": "滑动时间(以毫秒ms为单位)",
-      "validation": "required",
-      "help": "默认为10ms，因不同手机而异，如果解锁不成功可以尝试其他数值"
-    }
-]
