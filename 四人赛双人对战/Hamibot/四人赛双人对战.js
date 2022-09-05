@@ -258,6 +258,25 @@ function entry_model(number) {
 }
 
 /**
+ * 如果因为某种不知道的bug退出了界面，则使其回到正轨
+ */
+function back_track() {
+    app.launchApp("学习强国");
+    sleep(random_time(delay_time * 2));
+    var while_count = 0;
+    while (!id("comm_head_title").exists() && while_count < 5) {
+        while_count++;
+        back();
+        sleep(random_time(delay_time));
+    }
+    my_click_clickable("我的");
+    sleep(random_time(delay_time));
+    my_click_clickable("学习积分");
+    sleep(random_time(delay_time));
+    text("登录").waitFor();
+}
+
+/**
  * 选出选项
  * @param {answer} answer 答案
  * @param {int} depth_click_option 点击选项控件的深度，用于点击选项
@@ -456,6 +475,8 @@ function baidu_ocr_api(img) {
     question = question.replace(/\s*/g, "");
     question = question.replace(/,/g, "，");
     question = question.replace(/\-/g, "－");
+    question = question.replace(/\(/g, "（");
+    question = question.replace(/\)/g, "）");
     question = question.slice(question.indexOf(".") + 1);
     question = question.slice(0, 25);
     return [question, options_text];
