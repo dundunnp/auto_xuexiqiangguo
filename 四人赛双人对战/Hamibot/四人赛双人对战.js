@@ -5,7 +5,7 @@
  * @param SK {String} 百度Secret KEY
  * @return {int} 静音前的音量
  */
-function check_set_env(whether_improve_accuracy, AK, SK) {
+ function check_set_env(whether_improve_accuracy, AK, SK) {
     // 检查无障碍服务是否已经启用
     auto.waitFor();
 
