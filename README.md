@@ -52,19 +52,13 @@
 </a>
 </div>
 
-**旧界面代码:**
-
-<div align=center>
-<a href="https://hamibot.com/dashboard/scripts/import?url=https%3A%2F%2Fgithub.com%2Fdundunnp%2Fauto_xuexiqiangguo%2Ftree%2Fversion-15.6%2FHamibot" title="导入脚本到 Hamibot">
-<img src="https://hamibot.com/badge_import.png"/>
-</a>
-</div>
-
 **新界面代码示例**
 
 <div align=center>
 <img src="https://user-images.githubusercontent.com/68000706/189031879-c9844e66-2ac5-41b0-ab3b-b4a39a7c5ec1.jpg" alt="msedge_WRzp0mov3N" width="200px" style="zoom:33%;" />
 </div>
+
+旧界面代码麻烦到[文件夹](https://github.com/dundunnp/auto_xuexiqiangguo/tree/version-15.6/Hamibot)下复制
 
 3. 点击导入
 <div align=center>
