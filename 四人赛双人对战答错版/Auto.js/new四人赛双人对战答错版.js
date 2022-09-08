@@ -53,8 +53,8 @@
  
  function entry_model(number) {
      sleep(random_time(delay_time * 2));
-     var model = className('android.view.View').depth(22).findOnce(number);
-     while (!model.child(3).click());
+     var model = className('android.view.View').depth(24).findOnce(number);
+     while (!model.child(4).click());
  }
  
  // 模拟点击可点击元素
