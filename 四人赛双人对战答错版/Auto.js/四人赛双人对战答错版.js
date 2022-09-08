@@ -94,16 +94,18 @@ function handling_access_exceptions() {
             x_end = random(x_end, x_end + 10);
             gesture(random_time(delay_time), [x_start, y_start], [x_mid, y_end], [x_mid - back_x, y_start], [x_end, y_end]);
             sleep(random_time(delay_time));
+            while (textContains("访问异常").exists());
+            sleep(random_time(delay_time));
             if (textContains("刷新").exists()) {
-                click("刷新");
-                continue;
+                // 重答
+                my_click_clickable('刷新');
+                text("登录").waitFor();
             }
             if (textContains("网络开小差").exists()) {
-                click("确定");
-                continue;
+                // 重答
+                my_click_clickable("确定");
+                text("登录").waitFor();
             }
-            // 执行脚本只需通过一次验证即可，防止占用资源
-            break;
         }
     });
     return thread_handling_access_exceptions;
