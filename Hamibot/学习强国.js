@@ -1,4 +1,24 @@
 /**
+ * 获取配置参数及本地存储数据
+ */
+// 基础数据
+var { delay_time } = hamibot.env;
+delay_time = Number(delay_time) * 1000;
+var { whether_improve_accuracy } = hamibot.env;
+var { all_weekly_answers_completed, all_special_answer_completed } = hamibot.env;
+var { whether_complete_subscription } = hamibot.env;
+var { whether_complete_speech } = hamibot.env;
+var { sct_token, pushplus_token } = hamibot.env;
+var { whether_mute } = hamibot.env;
+var { whether_froze_app } = hamibot.env;
+
+// 调用百度api所需参数
+var { AK, SK } = hamibot.env;
+
+// 本地存储数据
+var storage = storages.create("data");
+
+/**
  * 检查和设置运行环境
  * @param whether_mute {String} 是否在运行过程中静音 "yes":开启; "no"(默认):不开启
  * @param whether_froze_app {String} 是否要冻结学习强国(需要root授权) "yes":开启; "no"(默认):不开启
@@ -63,25 +83,6 @@ function check_set_env(whether_mute, whether_froze_app,
     return vol;
 }
 
-/**
- * 获取配置参数及本地存储数据
- */
-// 基础数据
-var { delay_time } = hamibot.env;
-delay_time = Number(delay_time) * 1000;
-var { whether_improve_accuracy } = hamibot.env;
-var { all_weekly_answers_completed, all_special_answer_completed } = hamibot.env;
-var { whether_complete_subscription } = hamibot.env;
-var { whether_complete_speech } = hamibot.env;
-var { sct_token, pushplus_token } = hamibot.env;
-var { whether_mute } = hamibot.env;
-var { whether_froze_app } = hamibot.env;
-
-// 调用百度api所需参数
-var { AK, SK } = hamibot.env;
-
-// 本地存储数据
-var storage = storages.create("data");
 
 // 更新题库为answer_question_map1
 storage.remove("answer_question_map");
@@ -99,6 +100,9 @@ var answer_question_map = [];
 
 // 当题目为这些词时，题目较多会造成hash表上的一个index过多，此时存储其选项
 var special_problem = "选择正确的读音 选择词语的正确词形 下列词形正确的是 根据《中华人民共和国";
+// 当题目为这些词时，在线搜索书名号和逗号后的内容
+var special_problem2 = "根据《中国共 根据《中华人 《中华人民共 根据《化妆品";
+var special_problem3 = "下列选项中，";
 
 /**
  * hash函数，6469通过从3967到5591中的质数，算出的最优值，具体可以看评估代码
@@ -655,6 +659,8 @@ function do_contest_answer(depth_click_option, question, options_text) {
     // 如果本地题库没搜到，则搜网络题库
     if (answer == null) {
         var result;
+        if (special_problem2.indexOf(question.slice(0, 6)) != -1 && question.slice(18, 25) != -1) question = question.slice(18, 25);
+        if (special_problem3.indexOf(question.slice(0, 6)) != -1 && question.slice(6, 12) != -1) question = question.slice(6, 12);
         // 发送http请求获取答案 网站搜题速度 r1 > r2
         try {
             // 此网站只支持十个字符的搜索
@@ -664,8 +670,8 @@ function do_contest_answer(depth_click_option, question, options_text) {
         // 如果第一个网站没获取到正确答案，则利用第二个网站
         if (!(result && result[0].charCodeAt(3) > 64 && result[0].charCodeAt(3) < 69)) {
             try {
-                // 此网站只支持六个字符的搜索
-                var r2 = http.get("https://www.souwen123.com/search/select.php?age=" + encodeURI(question.slice(0, 6)));
+                // 截掉一部分，再在syiban.com上搜索一遍 六个字符的搜索 解决如题目开头嫦娥识别成娟娥、根据《书名号搜不到等类似的问题
+                var r2 = http.get("http://www.syiban.com/search/index/init.html?modelid=1&q=" + encodeURI(question.slice(3, 9)));
                 result = r2.body.string().match(/答案：.*</);
             } catch (error) { }
         }
@@ -687,6 +693,7 @@ function do_contest_answer(depth_click_option, question, options_text) {
         select_option(answer, depth_click_option, options_text);
     }
 }
+
 /*
  ********************答题部分********************
  */
@@ -947,33 +954,44 @@ function extract_ocr_recognize(object) {
 function ocr_processing(text, if_question) {
     // 标点修改
     text = text.replace(/,/g, "，");
-    text = text.replace(/〈〈/g, "《");
-    text = text.replace(/〉〉/g, "》");
     text = text.replace(/\s*/g, "");
     text = text.replace(/_/g, "一");
+    text = text.replace(/\-/g, "－");
     text = text.replace(/;/g, "；");
-    text = text.replace(/o/g, "");
-    text = text.replace(/。/g, "");
     text = text.replace(/`/g, "、");
     text = text.replace(/\?/g, "？");
     text = text.replace(/:/g, "：");
-    text = text.replace(/!/g, "!");
+    text = text.replace(/!/g, "！");
     text = text.replace(/\(/g, "（");
     text = text.replace(/\)/g, "）");
-    // 文字修改
-    text = text.replace(/营理/g, "管理");
-    text = text.replace(/土也/g, "地");
-    text = text.replace(/未口/g, "和");
-    text = text.replace(/晋查/g, "普查");
-    text = text.replace(/扶悌/g, "扶梯");
+    // 拼音修改
+    text = text.replace(/ā/g, "a");
+    text = text.replace(/á/g, "a");
+    text = text.replace(/ǎ/g, "a");
+    text = text.replace(/à/g, "a");
+    text = text.replace(/ō/g, "o");
+    text = text.replace(/ó/g, "o");
+    text = text.replace(/ǒ/g, "o");
+    text = text.replace(/ò/g, "o");
+    text = text.replace(/ē/g, "e");
+    text = text.replace(/é/g, "e");
+    text = text.replace(/ě/g, "e");
+    text = text.replace(/è/g, "e");
+    text = text.replace(/ī/g, "i");
+    text = text.replace(/í/g, "i");
+    text = text.replace(/ǐ/g, "i");
+    text = text.replace(/ì/g, "i");
+    text = text.replace(/ū/g, "u");
+    text = text.replace(/ú/g, "u");
+    text = text.replace(/ǔ/g, "u");
+    text = text.replace(/ù/g, "u");
 
     if (if_question) {
         text = text.slice(text.indexOf(".") + 1);
-        text = text.slice(0, 10);
+        text = text.slice(0, 25);
     }
     return text;
 }
-
 /**
  * 答题（每日、每周、专项）
  * @param {int} number 需要做题目的数量
@@ -1077,7 +1095,7 @@ function do_periodic_answer(number) {
                     }
                 }
             }
-            sleep(random_time(delay_time)); // 每题之间的过渡时间
+            sleep(random_time(delay_time * 2)); // 每题之间的过渡时间
         }
         if (num == number) flag = true;
     }
@@ -1109,28 +1127,26 @@ function handling_access_exceptions() {
             x_end = random(x_end, x_end + 10);
             gesture(random_time(delay_time), [x_start, y_start], [x_mid, y_end], [x_mid - back_x, y_start], [x_end, y_end]);
             sleep(random_time(delay_time));
+            while (textContains("访问异常").exists());
+            sleep(random_time(delay_time));
             if (textContains("刷新").exists()) {
                 // 重答
-                click("刷新");
+                my_click_clickable('刷新');
                 text("登录").waitFor();
                 entry_model(7);
                 log("等待:" + "查看提示");
                 text("查看提示").waitFor();
                 do_periodic_answer(5);
-                continue;
             }
             if (textContains("网络开小差").exists()) {
                 // 重答
-                click("确定");
+                my_click_clickable("确定");
                 text("登录").waitFor();
                 entry_model(7);
                 log("等待:" + "查看提示");
                 text("查看提示").waitFor();
                 do_periodic_answer(5);
-                continue;
             }
-            // 执行脚本只需通过一次验证即可，防止占用资源
-            break;
         }
     });
     return thread_handling_access_exceptions;
@@ -1694,7 +1710,7 @@ if (whether_mute == "yes") {
 
 //震动一秒
 device.vibrate(1000);
-toast("脚本运行完成");
+toastLog("脚本运行完成");
 home();
 
 //解冻app
