@@ -4,7 +4,7 @@
 # 目录
 - [目录](#目录)
 - [免责声明](#免责声明)
-- [v15.53 更新内容:](#v1553-更新内容)
+- [v15.6 更新内容:](#v156-更新内容)
 - [脚本声明](#脚本声明)
 - [使用说明](#使用说明)
   - [Hamibot](#hamibot)
@@ -23,8 +23,9 @@
 
 如果喜欢的话可以star一下噢，谢谢！
 
-# v15.53 更新内容:
-1. 修复挑战答题复活bug
+# v15.6 更新内容:
+1. 提供适配学习强国新页面的代码，对应文件名为前缀new...
+2. 修复挑战答题卡住的bug **（修复代码由[McMug2020](https://github.com/McMug2020)提供，十分的感谢）**
 
 # 脚本声明
 **本脚本适用于安卓、鸿蒙系统，不适用于IOS，请将强国软件换为2.33.0版本（[安装包](https://github.com/dundunnp/auto_xuexiqiangguo/tree/version-14.5/%E5%AE%89%E8%A3%85%E5%8C%85)），这之后的版本脚本运行可能报错**
@@ -44,19 +45,19 @@
 2. 点击图标导入脚本
 
 <div align=center>
-<a href="https://hamibot.com/dashboard/scripts/import?url=https%3A%2F%2Fgithub.com%2Fdundunnp%2Fauto_xuexiqiangguo%2Ftree%2Fversion-15.53%2FHamibot" title="导入脚本到 Hamibot">
+<a href="https://hamibot.com/dashboard/scripts/import?url=https%3A%2F%2Fgithub.com%2Fdundunnp%2Fauto_xuexiqiangguo%2Ftree%2Fversion-15.52%2FHamibot" title="导入脚本到 Hamibot">
 <img src="https://hamibot.com/badge_import.png"/>
 </a>
 </div>
 
 3. 点击导入
 <div align=center>
-<img src="https://user-images.githubusercontent.com/68000706/187081078-12de94a2-e911-499a-a71d-c01b9ffc2dbb.png" alt="msedge_WRzp0mov3N" width="600px" style="zoom:33%;" />
+<img src="https://i.bmp.ovh/imgs/2022/07/28/a67622eba07c5a33.png" alt="msedge_WRzp0mov3N" width="600px" style="zoom:33%;" />
 </div>
 
 4. 点击配置，将信息填入后保存
 <div align=center>
-<img src="https://user-images.githubusercontent.com/68000706/187081155-7c8272f1-d900-4ee5-8122-2ee044a521d2.png" alt="msedge_WRzp0mov3N" width="600px" style="zoom:33%;" />
+<img src="https://i.bmp.ovh/imgs/2022/07/28/b258833fb7a8229c.png" alt="msedge_WRzp0mov3N" width="600px" style="zoom:33%;" />
 </div>
 
 <div align=center>
@@ -127,7 +128,7 @@
 ## 百度API配置
 
 首先编辑脚本，将配置选项选择“是”
-<div align=center><img src="https://user-images.githubusercontent.com/68000706/187081233-33c6c3df-add5-40f0-8c97-5b1f6b4bb84d.png" alt="msedge_WRzp0mov3N" width="600px" style="zoom:33%;" /></div>
+<div align=center><img src="https://i.bmp.ovh/imgs/2022/01/143fefa456e002b1.png"/></div>
 
 *以下操作与百度[文字识别新手操作指引](https://cloud.baidu.com/doc/OCR/s/dk3iqnq51)一样*
 
