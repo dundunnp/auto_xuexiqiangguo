@@ -44,15 +44,31 @@
 
 2. 点击图标导入脚本
 
+**新界面代码:**
+
 <div align=center>
 <a href="https://hamibot.com/dashboard/scripts/import?url=https%3A%2F%2Fgithub.com%2Fdundunnp%2Fauto_xuexiqiangguo%2Ftree%2Fversion-15.6%2FHamibot" title="导入脚本到 Hamibot">
 <img src="https://hamibot.com/badge_import.png"/>
 </a>
 </div>
 
+**旧界面代码:**
+
+<div align=center>
+<a href="https://hamibot.com/dashboard/scripts/import?url=https%3A%2F%2Fgithub.com%2Fdundunnp%2Fauto_xuexiqiangguo%2Ftree%2Fversion-15.6%2FHamibot" title="导入脚本到 Hamibot">
+<img src="https://hamibot.com/badge_import.png"/>
+</a>
+</div>
+
+**新界面代码示例**
+
+<div align=center>
+<img src="https://user-images.githubusercontent.com/68000706/189031879-c9844e66-2ac5-41b0-ab3b-b4a39a7c5ec1.jpg" alt="msedge_WRzp0mov3N" width="200px" style="zoom:33%;" />
+</div>
+
 3. 点击导入
 <div align=center>
-<img src="https://i.bmp.ovh/imgs/2022/07/28/a67622eba07c5a33.png" alt="msedge_WRzp0mov3N" width="600px" style="zoom:33%;" />
+<img src="https://user-images.githubusercontent.com/68000706/189031125-cba73035-9d09-4089-88d4-6c9559f4d45a.png" alt="msedge_WRzp0mov3N" width="600px" style="zoom:33%;" />
 </div>
 
 4. 点击配置，将信息填入后保存
@@ -128,7 +144,7 @@
 ## 百度API配置
 
 首先编辑脚本，将配置选项选择“是”
-<div align=center><img src="https://i.bmp.ovh/imgs/2022/01/143fefa456e002b1.png"/></div>
+<div align=center><img src="https://user-images.githubusercontent.com/68000706/189031339-f52b77c8-97c7-42ef-a5a9-6fa4dd4da008.png"/></div>
 
 *以下操作与百度[文字识别新手操作指引](https://cloud.baidu.com/doc/OCR/s/dk3iqnq51)一样*
 
