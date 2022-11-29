@@ -52,8 +52,9 @@ function check_set_env(whether_mute, whether_froze_app,
     threads.start(function () {
         try {
             var beginBtn;
-            if ((beginBtn = classNameContains("Button").textContains("开始").findOne(delay_time)));
-            else beginBtn = classNameContains("Button").textContains("允许").findOne(delay_time);
+            if (beginBtn = classNameContains("Button").textContains("开始").findOne(delay_time));
+            else if (beginBtn = classNameContains("Button").textContains("允许").findOne(delay_time));
+            else (beginBtn = classNameContains("Button").textContains("ALLOW").findOne(delay_time));
             beginBtn.click();
         } catch (error) { }
     });
@@ -356,24 +357,26 @@ var two_players_scored;
 
 function get_finish_list() {
     var finish_list = [];
-    for (var i = 4; i < 17; i++) {
+    for (var i = 4; i < 18; i++) {
         // 由于模拟器有model无法读取因此用try catch
         try {
-            var model = className("android.view.View").depth(22).findOnce(i);
+            var model = className("android.view.View").depth(24).findOnce(i);
             if (i == 4) {
-                completed_read_count = parseInt(model.child(2).text().match(/\d+/)) / 2;
+                completed_read_count = parseInt(model.child(3).child(0).text()) / 2;
             } else if (i == 5) {
-                completed_watch_count = parseInt(model.child(2).text().match(/\d+/));
-            } else if (i == 16) {
-                weekly_answer_scored = parseInt(model.child(2).text().match(/\d+/));
+                completed_watch_count = parseInt(model.child(3).child(0).text());
+            } else if (i == 17) {
+                weekly_answer_scored = parseInt(model.child(3).child(0).text());
             } else if (i == 8) {
-                special_answer_scored = parseInt(model.child(2).text().match(/\d+/));
+                special_answer_scored = parseInt(model.child(3).child(0).text());
             } else if (i == 10) {
-                four_players_scored = parseInt(model.child(2).text().match(/\d+/));
+                four_players_scored = parseInt(model.child(3).child(0).text());
             } else if (i == 11) {
-                two_players_scored = parseInt(model.child(2).text().match(/\d+/));
+                three_players_scored = parseInt(model.child(3).child(0).text());
+            } else if (i == 12) {
+                two_players_scored = parseInt(model.child(3).child(0).text());
             }
-            finish_list.push(model.child(3).text() == "已完成");
+            finish_list.push(model.child(4).text() == "已完成");
         } catch (error) {
             finish_list.push(false);
         }
@@ -396,7 +399,7 @@ var finish_list = get_finish_list();
 // 返回首页
 log("返回首页");
 log("点击:" + "android.view.View");
-className("android.view.View").clickable(true).depth(21).findOne().click();
+className("android.view.View").clickable(true).depth(22).findOne().click();
 log("等待:" + "my_back");
 id("my_back").waitFor();
 sleep(random_time(delay_time / 2));
@@ -415,7 +418,7 @@ className("android.view.ViewGroup").depth(15).findOnce(2).child(3).click();
 /*
  **********本地频道*********
  */
-if (!finish_list[10]) {
+if (!finish_list[11]) {
     // 去本地频道
     log("去本地频道");
     log("等待:" + "android.widget.LinearLayout");
@@ -501,12 +504,14 @@ while (count < 6 - completed_read_count && !finish_list[0]) {
 }
 
 /*
- *********************视听部分********************
- */
+*********************视听部分********************
+*/
+back_track_flag = 1;
 
 // 关闭电台广播
 if (!finish_list[2] && !finish_list[0]) {
     log("关闭电台广播");
+    if (!id("comm_head_title").exists()) back_track();
     sleep(random_time(delay_time));
     my_click_clickable("电台");
     sleep(random_time(delay_time));
@@ -526,7 +531,6 @@ if (!finish_list[2] && !finish_list[0]) {
     sleep(random_time(delay_time));
 }
 
-back_track_flag = 1;
 
 /*
  **********视听学习、听学习时长*********
@@ -794,8 +798,8 @@ function is_select_all_choice() {
  * @param {int} number 7对应为每日答题模块，以此类推
  */
 function entry_model(number) {
-    var model = className("android.view.View").depth(22).findOnce(number);
-    while (!model.child(3).click());
+    var model = className("android.view.View").depth(24).findOnce(number);
+    while (!model.child(4).click());
 }
 
 /**
@@ -1115,17 +1119,56 @@ function handling_access_exceptions() {
             // 滑动边框位置
             text("向右滑动验证").waitFor();
             var slider_bound = text("向右滑动验证").findOne().bounds();
-            // 通过更复杂的手势验证（先右后左再右）
+            // 通过随机选择动作库中的手势验证
+
+            /**
+             * 动作库
+             */
+            // x轴起点位置
             var x_start = bound.centerX();
-            var dx = x_start - slider_bound.left;
-            var x_end = slider_bound.right - dx;
-            var x_mid = (x_end - x_start) * random(5, 8) / 10 + x_start;
-            var back_x = (x_end - x_start) * random(2, 3) / 10;
-            var y_start = random(bound.top, bound.bottom);
-            var y_end = random(bound.top, bound.bottom);
-            x_start = random(x_start - 7, x_start);
-            x_end = random(x_end, x_end + 10);
-            gesture(random_time(delay_time), [x_start, y_start], [x_mid, y_end], [x_mid - back_x, y_start], [x_end, y_end]);
+            // x轴终点位置
+            var x_end = slider_bound.right;
+            // y轴位置
+            var y = random(bound.top, bound.bottom);
+            // 随机选择手势
+            var choice_number = random(1, 5);
+            switch (choice_number) {
+                case 1:
+                    // 1. 先左后右（匀速）
+                    gesture(random_time(delay_time), [x_start, y], [x_end, y])
+                    break
+                case 2:
+                    // 2. 先左后右（加速）
+                    var x_mid1 = (x_end - x_start) * 1 / 4 + x_start;
+                    var x_mid2 = (x_end - x_start) * 2 / 4 + x_start;
+                    var x_mid3 = (x_end - x_start) * 3 / 4 + x_start;
+                    gesture([random_time(delay_time) / 2, [x_start, y], [x_mid1, y]],
+                        [random_time(delay_time) / 4, [x_mid1, y], [x_mid2, y]],
+                        [random_time(delay_time) / 6, [x_mid2, y], [x_mid3, y]],
+                        [random_time(delay_time) / 10, [x_mid3, y], [x_end, y]])
+                    break
+                case 3:
+                    // 3. 先左后右（减速）
+                    var x_mid1 = (x_end - x_start) * 1 / 4 + x_start;
+                    var x_mid2 = (x_end - x_start) * 2 / 4 + x_start;
+                    var x_mid3 = (x_end - x_start) * 3 / 4 + x_start;
+                    gesture([random_time(delay_time) / 10, [x_start, y], [x_mid1, y]],
+                        [random_time(delay_time) / 6, [x_mid1, y], [x_mid2, y]],
+                        [random_time(delay_time) / 4, [x_mid2, y], [x_mid3, y]],
+                        [random_time(delay_time) / 2, [x_mid3, y], [x_end, y]])
+                    break
+                case 4:
+                    // 4. 先左后右停顿再右
+                    var x_mid = (x_end - x_start) * random(5, 8) / 10 + x_start;
+                    gesture(random_time(delay_time), [x_start, y], [x_mid, y], [x_mid, y], [x_end, y])
+                    break
+                case 5:
+                    // 5. 先右后左再右
+                    var x_mid = (x_end - x_start) * random(5, 8) / 10 + x_start;
+                    var back_x = (x_end - x_start) * random(2, 3) / 10;
+                    gesture(random_time(delay_time), [x_start, y], [x_mid, y], [x_mid - back_x, y], [x_end, y]);
+                    break
+            }
             sleep(random_time(delay_time));
             while (textContains("访问异常").exists());
             sleep(random_time(delay_time));
@@ -1165,7 +1208,7 @@ var restart_flag = 0;
 if (!finish_list[3]) {
     log("每日答题");
     sleep(random_time(delay_time));
-    if (!className("android.view.View").depth(21).text("学习积分").exists()) back_track();
+    if (!className("android.view.View").depth(22).text("学习积分").exists()) back_track();
     entry_model(7);
     // 等待题目加载
     log("等待:" + "查看提示");
@@ -1188,11 +1231,11 @@ if (all_weekly_answers_completed == "no") {
     all_weekly_answers_completed = storage.get("all_weekly_answers_completed_storage");
 }
 
-if (!finish_list[12] && weekly_answer_scored < 4 && all_weekly_answers_completed == "no") {
+if (!finish_list[13] && weekly_answer_scored < 4 && all_weekly_answers_completed == "no") {
     log("每周答题");
     sleep(random_time(delay_time));
-    if (!className("android.view.View").depth(21).text("学习积分").exists()) back_track();
-    entry_model(16);
+    if (!className("android.view.View").depth(22).text("学习积分").exists()) back_track();
+    entry_model(17);
     // 等待列表加载
     log("等待:" + "月");
     textContains("月").waitFor();
@@ -1242,7 +1285,7 @@ if (!finish_list[4] && special_answer_scored < 8) {
     log("专项答题");
     sleep(random_time(delay_time));
 
-    if (!className("android.view.View").depth(21).text("学习积分").exists()) back_track();
+    if (!className("android.view.View").depth(22).text("学习积分").exists()) back_track();
     entry_model(8);
     // 等待列表加载
     log("等待:" + "android.view.View");
@@ -1287,7 +1330,7 @@ if (!finish_list[4] && special_answer_scored < 8) {
         }
         // 如果搜索到底部
         if (text("您已经看到了我的底线").exists()) {
-            storage.put("all_special_answers_completed_storage", "yes");
+            storage.put("all_special_answer_completed_storage", "yes");
             break;
         }
     }
@@ -1357,7 +1400,7 @@ if (!finish_list[5]) {
     log("挑战答题");
     sleep(random_time(delay_time));
 
-    if (!className("android.view.View").depth(21).text("学习积分").exists()) back_track();
+    if (!className("android.view.View").depth(22).text("学习积分").exists()) back_track();
     entry_model(9);
     // 加载页面
     log("等待:" + "android.view.View");
@@ -1420,11 +1463,11 @@ if (!finish_list[5]) {
 }
 
 /*
- ********************四人赛、双人对战********************
+ ********************四人赛、双人对战、太空三人行********************
  */
 
 /**
- * 答题
+ * 答四人赛、双人对战API
  */
 function do_contest() {
     while (!text("开始").exists());
@@ -1481,9 +1524,7 @@ if (!finish_list[6] && four_players_scored < 3) {
     log("四人赛");
     sleep(random_time(delay_time));
 
-    if (!className("android.view.View").depth(21).text("学习积分").exists()) back_track();
-    log("等待:" + "学习积分");
-    className("android.view.View").depth(21).text("学习积分").waitFor();
+    if (!className("android.view.View").depth(22).text("学习积分").exists()) back_track();
     entry_model(10);
 
     for (var i = 0; i < 2; i++) {
@@ -1503,16 +1544,47 @@ if (!finish_list[6] && four_players_scored < 3) {
 }
 
 /*
+ **********太空三人行*********
+ */
+// 由于不需要赢也可以获得积分，因此用hamibot自带ocr，不浪费baidu_ocr次数
+var old_whether_improve_accuracy = whether_improve_accuracy
+whether_improve_accuracy = "no"
+
+if (!finish_list[7] && three_players_scored < 1) {
+    log("太空三人行");
+    sleep(random_time(delay_time));
+
+    if (!className("android.view.View").depth(22).text("学习积分").exists()) back_track();
+    entry_model(11);
+
+    for (var i = 0; i < 2; i++) {
+        sleep(random_time(delay_time));
+        textStartsWith("网络").findOne().parent().child(1).child(0).click();
+        do_contest();
+        if (i == 0) {
+            sleep(random_time(delay_time * 2));
+            my_click_clickable("继续挑战");
+            sleep(random_time(delay_time));
+        }
+    }
+
+    sleep(random_time(delay_time * 2));
+    back();
+    sleep(random_time(delay_time));
+    back();
+}
+// 改回来
+whether_improve_accuracy = old_whether_improve_accuracy
+
+/*
  **********双人对战*********
  */
-if (!finish_list[7] && two_players_scored < 1) {
+if (!finish_list[8] && two_players_scored < 1) {
     log("双人对战");
     sleep(random_time(delay_time));
 
-    if (!className("android.view.View").depth(21).text("学习积分").exists()) back_track();
-    log("等待:" + "学习积分");
-    className("android.view.View").depth(21).text("学习积分").waitFor();
-    entry_model(11);
+    if (!className("android.view.View").depth(22).text("学习积分").exists()) back_track();
+    entry_model(12);
 
     // 点击随机匹配
     log("等待:" + "随机匹配");
@@ -1536,11 +1608,11 @@ if (!finish_list[7] && two_players_scored < 1) {
 /*
  **********订阅*********
  */
-while (!finish_list[8] && whether_complete_subscription == "yes") {
+while (!finish_list[9] && whether_complete_subscription == "yes") {
     log("订阅");
     sleep(random_time(delay_time));
-    if (!className("android.view.View").depth(21).text("学习积分").exists()) back_track();
-    entry_model(12);
+    if (!className("android.view.View").depth(22).text("学习积分").exists()) back_track();
+    entry_model(13);
     // 等待加载
     sleep(random_time(delay_time * 3));
 
@@ -1660,13 +1732,13 @@ while (!finish_list[8] && whether_complete_subscription == "yes") {
  **********发表观点*********
  */
 
-if (!finish_list[9] && whether_complete_speech == "yes") {
+if (!finish_list[10] && whether_complete_speech == "yes") {
     var speechs = ["好好学习，天天向上", "大国领袖，高瞻远瞩", "请党放心，强国有我", "坚持信念，砥砺奋进", "团结一致，共建美好", "为人民谋幸福"];
     log("发表观点");
     sleep(random_time(delay_time));
     if (!text("欢迎发表你的观点").exists()) {
-        if (!className("android.view.View").depth(21).text("学习积分").exists()) back_track();
-        entry_model(13);
+        if (!className("android.view.View").depth(22).text("学习积分").exists()) back_track();
+        entry_model(14);
         // 随意找一篇文章
         sleep(random_time(delay_time));
         my_click_clickable("推荐");
