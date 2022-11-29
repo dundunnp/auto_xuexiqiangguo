@@ -48,7 +48,7 @@
 
 2. 点击图标导入脚本
 <div align=center>
-<a href="https://hamibot.com/dashboard/scripts/import?url=https%3A%2F%2Fgithub.com%2Fdundunnp%2Fauto_xuexiqiangguo%2Ftree%2Fversion-15.6%2FHamibot" title="导入脚本到 Hamibot">
+<a href="https://hamibot.com/dashboard/scripts/import?url=https%3A%2F%2Fgithub.com%2Fdundunnp%2Fauto_xuexiqiangguo%2Ftree%2Fversion-15.7%2FHamibot" title="导入脚本到 Hamibot">
 <img src="https://hamibot.com/badge_import.png"/>
 </a>
 </div>
@@ -208,3 +208,4 @@ A: 请在[GitHub](https://github.com/dundunnp/hamibot-auto_xuexiqiangguo/issues)
 # To Do
 1. ui界面的编写
 2. 优化答题的编写
+3. 订阅的优化
