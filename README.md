@@ -4,7 +4,7 @@
 # 目录
 - [目录](#目录)
 - [免责声明](#免责声明)
-- [v15.6 更新内容:](#v156-更新内容)
+- [v15.7 更新内容:](#v157-更新内容)
 - [脚本声明](#脚本声明)
 - [使用说明](#使用说明)
   - [Hamibot](#hamibot)
@@ -23,9 +23,13 @@
 
 如果喜欢的话可以star一下噢，谢谢！
 
-# v15.6 更新内容:
-1. 提供适配学习强国新页面的代码，对应文件名为前缀new...
-2. 修复挑战答题卡住的bug **（修复代码由[McMug2020](https://github.com/McMug2020)提供，十分的感谢）**
+# v15.7 更新内容:
+1. 改善异常处理功能，增加更多手势预防不通过
+2. 增加太空三人行模块答题功能，由于不需要赢也可以获得积分，因此用hamibot自带ocr，不浪费baidu_ocr次数
+3. 无障碍开启适配英文（小修复）
+4. 删除学习强国旧版本的代码
+5. 修复关闭广播时，退回主界面不动的bug
+注：部分修复代码参考[McMug2020](https://github.com/McMug2020)，十分感谢
 
 # 脚本声明
 **本脚本适用于安卓、鸿蒙系统，不适用于IOS，请将强国软件换为2.33.0版本（[安装包](https://github.com/dundunnp/auto_xuexiqiangguo/tree/version-14.5/%E5%AE%89%E8%A3%85%E5%8C%85)），这之后的版本脚本运行可能报错**
@@ -43,22 +47,11 @@
 1. 先跟随着[Hamibot指导](https://hamibot.com/guide)安装Hamibot并配对好机器人：
 
 2. 点击图标导入脚本
-
-**新界面代码:**
-
 <div align=center>
 <a href="https://hamibot.com/dashboard/scripts/import?url=https%3A%2F%2Fgithub.com%2Fdundunnp%2Fauto_xuexiqiangguo%2Ftree%2Fversion-15.6%2FHamibot" title="导入脚本到 Hamibot">
 <img src="https://hamibot.com/badge_import.png"/>
 </a>
 </div>
-
-**新界面代码示例**
-
-<div align=center>
-<img src="https://user-images.githubusercontent.com/68000706/189031879-c9844e66-2ac5-41b0-ab3b-b4a39a7c5ec1.jpg" alt="msedge_WRzp0mov3N" width="200px" style="zoom:33%;" />
-</div>
-
-旧界面代码麻烦到[文件夹](https://github.com/dundunnp/auto_xuexiqiangguo/tree/version-15.6/Hamibot)下复制
 
 3. 点击导入
 <div align=center>
