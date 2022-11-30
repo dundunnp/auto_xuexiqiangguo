@@ -1,0 +1,100 @@
+[
+    {
+        "label": "账号信息，先填手机号码，再回车键，填写密码",
+        "type": "textarea",
+        "validation": "required",
+        "name": "account_information"
+    },
+    {
+        "name": "delay_time",
+        "type": "number",
+        "label": "跳转页面加载的时间(以秒s为单位)",
+        "validation": "required",
+        "help": "默认为1s(支持小数点形式)，根据手机性能与网络情况自行而定，时间越长出bug的可能越小，但同时耗费的时间越长"
+    },
+    {
+        "name": "all_weekly_answers_completed",
+        "type": "textarea",
+        "label": "之前的每周答题是否全部完成",
+        "validation": "required",
+        "help": "如果完成就不需要浪费时间向下搜索，填写“yes”或“no”，不同账号用回车键隔开，注意顺序"
+    },
+    {
+        "name": "all_special_answer_completed",
+        "type": "textarea",
+        "label": "之前的专项答题是否全部完成",
+        "validation": "required",
+        "help": "如果完成就不需要浪费时间向下搜索，填写“yes”或“no”，不同账号用回车键隔开，注意顺序"
+    },
+    {
+        "name": "whether_complete_subscription",
+        "type": "textarea",
+        "label": "是否完成订阅模块",
+        "validation": "required",
+        "help": "填写“yes”或“no”，不同账号用回车键隔开，注意顺序"
+    },
+    {
+        "name": "whether_complete_speech",
+        "type": "textarea",
+        "label": "是否完成发表言论模块",
+        "validation": "required",
+        "help": "填写“yes”或“no”，不同账号用回车键隔开，注意顺序"
+    },
+    {
+        "label": "是否提高四人赛双人对战正确率",
+        "type": "radio",
+        "name": "whether_improve_accuracy",
+        "options": {
+            "yes": "是",
+            "no": "否"
+        },
+        "validation": "required",
+        "help": "如果选择是，请按照提示填写如以下内容（具体如何填写请看说明），否则不需填写"
+    },
+    {
+        "name": "AK",
+        "type": "text",
+        "label": "API KEY",
+        "help": "如果选择百度，请填写，否则空着"
+    },
+    {
+        "name": "SK",
+        "type": "text",
+        "label": "Secret KEY",
+        "help": "如果选择百度，请填写，否则空着"
+    },
+    {
+        "label": "是否在脚本执行期间静音？",
+        "type": "radio",
+        "name": "whether_mute",
+        "options": {
+            "yes": "是",
+            "no": "否"
+        },
+        "validation": "required",
+        "help": "选是则在脚本执行期间静音，脚本运行完后会自动恢复。"
+    },
+    {
+        "label": "是否启用冻结学习强国？",
+        "type": "radio",
+        "name": "whether_froze_app",
+        "options": {
+            "yes": "是",
+            "no": "否"
+        },
+        "validation": "required",
+        "help": "如果不知道什么是root，请选择否。如果选择是，学习强国会在脚本结束后自动被冻结(pm disable)，下次运行脚本时解冻。本操作需要root权限。"
+    },
+    {
+        "name": "pushplus_token",
+        "type": "text",
+        "label": "pushplus_token",
+        "help": "选填，是否要使用微信消息推送功能，如是请填写pushplus的token"
+    },
+    {
+        "name": "sct_token",
+        "type": "text",
+        "label": "sct_token",
+        "help": "选填，是否要使用server酱推送，如是请填写server酱的token。"
+    }
+]
