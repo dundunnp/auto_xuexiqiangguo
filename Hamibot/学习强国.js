@@ -1119,8 +1119,8 @@ function handling_access_exceptions() {
             // 滑动边框位置
             text("向右滑动验证").waitFor();
             var slider_bound = text("向右滑动验证").findOne().bounds();
-            // 通过随机选择动作库中的手势验证
 
+            // 通过随机选择动作库中的手势验证
             /**
              * 动作库
              */
@@ -1131,55 +1131,26 @@ function handling_access_exceptions() {
             // y轴位置
             var y = random(bound.top, bound.bottom);
             // 随机选择手势
-            var choice_number = random(1, 5);
+            var choice_number = random(1, 3);
             switch (choice_number) {
                 case 1:
-                    // 1. 先左后右（匀速）
-                    gesture(random_time(delay_time), [x_start, y], [x_end, y])
+                    // 1. 先左后右，快速
+                    gesture(random_time(delay_time) * random(), [x_start, y], [x_end, y])
                     break
                 case 2:
-                    // 2. 先左后右（加速）
-                    var x_mid1 = (x_end - x_start) * 1 / 4 + x_start;
-                    var x_mid2 = (x_end - x_start) * 2 / 4 + x_start;
-                    var x_mid3 = (x_end - x_start) * 3 / 4 + x_start;
-                    gesture([random_time(delay_time) / 2, [x_start, y], [x_mid1, y]],
-                        [random_time(delay_time) / 4, [x_mid1, y], [x_mid2, y]],
-                        [random_time(delay_time) / 6, [x_mid2, y], [x_mid3, y]],
-                        [random_time(delay_time) / 10, [x_mid3, y], [x_end, y]])
+                    // 2. 先左后右，慢速
+                    gesture(random_time(delay_time) * random(1, 4), [x_start, y], [x_end, y])
                     break
                 case 3:
-                    // 3. 先左后右（减速）
-                    var x_mid1 = (x_end - x_start) * 1 / 4 + x_start;
-                    var x_mid2 = (x_end - x_start) * 2 / 4 + x_start;
-                    var x_mid3 = (x_end - x_start) * 3 / 4 + x_start;
-                    gesture([random_time(delay_time) / 10, [x_start, y], [x_mid1, y]],
-                        [random_time(delay_time) / 6, [x_mid1, y], [x_mid2, y]],
-                        [random_time(delay_time) / 4, [x_mid2, y], [x_mid3, y]],
-                        [random_time(delay_time) / 2, [x_mid3, y], [x_end, y]])
-                    break
-                case 4:
-                    // 4. 先左后右停顿再右
-                    var x_mid = (x_end - x_start) * random(5, 8) / 10 + x_start;
-                    gesture(random_time(delay_time), [x_start, y], [x_mid, y], [x_mid, y], [x_end, y])
-                    break
-                case 5:
-                    // 5. 先右后左再右
+                    // 3. 先右到中右位置后到中左位置再右
                     var x_mid = (x_end - x_start) * random(5, 8) / 10 + x_start;
                     var back_x = (x_end - x_start) * random(2, 3) / 10;
                     gesture(random_time(delay_time), [x_start, y], [x_mid, y], [x_mid - back_x, y], [x_end, y]);
                     break
             }
-            sleep(random_time(delay_time));
-            while (textContains("访问异常").exists());
-            sleep(random_time(delay_time));
+            sleep(random_time(delay_time * 2));
             if (textContains("刷新").exists()) {
-                // 重答
                 my_click_clickable('刷新');
-                text("登录").waitFor();
-                entry_model(7);
-                log("等待:" + "查看提示");
-                text("查看提示").waitFor();
-                do_periodic_answer(5);
             }
             if (textContains("网络开小差").exists()) {
                 // 重答
