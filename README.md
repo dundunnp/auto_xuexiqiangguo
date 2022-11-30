@@ -209,3 +209,4 @@ A: 请在[GitHub](https://github.com/dundunnp/hamibot-auto_xuexiqiangguo/issues)
 1. ui界面的编写
 2. 优化答题的编写
 3. 订阅的优化
+4. 多用户版的编写
