@@ -1,29 +1,29 @@
-<!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
+# auto_xuexiqiangguo
+<p align="center">auto_xuexiqiangguo 是一款自动化学习工具 每天可达满分🚩</p>
+<p align="center">本项目旨在解放双手 让大家有更多时间做更有意义的事💪</p>
+<p align="center"><img src="https://github.com/TechXueXi/TechXueXi/blob/master/img_folder/peoplelearning.jpg?raw=true" alt="学 xi 情景"/></p>
 
-<!-- code_chunk_output -->
-# 目录
-- [目录](#目录)
-- [免责声明](#免责声明)
-- [v15.71 更新内容:](#v1571-更新内容)
-- [脚本声明](#脚本声明)
-- [使用说明](#使用说明)
+# 📖 目录
+- [📃免责声明](#免责声明)
+- [🔧v15.71 更新内容:](#v1571-更新内容)
+- [📍脚本声明](#脚本声明)
+- [📗使用说明](#使用说明)
   - [Hamibot](#hamibot)
   - [Auto.js](#autojs)
   - [满足条件](#满足条件)
   - [编辑配置说明](#编辑配置说明)
   - [百度API配置](#百度api配置)
-- [额外衍生脚本](#额外衍生脚本)
-- [常见问题](#常见问题)
-- [To Do](#todo)
+- [👍额外衍生脚本](#额外衍生脚本)
+- [📑常见问题](#常见问题)
+- [✅To Do](#to-do)
+- [⭐Give A Star](#give-a-star)
 
-<!-- /code_chunk_output -->
-
-# 免责声明
+# 📃免责声明
 **本脚本为免费使用，本脚本只供个人学习使用，不得盈利传播，不得用于违法用途，否则造成的一切后果自负！**
 
 如果喜欢的话可以star一下噢，谢谢！
 
-# v15.71 更新内容:
+# 🔧v15.71 更新内容:
 
 ### 新增多用户版
 新增多用户版脚本，目前只有hamibot版，用户可以添加多个账号，可以根据配置文件说明进行配置
@@ -35,16 +35,17 @@
 ### 修改处理异常bug
 hamibot函数gestures貌似有bug，我测试多次运行此函数会自动锁屏甚至关机重启，因此去掉此动作
 
-# 脚本声明
+# 📍脚本声明
 **本脚本适用于安卓、鸿蒙系统，不适用于IOS，请将强国软件换为2.33.0版本（[安装包](https://github.com/dundunnp/auto_xuexiqiangguo/tree/version-14.5/%E5%AE%89%E8%A3%85%E5%8C%85)），这之后的版本脚本运行可能报错**
 **如果因为bug或各种原因不得不终止脚本，请重新运行脚本，脚本会自动跳过已完成的部分**
 **如果遇到bug问题，请先查看[常见问题](#常见问题)，如果没有找到类似问题或还是不行请反馈bug给我**
 **因为本人是在校学生无法把全部精力放在这，因此如果有想合作的小伙伴请在Github上一起完成更新项目**
 
-# 使用说明
+# 📗使用说明
 
 脚本可以在Hamibot上使用，也可以在Auto.js上使用，但由于Auto.js使用的是免费版，**不支持OCR**，Auto.js只能使用百度OCR，因此如果完整运行学习强国.js脚本的话（四人赛双人对战两个平台是一样的）将可能**调用百度OCR大约35次**，请谨慎使用，**超出百度OCR免费次数所产生的费用概不负责**
 
+选择Hamibot、Auto.js其一即可（**推荐Hamibot**）
 具体操作如下：
 
 ## Hamibot
@@ -70,6 +71,7 @@ hamibot函数gestures貌似有bug，我测试多次运行此函数会自动锁�
 <div align=center>
 <img src="https://s3.bmp.ovh/imgs/2022/01/2ce43a5d3b4e052a.png" alt="msedge_WRzp0mov3N" width="600px" style="zoom:33%;" />
 </div>
+
 5. 就可以点运行了
 <div align=center>
 <img src="https://s3.bmp.ovh/imgs/2022/01/54884dc3a8fa9d01.png" alt="msedge_WRzp0mov3N" width="600px" style="zoom:33%;" />
@@ -82,29 +84,20 @@ hamibot函数gestures貌似有bug，我测试多次运行此函数会自动锁�
 <div align=center>
 <img src="https://user-images.githubusercontent.com/68000706/160570166-9e696d71-1cd0-4dc5-a63e-4530497668dd.jpg" alt="msedge_WRzp0mov3N" width="300px" style="zoom:33%;" />
 </div>
+
 将Auto.js文件夹下的学习强国.js文件的代码复制到这里去
 <div align=center>
 <img src="https://user-images.githubusercontent.com/68000706/160570183-1e384421-6f4d-461d-b8c8-a0bc5a40da2c.jpg" alt="msedge_WRzp0mov3N" width="300px" style="zoom:33%;" />
 </div>
+
 将代码划到最上面，根据提示填写配置信息，并点击右上角的保存
 <div align=center>
 <img src="https://user-images.githubusercontent.com/68000706/160570186-026415c6-b770-475c-86a2-5d08aeacb324.jpg" alt="msedge_WRzp0mov3N" width="300px" style="zoom:33%;" />
 </div>
+
 点击右三角运行按钮，脚本就开始运行了
 <div align=center>
 <img src="https://user-images.githubusercontent.com/68000706/160570195-3960b0ec-947d-4571-83c7-8732ed80c0ce.jpg" alt="msedge_WRzp0mov3N" width="300px" style="zoom:33%;" />
-</div>
-
-如果想要使用其他版本的如v10.11，可以点击这里其他流程一样（不建议）
-<div align=center>
-<img src="https://s3.bmp.ovh/imgs/2022/01/12258501b035ee0e.png" alt="msedge_WRzp0mov3N"  width="300px" style="zoom:33%;" />
-</div>
-
-其他脚本也类似上述操作，只是代码不同
-
-**如果喜欢的话可以star一下噢，谢谢！**
-<div align=center>
-<img src="https://s3.bmp.ovh/imgs/2022/01/2fc8345bdc719323.png" alt="msedge_WRzp0mov3N"  width="300px" style="zoom:33%;" />
 </div>
 
 ## 满足条件
@@ -175,11 +168,12 @@ hamibot函数gestures貌似有bug，我测试多次运行此函数会自动锁�
 
 恭喜你，到这里就算是完成了!
 
-# 额外衍生脚本
-1. [单独四人赛双人对战脚本](https://github.com/dundunnp/auto_xuexiqiangguo/tree/version-14.5/%E5%9B%9B%E4%BA%BA%E8%B5%9B%E5%8F%8C%E4%BA%BA%E5%AF%B9%E6%88%98)，相关配置说明见README.md
-2. [四人赛双人对战答错脚本](https://github.com/dundunnp/auto_xuexiqiangguo/tree/version-14.5/%E5%9B%9B%E4%BA%BA%E8%B5%9B%E5%8F%8C%E4%BA%BA%E5%AF%B9%E6%88%98%E7%AD%94%E9%94%99%E7%89%88)，相关配置说明见README.md
+# 👍额外衍生脚本
+1. [单独四人赛双人对战脚本](https://github.com/dundunnp/auto_xuexiqiangguo/tree/version-15.71/%E5%9B%9B%E4%BA%BA%E8%B5%9B%E5%8F%8C%E4%BA%BA%E5%AF%B9%E6%88%98)，相关配置说明见README.md
+2. [四人赛双人对战答错脚本](https://github.com/dundunnp/auto_xuexiqiangguo/tree/version-15.71/%E5%9B%9B%E4%BA%BA%E8%B5%9B%E5%8F%8C%E4%BA%BA%E5%AF%B9%E6%88%98%E7%AD%94%E9%94%99%E7%89%88)，相关配置说明见README.md
+3. [学习强国多用户版](https://github.com/dundunnp/auto_xuexiqiangguo/tree/version-15.71/%E5%AD%A6%E4%B9%A0%E5%BC%BA%E5%9B%BD%E5%A4%9A%E7%94%A8%E6%88%B7%E7%89%88)，相关配置说明见README.md
 
-# 常见问题
+# 📑常见问题
 
 Q1: 点击运行脚本没有反应，甚至连学习强国都没有打开
 
@@ -209,6 +203,9 @@ Q5: 除上面的问题
 
 A: 请在[GitHub](https://github.com/dundunnp/hamibot-auto_xuexiqiangguo/issues)或议题上提出问题，问题尽量详细，包含图片（配置信息、学习强国主页等有助于了解问题的图片）或视频，这样对大家解决问题都快
 
-# To Do
+# ✅To Do
 1. ui界面的编写
 2. 改善get_finish，而非硬编码，以应对类似太空三人对战的活动出现 
+
+# ⭐Give A Star
+如果对你有帮助的话，希望您可以给一颗星星，推荐给更多的好友
