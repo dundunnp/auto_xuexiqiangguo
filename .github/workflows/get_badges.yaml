@@ -1,7 +1,7 @@
 - name: Create Awesome Badge
   uses: schneegans/dynamic-badges-action@v1.6.0
   with:
-    auth: ${{ secrets.GIST_SECRET }}
+    auth: ${{ secrets.BADGES }}
     gistID: <gist-ID>
     filename: star_badge.json
     label: Hello
