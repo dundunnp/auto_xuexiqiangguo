@@ -211,4 +211,4 @@ A: 请在[GitHub](https://github.com/dundunnp/hamibot-auto_xuexiqiangguo/issues)
 
 # To Do
 1. ui界面的编写
-2. 优化答题的编写
+2. 改善get_finish，而非硬编码，以应对类似太空三人对战的活动出现 
