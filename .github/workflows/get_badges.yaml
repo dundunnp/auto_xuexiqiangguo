@@ -2,7 +2,7 @@
   uses: schneegans/dynamic-badges-action@v1.6.0
   with:
     auth: ${{ secrets.BADGES }}
-    gistID: <gist-ID>
+    gistID: 8d156aec0df0935de687049ccb5c3615
     filename: star_badge.json
     label: Hello
     message: World
