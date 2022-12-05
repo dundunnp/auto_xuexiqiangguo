@@ -1,9 +1,25 @@
-- name: Create Awesome Badge
-  uses: schneegans/dynamic-badges-action@v1.6.0
-  with:
-    auth: ${{ secrets.BADGES }}
-    gistID: 8d156aec0df0935de687049ccb5c3615
-    filename: star_badge.json
-    label: Hello
-    message: World
-    color: orange
+name: get badges
+
+on:
+  # run automatically every 12 hours
+  schedule:
+    - cron: "0 */12 * * *" 
+  
+  # allows to manually run the job at any time
+  workflow_dispatch:
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    steps:
+      - name: Create Awesome Badge
+        uses: schneegans/dynamic-badges-action@v1.6.0
+        with:
+          auth: ${{ secrets.BADGES }}
+          gistID: 8d156aec0df0935de687049ccb5c3615
+          filename: star_badge.json
+          label: Hello
+          message: World
+          color: orange
