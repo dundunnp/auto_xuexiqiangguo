@@ -3,6 +3,14 @@
 <p align="center">本项目旨在解放双手 让大家有更多时间做更有意义的事💪</p>
 <p align="center"><img src="https://github.com/TechXueXi/TechXueXi/blob/master/img_folder/peoplelearning.jpg?raw=true" alt="学 xi 情景"/></p>
 
+<p align="center">
+<a href="https://github.com/dundunnp/auto_xuexiqiangguo/blob/version-15.71/LICENSE.txt"><img src="https://img.shields.io/github/license/dundunnp/auto_xuexiqiangguo"/></a>
+<a href="https://github.com/dundunnp/auto_xuexiqiangguo/network"><img src="https://img.shields.io/github/forks/dundunnp/auto_xuexiqiangguo"/></a>
+<a href="https://github.com/dundunnp/auto_xuexiqiangguo/stargazers/"><img src="https://img.shields.io/github/stars/dundunnp/auto_xuexiqiangguo"/></a>
+<a href="https://github.com/dundunnp/auto_xuexiqiangguo/watchers"><img src="https://img.shields.io/github/watchers/dundunnp/auto_xuexiqiangguo"/></a>
+<a href="https://github.com/dundunnp/auto_xuexiqiangguo/issues"><img src="https://img.shields.io/github/issues/dundunnp/auto_xuexiqiangguo"/></a>
+</p>
+
 # 📖 目录
 - [📃免责声明](#免责声明)
 - [🔧v15.71 更新内容:](#v1571-更新内容)
