@@ -14,12 +14,21 @@ jobs:
     timeout-minutes: 10
     
     steps:
-      - name: Create Awesome Badge
+      - name: Create Star Badge
         uses: schneegans/dynamic-badges-action@v1.6.0
         with:
           auth: ${{ secrets.BADGES }}
           gistID: 8d156aec0df0935de687049ccb5c3615
           filename: star_badge.json
-          label: Hello
+          label: Stars
           message: World
-          color: orange
+          color: red
+      - name: Create Fork Badge
+        uses: schneegans/dynamic-badges-action@v1.6.0
+        with:
+          auth: ${{ secrets.BADGES }}
+          gistID: cb4cc4e13327a55028a5549f485c9af2
+          filename: fork_badge.json
+          label: Fork
+          message: World
+          color: red
