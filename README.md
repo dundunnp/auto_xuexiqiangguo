@@ -13,7 +13,7 @@
 
 # 📖 目录
 - [📃免责声明](#免责声明)
-- [🔧v15.71 更新内容:](#v1571-更新内容)
+- [🔧v15.72 更新内容:](#v1572-更新内容)
 - [📍脚本声明](#脚本声明)
 - [📗使用说明](#使用说明)
   - [Hamibot](#hamibot)
@@ -31,17 +31,22 @@
 
 如果喜欢的话可以star一下噢，谢谢！
 
-# 🔧v15.71 更新内容:
+# 🔧v15.72 更新内容:
 
-### 新增多用户版
-新增多用户版脚本，目前只有hamibot版，用户可以添加多个账号，可以根据配置文件说明进行配置
+### 适配虚拟机
+
+**测试环境：**
+Android Studio下创建的安卓虚拟机，配置如下图
+<div align=center>
+<img src="https://user-images.githubusercontent.com/68000706/206117841-5a2610f7-50b7-46f7-9bce-f3ccebabe217.png" alt="msedge_WRzp0mov3N" width="600px" style="zoom:33%;" />
+</div>
+
 但测试时，发现以下问题：
-1. 在切换账号时，异常检测验证有时不会通过的情况
-2. 百度ocr http请求超时，原因暂时未知
-3. 答题偶尔会因为hamibot断开连接而停止，影响答题速度
+1. 答完每日答题时，弹出的处理异常窗口为空白（原因未知），解决方法是在运行前，通过重新登录账号手动处理异常
+2. 用hamibot自带ocr识别正确率太低，原因可能跟虚拟机有关
 
-### 修改处理异常bug
-hamibot函数gestures貌似有bug，我测试多次运行此函数会自动锁屏甚至关机重启，因此去掉此动作
+### 增强稳定性
+去除获取模块时的硬编码，以应对类似“太空三人行”新增活动导致的程序崩溃，详细见 get_finish_dict 与 entry_model 函数的实现
 
 # 📍脚本声明
 **本脚本适用于安卓、鸿蒙系统，不适用于IOS，请将强国软件换为2.33.0版本（[安装包](https://github.com/dundunnp/auto_xuexiqiangguo/tree/version-14.5/%E5%AE%89%E8%A3%85%E5%8C%85)），这之后的版本脚本运行可能报错**
@@ -61,7 +66,7 @@ hamibot函数gestures貌似有bug，我测试多次运行此函数会自动锁�
 
 2. 点击图标导入脚本
 <div align=center>
-<a href="https://hamibot.com/dashboard/scripts/import?url=https%3A%2F%2Fgithub.com%2Fdundunnp%2Fauto_xuexiqiangguo%2Ftree%2Fversion-15.71%2FHamibot" title="导入脚本到 Hamibot">
+<a href="https://hamibot.com/dashboard/scripts/import?url=https%3A%2F%2Fgithub.com%2Fdundunnp%2Fauto_xuexiqiangguo%2Ftree%2Fversion-15.72%2FHamibot" title="导入脚本到 Hamibot">
 <img src="https://hamibot.com/badge_import.png"/>
 </a>
 </div>
