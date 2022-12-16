@@ -218,7 +218,7 @@ A: 请在[GitHub](https://github.com/dundunnp/hamibot-auto_xuexiqiangguo/issues)
 
 # ✅To Do
 1. ui界面的编写
-2. 改善get_finish，而非硬编码，以应对类似太空三人对战的活动出现 
+2. 封装为apk文件
 
 # ⭐Give A Star
 如果对你有帮助的话，希望您可以给一颗星星，推荐给更多的好友
