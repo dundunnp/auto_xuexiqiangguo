@@ -1250,7 +1250,7 @@ if (all_weekly_answers_completed == "no") {
     all_weekly_answers_completed = storage.get("all_weekly_answers_completed_storage");
 }
 
-if (!finish_dict['每周答题'][0] && finish_dict['每周答题'][1] < 4 && all_weekly_answers_completed == "no") {
+if (typeof (finish_dict['每周答题']) != "undefined" && !finish_dict['每周答题'][0] && finish_dict['每周答题'][1] < 4 && all_weekly_answers_completed == "no") {
     log("每周答题");
     sleep(random_time(delay_time));
     if (!className("android.view.View").depth(22).text("学习积分").exists()) back_track();
