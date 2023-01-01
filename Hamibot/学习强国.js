@@ -78,7 +78,7 @@ function check_set_env(whether_mute, whether_froze_app,
             toast("解冻失败，请查看配置模式中的'冻结学习强国'选项是否选择'否'");
             if (pushplus_token)
                 push_weixin_message("解冻失败，请查看配置模式中的'冻结学习强国'选项是否选择'否'");
-            exit(0);
+            exit();
         }
     }
 
@@ -288,7 +288,7 @@ function back_track() {
             device.vibrate(1000);
             push_weixin_message("请先登录学习强国");
             toast("请先登录学习强国");
-            exit(0);
+            exit();
         }
         if (text("立即升级").exists()) {
             log("点击:" + "取消");
@@ -1767,6 +1767,6 @@ if (whether_froze_app == "yes") {
     if (result.code != 0) {
         log("冻结失败");
         push_weixin_message("学习强国冻结失败！");
-        exit(0);
+        exit();
     }
 }
