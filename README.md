@@ -34,6 +34,7 @@
 # 🔧v15.73 更新内容:
 
 1. 修复每周答题去除的bug
+2. 修复 亮点 存在卡在的bug
 
 # 📍脚本声明
 **本脚本适用于安卓、鸿蒙系统，不适用于IOS，请将强国软件换为2.33.0版本（[安装包](https://github.com/dundunnp/auto_xuexiqiangguo/tree/version-14.5/%E5%AE%89%E8%A3%85%E5%8C%85)），这之后的版本脚本运行可能报错**
