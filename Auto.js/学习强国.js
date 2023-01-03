@@ -371,6 +371,16 @@ if (!finish_list[2] && !finish_list[0]) {
 // 阅读文章次数
 var count = 0;
 
+var id_fangxiping;
+var thread_fangxiping_exceptions = threads.start(function () {
+    // 每2秒就处理访问异常
+    id_fangxiping = setInterval(handling_fangxiping, 5000);
+});
+
+function handling_fangxiping(){
+    toast("防息屏弹窗,请无视");
+}
+
 while ((count < 6 - completed_read_count) && !finish_list[0]) {
 
     if (!id('comm_head_title').exists() || !className('android.widget.TextView').depth(27).text('切换地区').exists()) back_track();
@@ -412,6 +422,9 @@ while ((count < 6 - completed_read_count) && !finish_list[0]) {
     }
     sleep(random_time(500));
 }
+
+// 取消防息屏
+if (id_fangxiping) clearInterval(id_fangxiping);
 
 /*
 *********************视听部分********************
