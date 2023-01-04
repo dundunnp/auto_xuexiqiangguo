@@ -55,7 +55,7 @@ var whether_mute = "yes"
 * 是否启用冻结学习强国
 * 请填入"yes"或"no"(默认为"no")
 *  */
-var whether_mute = "no"
+var whether_froze_app = "no"
 
 /**
  * 选填，是否要使用微信消息推送功能
@@ -63,6 +63,10 @@ var whether_mute = "no"
  *  */
 var pushplus_token = "";
 var sct_token = "";
+
+/**
+ * 
+ */
 
 /* **********************请填写如上信息********************** */
 
