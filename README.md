@@ -31,10 +31,9 @@
 
 如果喜欢的话可以star一下噢，谢谢！
 
-# 🔧v15.73 更新内容:
+# 🔧v15.74 更新内容:
 
-1. 修复每周答题去除的bug
-2. 修复 亮点 存在卡在的bug
+1. 适配挑战答题分类
 
 # 📍脚本声明
 **本脚本适用于安卓、鸿蒙系统，不适用于IOS，请将强国软件换为2.33.0版本（[安装包](https://github.com/dundunnp/auto_xuexiqiangguo/tree/version-14.5/%E5%AE%89%E8%A3%85%E5%8C%85)），这之后的版本脚本运行可能报错**
@@ -54,7 +53,7 @@
 
 2. 点击图标导入脚本
 <div align=center>
-<a href="https://hamibot.com/dashboard/scripts/import?url=https%3A%2F%2Fgithub.com%2Fdundunnp%2Fauto_xuexiqiangguo%2Ftree%2Fversion-15.73%2FHamibot" title="导入脚本到 Hamibot">
+<a href="https://hamibot.com/dashboard/scripts/import?url=https%3A%2F%2Fgithub.com%2Fdundunnp%2Fauto_xuexiqiangguo%2Ftree%2Fversion-15.74%2FHamibot" title="导入脚本到 Hamibot">
 <img src="https://hamibot.com/badge_import.png"/>
 </a>
 </div>
