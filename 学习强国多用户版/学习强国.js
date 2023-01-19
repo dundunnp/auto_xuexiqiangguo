@@ -1489,6 +1489,12 @@ for (var account_i = 0; account_i < phone_number_list.length; account_i++) {
 
         if (!className("android.view.View").depth(22).text("学习积分").exists()) back_track();
         entry_model('挑战答题');
+
+        // 点击强国总题库
+        text("挑战答题").waitFor();
+        sleep(random_time(delay_time / 2))
+        while (!click("total.88d389ee"));
+
         // 加载页面
         log("等待:" + "android.view.View");
         className("android.view.View").clickable(true).depth(22).waitFor();
