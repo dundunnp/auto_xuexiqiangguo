@@ -2,7 +2,7 @@ name: Deploy
 on:
   push:
     branches:
-      - master
+      - version-15.74
 
 jobs:
   deploy:
