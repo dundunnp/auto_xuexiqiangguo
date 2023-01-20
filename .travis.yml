@@ -1,0 +1,15 @@
+language: rust
+sudo: false
+
+cache:
+  - cargo
+
+rust:
+  - stable
+
+before_script:
+  - cargo install --vers "^0.4" mdbook
+
+script:
+  # In case of custom book path: mdbook build path/to/mybook && mdbook test path/to/mybook    
+  - mdbook build .\Book\auto_xuexiqiangguo-book && mdbook test .\Book\auto_xuexiqiangguo-book
