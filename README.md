@@ -34,7 +34,6 @@
 # 🔧v15.74 更新内容:
 
 1. 适配挑战答题分类
-2. 新增Anroid Studio模拟器安装说明
 
 # 📍脚本声明
 **本脚本适用于安卓、鸿蒙和Anroid Studio(模拟器具体如何安装配置请看)，不适用于IOS，请将强国软件换为2.33.0版本（[安装包](https://github.com/dundunnp/auto_xuexiqiangguo/tree/version-14.5/%E5%AE%89%E8%A3%85%E5%8C%85)），这之后的版本脚本无法运行**
