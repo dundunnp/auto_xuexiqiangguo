@@ -1,0 +1,16 @@
+[book]
+title = "auto_xuexiqiangguo"
+authors = ["dundun"]
+description = "The auto_xuexiqiangguo guidebook."
+language = "ch"
+multilingual = false
+src = "src"
+
+[output.html]
+default-theme = "dark"
+preferred-dark-theme = "navy"
+curly-quotes = true
+mathjax-support = false
+copy-fonts = true
+git-repository-url = "https://github.com/dundunnp/hamibot-auto_xuexiqiangguo"
+git-repository-icon = "fa-github"
