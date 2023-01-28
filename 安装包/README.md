@@ -1,7 +1,5 @@
 **以下方式任选其一**
 
-阿里云盘：
-
 Google Drive：
 https://drive.google.com/file/d/1c1CSwE0CvNe6ICw6xvwAsc9KrQGNTMRM/view?usp=share_link
 
