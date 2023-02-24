@@ -15,6 +15,10 @@ whether_complete_speech = whether_complete_speech.split('\n');
 var { sct_token, pushplus_token } = hamibot.env;
 var { whether_mute } = hamibot.env;
 var { whether_froze_app } = hamibot.env;
+// 获取Android系统版本号
+var version_number = Number(device.release);
+// 获取强国软件版本信息
+var package_info = app.getPackageInfo('cn.xuexi.android');
 
 // 保存各账号信息
 var { account_information } = hamibot.env;
@@ -77,6 +81,12 @@ function check_set_env(whether_mute, whether_froze_app,
     // 检查Hamibot版本是否支持ocr
     if (app.versionName < "1.3.1") {
         toast("请将Hamibot更新至v1.3.1版本或更高版本");
+        exit();
+    }
+
+    // 检查强国版本是否为2.33.0
+    if (package_info.versionCode == 23300) {
+        toast("请使用2.33.0的强国版本，安装包在github上");
         exit();
     }
 
@@ -305,47 +315,56 @@ function push_weixin_message(message) {
 }
 
 /**
-     * 处理访问异常
-     */
+ * 处理访问异常
+ */
 function handling_access_exceptions() {
     // 在子线程执行的定时器，如果不用子线程，则无法获取弹出页面的控件
     var thread_handling_access_exceptions = threads.start(function () {
         while (true) {
             textContains("访问异常").waitFor();
-            // 滑动按钮">>"位置
-            idContains("nc_1_n1t").waitFor();
-            var bound = idContains("nc_1_n1t").findOne().bounds();
-            // 滑动边框位置
-            text("向右滑动验证").waitFor();
-            var slider_bound = text("向右滑动验证").findOne().bounds();
+            sleep(random_time(delay_time * 2));
+            // 如果是新版验证，手动方式
+            if (text("拖动滑块直到出现").exists()) {
+                // 震动提示
+                device.vibrate(1000);
+                sleep(random_time(delay_time * 4));
+            } else {
+                // 旧版验证
+                // 滑动按钮">>"位置
+                idContains("nc_1_n1t").waitFor();
+                var bound = idContains("nc_1_n1t").findOne().bounds();
+                // 滑动边框位置
+                text("向右滑动验证").waitFor();
+                var slider_bound = text("向右滑动验证").findOne().bounds();
 
-            // 通过随机选择动作库中的手势验证
-            /**
-             * 动作库
-             */
-            // x轴起点位置
-            var x_start = bound.centerX();
-            // x轴终点位置
-            var x_end = slider_bound.right;
-            // y轴位置
-            var y = random(bound.top, bound.bottom);
-            // 随机选择手势
-            var choice_number = random(1, 3);
-            switch (choice_number) {
-                case 1:
-                    // 1. 先左后右，快速
-                    gesture(random_time(delay_time) * random(), [x_start, y], [x_end, y])
-                    break
-                case 2:
-                    // 2. 先左后右，慢速
-                    gesture(random_time(delay_time) * random(1, 4), [x_start, y], [x_end, y])
-                    break
-                case 3:
-                    // 3. 先右到中右位置后到中左位置再右
-                    var x_mid = (x_end - x_start) * random(5, 8) / 10 + x_start;
-                    var back_x = (x_end - x_start) * random(2, 3) / 10;
-                    gesture(random_time(delay_time), [x_start, y], [x_mid, y], [x_mid - back_x, y], [x_end, y]);
-                    break
+                // 通过随机选择动作库中的手势验证
+                /**
+                 * 动作库
+                 */
+                // x轴起点位置
+                var x_start = bound.centerX();
+                // x轴终点位置
+                var x_end = slider_bound.right;
+                // y轴位置
+                var y = random(bound.top, bound.bottom);
+                // 随机选择手势
+                var choice_number = random(1, 3);
+                switch (choice_number) {
+                    case 1:
+                        // 1. 先左后右，快速
+                        gesture(random_time(delay_time) * random(), [x_start, y], [x_end, y])
+                        break
+                    case 2:
+                        // 2. 先左后右，慢速
+                        gesture(random_time(delay_time) * random(1, 4), [x_start, y], [x_end, y])
+                        break
+                    case 3:
+                        // 3. 先右到中右位置后到中左位置再右
+                        var x_mid = (x_end - x_start) * random(5, 8) / 10 + x_start;
+                        var back_x = (x_end - x_start) * random(2, 3) / 10;
+                        gesture(random_time(delay_time), [x_start, y], [x_mid, y], [x_mid - back_x, y], [x_end, y]);
+                        break
+                }
             }
             sleep(random_time(delay_time * 2));
             if (textContains("刷新").exists()) {
@@ -355,7 +374,7 @@ function handling_access_exceptions() {
                 // 重答
                 my_click_clickable("确定");
                 text("登录").waitFor();
-                entry_model(7);
+                entry_model('每日答题');
                 log("等待:" + "查看提示");
                 text("查看提示").waitFor();
                 do_periodic_answer(5);
@@ -560,7 +579,7 @@ function is_select_all_choice() {
     var options = className("android.view.View").depth(26).find();
     // question是题目(专项答题是第4个，其他是第2个)
     var question = className("android.view.View").depth(23).findOnce(1).text().length > 2 ? className("android.view.View").depth(23).findOnce(1).text() : className("android.view.View").depth(23).findOnce(3).text();
-    return options.length / 2 == (question.match(/\s+/g) || []).length;
+    return options.length / 2 <= (question.match(/\s+/g) || []).length;
 }
 
 /**
@@ -1123,7 +1142,9 @@ for (var account_i = 0; account_i < phone_number_list.length; account_i++) {
     // 返回首页
     log("返回首页");
     log("点击:" + "android.view.View");
-    className("android.view.View").clickable(true).depth(22).findOne().click();
+    // Android 13控件位置不同
+    var depth_num = version_number == 13 ? 23 : 22;
+    className("android.view.View").clickable(true).depth(depth_num).findOne().click();
     log("等待:" + "my_back");
     id("my_back").waitFor();
     sleep(random_time(delay_time / 2));
@@ -1822,6 +1843,9 @@ for (var account_i = 0; account_i < phone_number_list.length; account_i++) {
 if (whether_mute == "yes") {
     device.setMusicVolume(vol);
 }
+
+// 解除屏幕常亮
+device.cancelKeepingAwake();
 
 //震动一秒
 device.vibrate(1000);
