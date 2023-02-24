@@ -472,35 +472,62 @@ function handling_access_exceptions() {
     var thread_handling_access_exceptions = threads.start(function () {
         while (true) {
             textContains("访问异常").waitFor();
-            // 滑动按钮">>"位置
-            idContains("nc_1_n1t").waitFor();
-            var bound = idContains("nc_1_n1t").findOne().bounds();
-            // 滑动边框位置
-            text("向右滑动验证").waitFor();
-            var slider_bound = text("向右滑动验证").findOne().bounds();
-            // 通过更复杂的手势验证（先右后左再右）
-            var x_start = bound.centerX();
-            var dx = x_start - slider_bound.left;
-            var x_end = slider_bound.right - dx;
-            var x_mid = (x_end - x_start) * random(5, 8) / 10 + x_start;
-            var back_x = (x_end - x_start) * random(2, 3) / 10;
-            var y_start = random(bound.top, bound.bottom);
-            var y_end = random(bound.top, bound.bottom);
-            x_start = random(x_start - 7, x_start);
-            x_end = random(x_end, x_end + 10);
-            gesture(random_time(delay_time), [x_start, y_start], [x_mid, y_end], [x_mid - back_x, y_start], [x_end, y_end]);
-            sleep(random_time(delay_time));
-            while (textContains("访问异常").exists());
-            sleep(random_time(delay_time));
+            sleep(random_time(delay_time * 2));
+            // 如果是新版验证，手动方式
+            if (text("拖动滑块直到出现").exists()) {
+                // 震动提示
+                device.vibrate(1000);
+                sleep(random_time(delay_time * 4));
+            } else {
+                // 旧版验证
+                // 滑动按钮">>"位置
+                idContains("nc_1_n1t").waitFor();
+                var bound = idContains("nc_1_n1t").findOne().bounds();
+                // 滑动边框位置
+                text("向右滑动验证").waitFor();
+                var slider_bound = text("向右滑动验证").findOne().bounds();
+
+                // 通过随机选择动作库中的手势验证
+                /**
+                 * 动作库
+                 */
+                // x轴起点位置
+                var x_start = bound.centerX();
+                // x轴终点位置
+                var x_end = slider_bound.right;
+                // y轴位置
+                var y = random(bound.top, bound.bottom);
+                // 随机选择手势
+                var choice_number = random(1, 3);
+                switch (choice_number) {
+                    case 1:
+                        // 1. 先左后右，快速
+                        gesture(random_time(delay_time) * random(), [x_start, y], [x_end, y])
+                        break
+                    case 2:
+                        // 2. 先左后右，慢速
+                        gesture(random_time(delay_time) * random(1, 4), [x_start, y], [x_end, y])
+                        break
+                    case 3:
+                        // 3. 先右到中右位置后到中左位置再右
+                        var x_mid = (x_end - x_start) * random(5, 8) / 10 + x_start;
+                        var back_x = (x_end - x_start) * random(2, 3) / 10;
+                        gesture(random_time(delay_time), [x_start, y], [x_mid, y], [x_mid - back_x, y], [x_end, y]);
+                        break
+                }
+            }
+            sleep(random_time(delay_time * 2));
             if (textContains("刷新").exists()) {
-                // 重答
                 my_click_clickable('刷新');
-                text("登录").waitFor();
             }
             if (textContains("网络开小差").exists()) {
                 // 重答
                 my_click_clickable("确定");
                 text("登录").waitFor();
+                entry_model('每日答题');
+                log("等待:" + "查看提示");
+                text("查看提示").waitFor();
+                do_periodic_answer(5);
             }
         }
     });
