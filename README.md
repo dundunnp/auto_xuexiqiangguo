@@ -15,3 +15,7 @@ auto_xuexiqiangguo 是一款自动化学习工具 每天可达满分🚩
 查看[指导手册](https://dundunnp.github.io/auto_xuexiqiangguo/)了解如何安装
 
 ⭐Give A Star. 如果对你有帮助的话，希望您可以给一颗星星，推荐给更多的好友
+
+## :fire:Notice:
+
+目前无法应对新版的滑动验证，用出现滑动验证震动提示人工手动完成的方式进行过渡，请各位敬请期待新的解决方式
