@@ -74,8 +74,7 @@ auto.waitFor()
 
 // 获取Android系统版本号
 var version_number = Number(device.release);
-// 获取强国软件版本信息
-var package_info = app.getPackageInfo('cn.xuexi.android');
+
 // 本地存储数据
 var storage = storages.create("data");
 
@@ -103,12 +102,6 @@ function check_set_env(whether_mute, whether_froze_app,
     // 检查Hamibot版本是否支持ocr
     if (app.versionName < "1.3.1") {
         toast("请将Hamibot更新至v1.3.1版本或更高版本");
-        exit();
-    }
-
-    // 检查强国版本是否为2.33.0
-    if (package_info.versionCode != 23300) {
-        toast("请使用2.33.0的强国版本，安装包在github上");
         exit();
     }
 
