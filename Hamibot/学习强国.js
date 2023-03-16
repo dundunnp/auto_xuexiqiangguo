@@ -174,7 +174,7 @@ function map_get(key) {
 function map_update() {
     toast("正在下载题库");
     // 使用 Github 文件加速服务：https://gh-proxy.com
-    var answer_question_bank = http.get("https://gh-proxy.com/https://raw.githubusercontent.com/Mondayfirst/XXQG_TiKu/main/%E9%A2%98%E5%BA%93_%E6%8E%92%E5%BA%8F%E7%89%88.json");
+    var answer_question_bank = http.get("https://ghproxy.com/https://raw.githubusercontent.com/Mondayfirst/XXQG_TiKu/main/%E9%A2%98%E5%BA%93_%E6%8E%92%E5%BA%8F%E7%89%88.json");
     // 如果资源过期或无法访问则换成别的云盘
     if (!(answer_question_bank.statusCode >= 200 && answer_question_bank.statusCode < 300)) {
         // 使用腾讯云
