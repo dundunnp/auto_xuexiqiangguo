@@ -260,6 +260,33 @@ function refresh(orientation) {
 }
 
 /**
+ * 去province模块
+ */
+function go_province() {
+    log("去province模块");
+    sleep(random_time(delay_time));
+    log("等待:" + "android.view.ViewGroup");
+    className("android.view.ViewGroup").depth(15).waitFor();
+    sleep(random_time(delay_time));
+    log("点击:" + "android.view.ViewGroup");
+    // 判断province模块位置
+    province_list = ["河北", "山西", "黑龙江", "吉林", "辽宁", "江苏", "浙江", "安徽", "福建", "江西", "山东", "河南", "湖北", "湖南", "广东", "海南", "四川", "贵州", "云南", "陕西", "甘肃", "青海", "台湾", "内蒙古", "广西", "西藏", "宁夏", "新疆", "北京", "天津", "上海", "重庆", "香港", "澳门"]
+    index_province = -1
+    var list = className("android.view.ViewGroup").depth(15).findOnce(2);
+    for (var i = 0; i < list.childCount(); i++) {
+        if (province_list.indexOf(list.child(i).child(0).text().trim()) != -1) {
+            index_province = i;
+            break
+        }
+    }
+    if (index_province == -1) {
+        toastLog('没找到你的省份模块，请在github中提出issue');
+        exit();
+    }
+    className("android.view.ViewGroup").depth(15).findOnce(2).child(index_province).click();
+}
+
+/**
  * 推送通知到微信
  * @param {string} account 账号
  * @param {string} score 分数
@@ -319,16 +346,7 @@ function back_track() {
                 var home_bottom = id("home_bottom_tab_icon_large").findOne().bounds();
                 click(home_bottom.centerX(), home_bottom.centerY());
                 // 去province模块
-                log("等待:" + "android.view.ViewGroup");
-                className("android.view.ViewGroup").depth(15).waitFor();
-                sleep(random_time(delay_time));
-                log("点击:" + "android.view.ViewGroup");
-                // 存在 亮点 栏目时要额外判断
-                if (text("亮点").exists()) {
-                    className("android.view.ViewGroup").depth(15).findOnce(2).child(4).click();
-                } else {
-                    className("android.view.ViewGroup").depth(15).findOnce(2).child(3).click();
-                }
+                go_province();
                 break;
             case 1:
                 break;
@@ -411,18 +429,7 @@ log("点击:" + "my_back");
 id("my_back").findOne().click();
 
 // 去province模块
-log("去province模块");
-sleep(random_time(delay_time));
-log("等待:" + "android.view.ViewGroup");
-className("android.view.ViewGroup").depth(15).waitFor();
-sleep(random_time(delay_time));
-log("点击:" + "android.view.ViewGroup");
-// 存在 亮点 栏目时要额外判断
-if (text("亮点").exists()) {
-    className("android.view.ViewGroup").depth(15).findOnce(2).child(4).click();
-} else {
-    className("android.view.ViewGroup").depth(15).findOnce(2).child(3).click();
-}
+go_province();
 
 /*
  **********本地频道*********
