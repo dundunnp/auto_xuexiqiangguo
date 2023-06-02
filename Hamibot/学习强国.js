@@ -461,7 +461,7 @@ var back_track_flag = 0;
  */
 
 // 打开电台广播
-if (!finish_dict['视听学习时长'][0] && !finish_dict['我要选读文章'][0]) {
+if (!finish_dict['我要视听学习'][0] && !finish_dict['我要选读文章'][0]) {
     log("打开电台广播");
     sleep(random_time(delay_time));
     my_click_clickable("电台");
@@ -525,7 +525,7 @@ while (count < 6 - finish_dict['我要选读文章'][1] / 2) {
 back_track_flag = 1;
 
 // 关闭电台广播
-if (!finish_dict['视听学习时长'][0] && !finish_dict['我要选读文章'][0]) {
+if (!finish_dict['我要视听学习'][0] && !finish_dict['我要选读文章'][0]) {
     log("关闭电台广播");
     if (!id("comm_head_title").exists()) back_track();
     sleep(random_time(delay_time));
@@ -547,11 +547,17 @@ if (!finish_dict['视听学习时长'][0] && !finish_dict['我要选读文章'][
     sleep(random_time(delay_time));
 }
 
+// 重新获取视听学习剩下的分数
+var back_track_flag = 2;
+back_track();
+var finish_dict = get_finish_dict();
+back_track_flag = 1;
+sleep(random_time(delay_time));
 
 /*
- **********视听学习、听学习时长*********
+ **********我要视听学习*********
  */
-if (!finish_dict['视听学习'][0] && !finish_dict['视听学习时长'][0]) {
+if (!finish_dict['我要视听学习'][0]) {
     log("视听学习、听学习");
     if (!id("comm_head_title").exists()) back_track();
     my_click_clickable("百灵");
@@ -576,8 +582,8 @@ if (!finish_dict['视听学习'][0] && !finish_dict['视听学习时长'][0]) {
     if (text("继续播放").exists()) click("继续播放");
     if (text("刷新重试").exists()) click("刷新重试");
 
-    var completed_watch_count = finish_dict['视听学习'][1];
-    while (completed_watch_count < 6) {
+    var completed_watch_count = finish_dict['我要视听学习'][1];
+    while (completed_watch_count < 12) {
         log("视听学习：" + completed_watch_count);
         sleep(random_time(delay_time / 2));
         log("等待:" + "android.widget.LinearLayout");
@@ -601,12 +607,6 @@ if (!finish_dict['视听学习'][0] && !finish_dict['视听学习时长'][0]) {
 
     back();
 }
-
-// 过渡
-my_click_clickable("我的");
-sleep(random_time(delay_time / 2));
-my_click_clickable("学习积分");
-sleep(random_time(delay_time / 2));
 
 /*
  *********************竞赛部分********************
